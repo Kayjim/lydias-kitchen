@@ -8,20 +8,10 @@ import { fade, makeStyles } from '@material-ui/core/styles';
 import MenuIcon from '@material-ui/icons/Menu';
 import SearchIcon from '@material-ui/icons/Search';
 
-import { ThemeProvider, createMuiTheme } from '@material-ui/core/styles';
-
-// const theme = createMuiTheme({
-//     palette: {
-//         primary: {
-//             main: '#d32f2f',
-//         }
-//     }
-// },);
-
 const useStyles = makeStyles(theme => ({
   root: {
     flexGrow: 1,
-    backgroundImage: 'linear-gradient(35deg, #962715, #962715)',
+    backgroundImage: 'linear-gradient(35deg, #A7414A, #962715)',
     color: '#fff',
   },
   menuButton: {

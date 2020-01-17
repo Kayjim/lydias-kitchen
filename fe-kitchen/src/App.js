@@ -1,12 +1,24 @@
-import React from 'react';
-import './App.css';
-import './components/Navbar'
-import SearchAppBar from './components/Navbar';
+import React from "react";
+import "./App.css";
+import SearchAppBar from "./components/appBar";
+import SimpleCard from "./components/cards";
 
 function App() {
   return (
     <div>
-    <SearchAppBar color='secondary'></SearchAppBar>
+      <SearchAppBar></SearchAppBar>
+      <div className="card-container">
+        <SimpleCard></SimpleCard>
+        <SimpleCard></SimpleCard>
+        <SimpleCard></SimpleCard>
+        <SimpleCard></SimpleCard>
+        <SimpleCard></SimpleCard>
+        <SimpleCard></SimpleCard>
+        <SimpleCard></SimpleCard>
+        <SimpleCard></SimpleCard>
+        <SimpleCard></SimpleCard>
+        <SimpleCard></SimpleCard>
+      </div>
     </div>
   );
 }
