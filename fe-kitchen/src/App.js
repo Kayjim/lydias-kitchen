@@ -1,6 +1,6 @@
 import React from "react";
 import "./App.css";
-import SearchAppBar from "./components/appBar";
+import SearchAppBar from "./components/AppBar";
 import SimpleCard from "./components/cards";
 
 function App() {
