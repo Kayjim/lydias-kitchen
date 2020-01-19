@@ -1,7 +1,7 @@
 import React from "react";
 import "./App.css";
-import SearchAppBar from "./components/AppBar";
-import SimpleCard from "./components/cards";
+import SearchAppBar from "./components/appBar";
+import SimpleCard from "./components/Cards";
 
 function App() {
   return (
