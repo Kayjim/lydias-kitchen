@@ -7,9 +7,6 @@ const cors = require('cors');
 const saveImage = require('./middleware/save-image');
 // const cookieParser = require('cookie-parser');
 
-
-const imgPath = './ChocolateCrinkleCookies.png';
-
 const PORT = process.env.PORT || 4000;
 const USER = process.env.MONGO_USER;
 const PASSWORD = process.env.MONGO_PASSWORD;
@@ -60,7 +57,6 @@ mongoose.connect(
 ).then(() => {
     app.listen(PORT);
     console.log("Connected to DB and listening on port: " + PORT);
-    saveImage(imgPath);
 }).catch( err => {
     console.log(err);
 });
