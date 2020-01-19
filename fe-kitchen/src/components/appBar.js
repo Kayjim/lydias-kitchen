@@ -6,9 +6,15 @@ import MenuButton from "@material-ui/core/IconButton";
 import AccountCircle from "@material-ui/core/IconButton";
 import Typography from "@material-ui/core/Typography";
 import InputBase from "@material-ui/core/InputBase";
+import Menu from '@material-ui/core/Menu';
+import MenuItem from '@material-ui/core/MenuItem';
 import { fade, makeStyles } from "@material-ui/core/styles";
 import MenuIcon from "@material-ui/icons/Menu";
 import SearchIcon from "@material-ui/icons/Search";
+import CakeIcon from '@material-ui/icons/CakeTwoTone';
+import CookieIcon from '@material-ui/icons/BlurCircularTwoTone';
+import FoodPrepIcon from '@material-ui/icons/KitchenTwoTone';
+import OrderIcon from '@material-ui/icons/ShoppingCartTwoTone';
 
 const useStyles = makeStyles(theme => ({
   root: {
@@ -65,8 +71,19 @@ const useStyles = makeStyles(theme => ({
   }
 }));
 
+
 export default function SearchAppBar() {
   const classes = useStyles();
+
+  const [anchorEl, setAnchorEl] = React.useState(null);
+
+  const handleClick = event => {
+    setAnchorEl(event.currentTarget);
+  };
+
+  const handleClose = () => {
+    setAnchorEl(null);
+  };
 
   return (
     <div className={classes.root}>
@@ -77,6 +94,7 @@ export default function SearchAppBar() {
             className={classes.menuButton}
             color="inherit"
             aria-label="open drawer"
+            onClick={handleClick}
           >
             <MenuIcon />
           </IconButton>
@@ -108,6 +126,18 @@ export default function SearchAppBar() {
           </div>
         </Toolbar>
       </AppBar>
+      <Menu
+        id="simple-menu"
+        anchorEl={anchorEl}
+        keepMounted
+        open={Boolean(anchorEl)}
+        onClose={handleClose}
+      >
+        <MenuItem onClick={handleClose}><CookieIcon />Cookies</MenuItem>
+        <MenuItem onClick={handleClose}><CakeIcon />Cakes</MenuItem>
+        <MenuItem onClick={handleClose}><FoodPrepIcon />Food Prep</MenuItem>
+        <MenuItem onClick={handleClose}><OrderIcon />Order</MenuItem>
+      </Menu>
     </div>
   );
 }
