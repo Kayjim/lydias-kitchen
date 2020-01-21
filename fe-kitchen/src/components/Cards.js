@@ -25,7 +25,7 @@ const useStyles = makeStyles({
   },
 });
 
-export default function SimpleCard() {
+export default function SimpleCard(props) {
   const classes = useStyles();
   const bull = <span className={classes.bullet}>•</span>;
 
@@ -33,10 +33,10 @@ export default function SimpleCard() {
     <Card className={classes.card}>
       <CardContent>
         <Typography className={classes.title} color="textSecondary" gutterBottom>
-          Yummy description
+          {props.image.title}
         </Typography>
         <Typography variant="h5" component="h2">
-          Picture {bull} of {bull} cake
+          <img src={props.image.url}></img>
         </Typography>
         <Typography className={classes.pos} color="textSecondary">
           noun
