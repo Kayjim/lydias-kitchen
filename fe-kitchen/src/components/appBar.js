@@ -67,6 +67,13 @@ const useStyles = makeStyles(theme => ({
         width: 200
       }
     }
+  },
+  kitchenIcon: {
+    textDecoration: "none",
+    color: "white",
+    '&:hover': {
+      color: '#7FFFD4',
+    },
   }
 }));
 
@@ -98,7 +105,7 @@ export default function SearchAppBar() {
             <MenuIcon />
           </IconButton>
           <Typography className={classes.title} variant="h6" noWrap>
-            <a href='/'>Lydia's Kitchen</a>
+            <a href='/' className={classes.kitchenIcon}>Lydia's Kitchen</a>
           </Typography>
           <div className={classes.search}>
             <div className={classes.searchIcon}>
