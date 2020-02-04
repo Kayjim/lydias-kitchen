@@ -2,7 +2,7 @@ import React from "react"
 import { BrowserRouter, Route, Switch } from 'react-router-dom';
 import SearchAppBar from "./components/appBar";
 import HomePage from './pages/Home';
-import CookiesPage from './pages/Home';
+import CookiesPage from './pages/Cookies';
 
 
 import "./App.css";
