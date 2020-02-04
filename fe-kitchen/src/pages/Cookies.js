@@ -1,7 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import Card from '../components/Cards';
 
-import './Cookies.css';
 
 const fetchCookies = () => {
     //REST call to /get-cookies that will return all our cookie objects 
@@ -16,51 +15,52 @@ const testImage = {
 const CookiePage = () => {
 
     const [cookies, setCookies] = useState([]);
-    let didCancel = false;
 
-    useEffect(() => { 
-        if(!didCancel){
-            setCookies([
-                {
-                    title: 'Test cookie',
-                    url: 'https://i.imgur.com/udB8jK2m.jpg'
-                },
-                {
-                    title: 'Test cookie',
-                    url: 'https://i.imgur.com/udB8jK2m.jpg'
-                },
-                {
-                    title: 'Test cookie',
-                    url: 'https://i.imgur.com/udB8jK2m.jpg'
-                },
-                {
-                    title: 'Test cookie',
-                    url: 'https://i.imgur.com/udB8jK2m.jpg'
-                },
-                {
-                    title: 'Test cookie',
-                    url: 'https://i.imgur.com/udB8jK2m.jpg'
-                },
-                {
-                    title: 'Test cookie',
-                    url: 'https://i.imgur.com/udB8jK2m.jpg'
-                },
-                {
-                    title: 'Test cookie',
-                    url: 'https://i.imgur.com/udB8jK2m.jpg'
-                },
-            ]);
-        }
+    useEffect(() => {
+        setCookies([
+            {
+                title: 'Test cookie',
+                url: 'https://i.imgur.com/udB8jK2m.jpg'
+            },
+            {
+                title: 'Test cookie',
+                url: 'https://i.imgur.com/udB8jK2m.jpg'
+            },
+            {
+                title: 'Test cookie',
+                url: 'https://i.imgur.com/udB8jK2m.jpg'
+            },
+            {
+                title: 'Test cookie',
+                url: 'https://i.imgur.com/udB8jK2m.jpg'
+            },
+            {
+                title: 'Test cookie',
+                url: 'https://i.imgur.com/udB8jK2m.jpg'
+            },
+            {
+                title: 'Test cookie',
+                url: 'https://i.imgur.com/udB8jK2m.jpg'
+            },
+            {
+                title: 'Test cookie',
+                url: 'https://i.imgur.com/udB8jK2m.jpg'
+            },
+            {
+                title: 'Test cookie',
+                url: 'https://i.imgur.com/udB8jK2m.jpg'
+            },
+        ]);
     }, []);
     return (
         <div className='cookie-container card-container'>
             {cookies.map(c => {
-              return (
-              <Card 
-              className='cookie-card'
-              image={c}
-              />  
-              ); 
+                return (
+                    <Card
+                        className='cookie-card'
+                        image={c}
+                    />
+                );
             }
             )}
         </div>
