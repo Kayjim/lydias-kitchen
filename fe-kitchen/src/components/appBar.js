@@ -2,12 +2,11 @@ import React from "react";
 import AppBar from "@material-ui/core/AppBar";
 import Toolbar from "@material-ui/core/Toolbar";
 import IconButton from "@material-ui/core/IconButton";
-import MenuButton from "@material-ui/core/IconButton";
-import AccountCircle from "@material-ui/core/IconButton";
 import Typography from "@material-ui/core/Typography";
 import InputBase from "@material-ui/core/InputBase";
 import Menu from '@material-ui/core/Menu';
 import MenuItem from '@material-ui/core/MenuItem';
+import Link from '@material-ui/core/Link';
 import { fade, makeStyles } from "@material-ui/core/styles";
 import MenuIcon from "@material-ui/icons/Menu";
 import SearchIcon from "@material-ui/icons/Search";
@@ -98,18 +97,8 @@ export default function SearchAppBar() {
           >
             <MenuIcon />
           </IconButton>
-          {/* testing menu items */}
-          <MenuButton
-            iconType={AccountCircle}
-            items={["Create", "List1", "List2"]}
-          />
-          <MenuButton
-            iconType={MenuIcon}
-            items={["Profile", "User Management", "Logout"]}
-          />
-          {/* end testing menu items */}
           <Typography className={classes.title} variant="h6" noWrap>
-            Lydia's Kitchen
+            <a href='/'>Lydia's Kitchen</a>
           </Typography>
           <div className={classes.search}>
             <div className={classes.searchIcon}>
@@ -133,11 +122,27 @@ export default function SearchAppBar() {
         open={Boolean(anchorEl)}
         onClose={handleClose}
       >
-        <MenuItem onClick={handleClose}><CookieIcon />Cookies</MenuItem>
-        <MenuItem onClick={handleClose}><CakeIcon />Cakes</MenuItem>
-        <MenuItem onClick={handleClose}><FoodPrepIcon />Food Prep</MenuItem>
-        <MenuItem onClick={handleClose}><OrderIcon />Order</MenuItem>
+        <Link href='/cookies'>
+          <MenuItem onClick={handleClose}>
+            <CookieIcon />Cookies
+          </MenuItem>
+        </Link>
+        <Link href='/cookies'>
+          <MenuItem onClick={handleClose}>
+            <CakeIcon />Cakes
+      </MenuItem>
+        </Link>
+        <Link href='/cookies'>
+          <MenuItem onClick={handleClose}>
+            <FoodPrepIcon />Food Prep
+      </MenuItem>
+        </Link>
+        <Link href='/cookies'>
+          <MenuItem onClick={handleClose}>
+            <OrderIcon />Order
+      </MenuItem>
+        </Link>
       </Menu>
-    </div>
+    </div >
   );
 }

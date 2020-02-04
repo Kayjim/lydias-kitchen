@@ -1,25 +1,24 @@
-import React from "react";
-import "./App.css";
+import React from "react"
+import { BrowserRouter, Route, Switch } from 'react-router-dom';
 import SearchAppBar from "./components/appBar";
-import SimpleCard from "./components/Cards";
+import HomePage from './pages/Home';
+import CookiesPage from './pages/Cookies';
 
+
+import "./App.css";
 function App() {
   return (
-    <div>
+    <BrowserRouter>
       <SearchAppBar></SearchAppBar>
-      <div className="card-container">
-        <SimpleCard></SimpleCard>
-        <SimpleCard></SimpleCard>
-        <SimpleCard></SimpleCard>
-        <SimpleCard></SimpleCard>
-        <SimpleCard></SimpleCard>
-        <SimpleCard></SimpleCard>
-        <SimpleCard></SimpleCard>
-        <SimpleCard></SimpleCard>
-        <SimpleCard></SimpleCard>
-        <SimpleCard></SimpleCard>
-      </div>
-    </div>
+      <Switch>
+      <Route path="/" exact component={HomePage} />
+      <Route path="/cookies" component={CookiesPage} />
+      <Route path="/cakes" component={CookiesPage} />
+      <Route path="/foodprep" component={CookiesPage} />
+      <Route path="/order" component={CookiesPage} />
+      <Route path="/feedback" component={CookiesPage} />
+      </Switch>
+    </BrowserRouter>
   );
 }
 

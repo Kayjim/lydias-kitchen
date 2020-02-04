@@ -3,3 +3,14 @@
   display: flex;
   flex-wrap: wrap;
 }
+
+.cookie-container{
+  display: flex;
+  flex-direction: row;
+  width: 100%;
+}
+.cookie-card{
+  width: 22%;
+  border: 1px solid #962715;
+  margin: 1em;
+}
