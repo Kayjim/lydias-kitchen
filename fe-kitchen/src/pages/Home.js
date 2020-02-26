@@ -25,31 +25,31 @@ const HomePage = props => {
     useEffect(() => {
             setCookies([
                 {
-                    title: 'Test cookie',
+                    title: 'Test cookie0',
                     url: 'https://i.imgur.com/udB8jK2m.jpg'
                 },
                 {
-                    title: 'Test cookie',
+                    title: 'Test cookie2',
                     url: 'https://i.imgur.com/udB8jK2m.jpg'
                 },
                 {
-                    title: 'Test cookie',
+                    title: 'Test cookie3',
                     url: 'https://i.imgur.com/udB8jK2m.jpg'
                 },
                 {
-                    title: 'Test cookie',
+                    title: 'Test cookie4',
                     url: 'https://i.imgur.com/udB8jK2m.jpg'
                 },
                 {
-                    title: 'Test cookie',
+                    title: 'Test cookie5',
                     url: 'https://i.imgur.com/udB8jK2m.jpg'
                 },
                 {
-                    title: 'Test cookie',
+                    title: 'Test cookie6',
                     url: 'https://i.imgur.com/udB8jK2m.jpg'
                 },
                 {
-                    title: 'Test cookie',
+                    title: 'Test cookie7',
                     url: 'https://i.imgur.com/udB8jK2m.jpg'
                 },
             ]);
@@ -59,6 +59,7 @@ const HomePage = props => {
             {cookies.map(c => {
                 return (
                     <Card
+                        key={c.title}
                         className='cookie-card'
                         image={c}
                     />
