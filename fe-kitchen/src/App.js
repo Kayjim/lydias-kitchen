@@ -1,12 +1,16 @@
 import React from "react"
 import { BrowserRouter, Route, Switch } from 'react-router-dom';
-import SearchAppBar from "./components/appBar";
+import SearchAppBar from "./components/AppBar";
 import HomePage from './pages/Home';
 import CookiesPage from './pages/Cookies';
+<<<<<<< HEAD
 import AdminPage from './pages/Admin';
 
 
+=======
+>>>>>>> c27dd4ef458425781bf7f2d4e8fa44d477749553
 import "./App.css";
+
 function App() {
   return (
     <BrowserRouter>
