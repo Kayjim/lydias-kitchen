@@ -4,6 +4,9 @@ const bodyParser = require('body-parser');
 const mongoose = require('mongoose');
 const path = require('path');
 const cors = require('cors');
+
+const adminRoutes = require('./routes/admin');
+
 const saveImage = require('./middleware/save-image');
 // const cookieParser = require('cookie-parser');
 
@@ -14,9 +17,6 @@ const DBNAME = process.env.DBNAME;
 
 const app = express();
 
-
-
-
 mongoose.set('useFindAndModify', false);
 
 app.use('/public', express.static(path.join(__dirname, 'public')));
@@ -24,6 +24,8 @@ app.use('/public', express.static(path.join(__dirname, 'public')));
 // app.use(cookieParser());
 app.use(bodyParser.urlencoded({ extended: false}));
 app.use(bodyParser.json());
+
+app.use('/3', adminRoutes);
 
 var corsOptions = {
     origin: ['http://www.lydiaskitchen.net', 'http://localhost:3000', 'http://localhost:4000'],

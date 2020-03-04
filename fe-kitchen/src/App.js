@@ -1,8 +1,11 @@
 import React from "react"
 import { BrowserRouter, Route, Switch } from 'react-router-dom';
-import SearchAppBar from "./components/AppBar";
+import SearchAppBar from "./components/appBar";
 import HomePage from './pages/Home';
 import CookiesPage from './pages/Cookies';
+import AdminPage from './pages/Admin';
+
+
 import "./App.css";
 
 function App() {
@@ -16,6 +19,7 @@ function App() {
       <Route path="/foodprep" component={CookiesPage} />
       <Route path="/order" component={CookiesPage} />
       <Route path="/feedback" component={CookiesPage} />
+      <Route path='/3' component={AdminPage} />
       </Switch>
     </BrowserRouter>
   );
