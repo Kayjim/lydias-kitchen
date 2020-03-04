@@ -6,12 +6,7 @@ const imgSchema = new Schema({
     title: String,
     url: String,
     description: String,
-    ingredients: [
-            {
-                name: String,
-                value: String,
-        }
-    ],
+    ingredients: [],
     deleted: {
         default: false,
         type: Boolean
