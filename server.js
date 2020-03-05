@@ -6,8 +6,6 @@ const path = require('path');
 const cors = require('cors');
 
 const adminRoutes = require('./routes/admin');
-
-const saveImage = require('./middleware/save-image');
 // const cookieParser = require('cookie-parser');
 
 const PORT = process.env.PORT || 4000;
