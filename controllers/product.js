@@ -11,7 +11,8 @@ module.exports = {
             type: args.type,
             price: args.price,
             ingredients: args.ingredients,
-            images: args.imgs
+            images: args.imgs,
+            level: args.level
         });
 
         let createdProduct;
