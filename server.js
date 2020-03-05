@@ -6,8 +6,7 @@ const path = require('path');
 const cors = require('cors');
 
 const adminRoutes = require('./routes/admin');
-
-const saveImage = require('./middleware/save-image');
+const homeRoutes = require('./routes/home');
 // const cookieParser = require('cookie-parser');
 
 const PORT = process.env.PORT || 4000;
@@ -26,6 +25,7 @@ app.use(bodyParser.urlencoded({ extended: false}));
 app.use(bodyParser.json());
 
 app.use('/3', adminRoutes);
+app.use('/', homeRoutes);
 
 var corsOptions = {
     origin: ['http://www.lydiaskitchen.net', 'http://localhost:3000', 'http://localhost:4000'],

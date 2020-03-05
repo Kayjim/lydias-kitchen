@@ -19,34 +19,42 @@ const CookiePage = () => {
     useEffect(() => {
         setCookies([
             {
+                id: 1,
                 title: 'Test cookie',
                 url: 'https://i.imgur.com/udB8jK2m.jpg'
             },
             {
+                id: 2,
                 title: 'Test cookie',
                 url: 'https://i.imgur.com/udB8jK2m.jpg'
             },
             {
+                id: 3,
                 title: 'Test cookie',
                 url: 'https://i.imgur.com/udB8jK2m.jpg'
             },
             {
+                id: 4,
                 title: 'Test cookie',
                 url: 'https://i.imgur.com/udB8jK2m.jpg'
             },
             {
+                id: 5,
                 title: 'Test cookie',
                 url: 'https://i.imgur.com/udB8jK2m.jpg'
             },
             {
+                id: 6,
                 title: 'Test cookie',
                 url: 'https://i.imgur.com/udB8jK2m.jpg'
             },
             {
+                id: 7,
                 title: 'Test cookie',
                 url: 'https://i.imgur.com/udB8jK2m.jpg'
             },
             {
+                id: 8,
                 title: 'Test cookie',
                 url: 'https://i.imgur.com/udB8jK2m.jpg'
             },

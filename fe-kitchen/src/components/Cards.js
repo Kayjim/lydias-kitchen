@@ -34,16 +34,14 @@ export default function SimpleCard(props) {
     <Card className={props.className}>
       <CardContent>
         <Typography className={classes.title} style={{textAlign: 'center'}} color="textSecondary" gutterBottom>
-          {props.image.title}
+          {props.title}
         </Typography>
-          <img style={{width: '100%', maxHeight: 325}} src={props.image.url}></img>
+          <img style={{width: '100%', maxHeight: 325}} src={props.image}></img>
         <Typography className={classes.pos} style={{textAlign: 'center'}} color="textSecondary">
-          noun
+        {props.description}
         </Typography>
         <Typography variant="body2" style={{textAlign: 'center'}} component="p">
-          Could be cookies too
-          <br />
-          {'"a benevolent smile"'}
+          {props.ingredients.toString()}
         </Typography>
       </CardContent>
       <CardActions>

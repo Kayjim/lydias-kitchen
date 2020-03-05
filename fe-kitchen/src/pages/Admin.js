@@ -11,22 +11,25 @@ import axios from 'axios';
 
 const AdminPage = () => {
 
-    const [products, setProducts] = useState([{ url: null, title: null, description: null, ingredients: null }]);
+    const [products, setProducts] = useState([{ imgs: null, title: null, description: null, ingredients: null }]);
 
     const handleChange = (i, e) => {
         const values = [...products];
         switch (e.target.id) {
-            case ('url-'+i):
-                values[i].url = e.target.value;
+            case ('imgs-' + i):
+                values[i].imgs = e.target.value;
                 break;
-            case ('title-'+i):
+            case ('title-' + i):
                 values[i].title = e.target.value;
                 break;
-            case ('desc-'+i):
+            case ('desc-' + i):
                 values[i].description = e.target.value;
                 break;
-            case ('ingrd-'+i):
+            case ('ingrd-' + i):
                 values[i].ingredients = e.target.value;
+                break;
+            case ('type-' + i):
+                values[i].type = e.target.value;
                 break;
         }
         setProducts(values);
@@ -34,7 +37,7 @@ const AdminPage = () => {
 
     const addNew = () => {
         const values = [...products];
-        values.push({ url: null, title: null, description: null, ingredients: null });
+        values.push({ imgs: null, title: null, description: null, ingredients: null });
         setProducts(values);
     };
 
@@ -47,7 +50,7 @@ const AdminPage = () => {
     const handleImport = () => {
         console.log(products);
         axios.post('http://localhost:4000/3/import', products)
-            .then( res => {
+            .then(res => {
                 console.log(res);
                 console.log(res.data);
             });
@@ -61,10 +64,11 @@ const AdminPage = () => {
                 {products.map((field, idx) => {
                     return (
                         <div key={`${field}-${idx}`}>
-                            <TextField id={'url-' + idx} defaultValue='Image URL' onChange={(e) => handleChange(idx, e)} />
-                            <TextField id={'title-' + idx} defaultValue='Image Title' onChange={(e) => handleChange(idx, e)} />
+                            <TextField id={'imgs-' + idx} defaultValue='Image URL' onChange={(e) => handleChange(idx, e)} />
+                            <TextField id={'title-' + idx} defaultValue='Product Name' onChange={(e) => handleChange(idx, e)} />
                             <TextField id={'desc-' + idx} defaultValue='Description' onChange={(e) => handleChange(idx, e)} />
                             <TextField id={'ingrd-' + idx} defaultValue='Ingredients' onChange={(e) => handleChange(idx, e)} />
+                            <TextField id={'type-' + idx} defaultValue='Type' onChange={(e) => handleChange(idx, e)} />
                             <Button variant='outlined' color='secondary' onClick={() => remove(idx)}><RemoveIcon /></Button>
                         </div>)
                 })}

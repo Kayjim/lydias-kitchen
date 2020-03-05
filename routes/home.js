@@ -3,20 +3,19 @@ var router = express.Router();
 const cors = require('cors');
 
 const corsOptions = require('../middleware/cors-config');
-const saveProduct = require('../middleware/save-product');
+
+const productController = require('../controllers/product');
 
 router.use(cors(corsOptions));
 
 
-router.post('/import', async (req, res) => {
-    const products = req.body;
+router.get('/all-products', async (req, res) => {
 
-    products.forEach(p => {
-        saveProduct(p);
-    });
+    const products = await productController.getAllProducts();
 
     res.send({
-        msg: 'Success!'
+        msg: 'Success!',
+        products: products
     });
 });
 

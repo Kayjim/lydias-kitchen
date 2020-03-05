@@ -19,7 +19,7 @@ function Copyright() {
     <Typography variant="body2" color="textSecondary" align="center">
       {'Copyright © '}
       <Link color="inherit" href="https://material-ui.com/">
-        Your Website
+        Lydia's Kitchen
       </Link>{' '}
       {new Date().getFullYear()}
       {'.'}
@@ -67,13 +67,13 @@ const useStyles = makeStyles(theme => ({
 const steps = ['Shipping address', 'Payment details', 'Review your order'];
 
 function getStepContent(step) {
-  switch (step) {
+    switch (step) {
     case 0:
-      return <AddressForm />;
+       return <AddressForm />;
     case 1:
-      return <PaymentForm />;
+       return <PaymentForm />;
     case 2:
-      return <Review />;
+       return <Review />;
     default:
       throw new Error('Unknown step');
   }
