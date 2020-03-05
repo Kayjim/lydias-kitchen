@@ -3,7 +3,7 @@ var router = express.Router();
 const cors = require('cors');
 
 const corsOptions = require('../middleware/cors-config');
-const saveImage = require('../middleware/save-image');
+const saveProduct = require('../middleware/save-product');
 
 router.use(cors(corsOptions));
 
@@ -12,7 +12,7 @@ router.post('/import', async (req, res) => {
     const products = req.body;
 
     products.forEach(p => {
-        saveImage(p);
+        saveProduct(p);
     });
 
     res.send({
