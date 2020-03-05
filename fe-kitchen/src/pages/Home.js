@@ -1,6 +1,8 @@
 import React, { useState, useEffect } from 'react';
 import Card from '../components/Cards';
 
+import axios from 'axios';
+
 
 
 const fetchTopCookies = () => {
@@ -11,57 +13,28 @@ const fetchTopCakes = () => {
     //REST call to fetch Cakes to display
 };
 
-const testImage = {
-    title: 'testcookie',
-    url: 'https://i.imgur.com/udB8jK2m.jpg'
-};
-
 const HomePage = props => {
     React.useEffect(() => fetchTopCookies());
-
     React.useEffect(() => fetchTopCakes());
-    const [cookies, setCookies] = useState([]);
+    const [products, setProducts] = useState([]);
 
     useEffect(() => {
-            setCookies([
-                {
-                    title: 'Test cookie0',
-                    url: 'https://i.imgur.com/udB8jK2m.jpg'
-                },
-                {
-                    title: 'Test cookie2',
-                    url: 'https://i.imgur.com/udB8jK2m.jpg'
-                },
-                {
-                    title: 'Test cookie3',
-                    url: 'https://i.imgur.com/udB8jK2m.jpg'
-                },
-                {
-                    title: 'Test cookie4',
-                    url: 'https://i.imgur.com/udB8jK2m.jpg'
-                },
-                {
-                    title: 'Test cookie5',
-                    url: 'https://i.imgur.com/udB8jK2m.jpg'
-                },
-                {
-                    title: 'Test cookie6',
-                    url: 'https://i.imgur.com/udB8jK2m.jpg'
-                },
-                {
-                    title: 'Test cookie7',
-                    url: 'https://i.imgur.com/udB8jK2m.jpg'
-                },
-            ]);
+        axios.get('http://localhost:4000/all-products')
+            .then(res => {
+                setProducts(res.data.products);
+            });
     }, []);
     return (
         <div className='cookie-container card-container'>
-            {cookies.map(c => {
+            {products.map(p => {
                 return (
                     <Card
-                        key={c.title}
+                        key={p.title}
                         className='cookie-card'
-                        image={c}
+                        title={p.title}
+                        ingredients={p.ingredients}
+                        description={p.description}
+                        image={p.images[0]}
                     />
                 );
             }

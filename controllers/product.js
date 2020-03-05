@@ -27,4 +27,15 @@ module.exports = {
             throw(err);
         }
     },
+    getAllProducts: async (args, req) => {
+        try {
+            const products = await Product.find();
+            return products.map(p => {
+                return transformProduct(p);
+            });
+        }
+        catch(err){
+            throw err;
+        }
+    }
 }
