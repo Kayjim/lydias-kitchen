@@ -6,6 +6,7 @@ module.exports = saveProduct = (p) => {
     const title = p.title;
     const description = p.description;
     const type = p.type;
+    const level = p.level ? p.level : 2;
     let price = 0;
     switch(type){
         case ('Cake'):
@@ -16,7 +17,7 @@ module.exports = saveProduct = (p) => {
             break;
     }
 
-    productController.createProduct({ title, description, price, type, imgs, ingredients})
+    productController.createProduct({ title, description, price, type, level, imgs, ingredients})
     .then((err, p) => {
         if(err)
             console.log(err);

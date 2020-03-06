@@ -28,7 +28,7 @@ app.use('/3', adminRoutes);
 app.use('/', homeRoutes);
 
 var corsOptions = {
-    origin: ['http://www.lydiaskitchen.net', 'http://localhost:3000', 'http://localhost:4000'],
+    origin: ['http://www.lydiaskitchen.net', 'http://localhost:3000', 'http://localhost:4000', 'http://localhost:3004'],
     optionsSuccessStatus: 200
 };
 app.use(cors(corsOptions));

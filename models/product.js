@@ -9,6 +9,10 @@ const productSchema = new Schema({
     price: Number,
     type: String,
     images: [String],
+    level: {
+        type: Number,
+        default: 2
+        },
     onSale: {
         default: false,
         type: Boolean

@@ -16,14 +16,8 @@ const fetchTopCakes = () => {
 const HomePage = props => {
     React.useEffect(() => fetchTopCookies());
     React.useEffect(() => fetchTopCakes());
-    const [products, setProducts] = useState([]);
 
-    useEffect(() => {
-        axios.get('http://localhost:4000/all-products')
-            .then(res => {
-                setProducts(res.data.products);
-            });
-    }, []);
+    const products = props.products;
     return (
         <div className='cookie-container card-container'>
             {products.map(p => {
