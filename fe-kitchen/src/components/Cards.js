@@ -29,7 +29,8 @@ const useStyles = makeStyles({
 
 export default function SimpleCard(props) {
   const classes = useStyles();
-  const bull = <span className={classes.bullet}>•</span>;
+
+  const product = props.product;
 
   return (
     <Card className={props.className}>
@@ -46,7 +47,7 @@ export default function SimpleCard(props) {
         </Typography>
       </CardContent>
       <CardActions>
-        <Button className={classes.button} size="small">Order button</Button>
+        <Button className={classes.button} size="small" onClick={() => props.addToCart(product)}>Add to Cart</Button>
       </CardActions>
     </Card>
   );
