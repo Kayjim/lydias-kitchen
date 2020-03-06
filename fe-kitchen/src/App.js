@@ -61,12 +61,18 @@ function App() {
           exact
           render={props => <HomePage {...props} products={products} />}
         />
-        <Route products={products} path="/cookies" component={CookiesPage} />
-        <Route products={products} path="/cakes" component={CookiesPage} />
-        <Route products={products} path="/foodprep" component={CookiesPage} />
-        <Route path="/order" component={CheckOut} />
-        <Route path="/feedback" component={CookiesPage} />
-        <Route path="/3" component={AdminPage} />
+        <Route
+          render={props => <CookiesPage {...props} products={products.filter(p => p.type === 'Cookie')} />} path="/cookies" />
+        <Route
+          render={props => <CookiesPage {...props} products={products} />} path="/cakes" />
+        <Route
+        render={props => <CookiesPage {...props} products={products} />} path="/foodprep" />
+        <Route
+          path="/order" component={CheckOut} />
+        <Route
+          path="/feedback" component={CookiesPage} />
+        <Route
+          path="/3" component={AdminPage} />
       </Switch>
     </BrowserRouter>
   );
