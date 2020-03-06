@@ -12,10 +12,14 @@ import "./App.css";
 
 function App() {
   const [products, setProducts] = useState([]);
+  const [allProducts, setAllProducts] = useState([]);
 
   const handleSearch = txt => {
     let newProductState = [];
     switch (txt) {
+      case(''):
+        setProducts(allProducts);
+        break;
       case "Cake":
         newProductState = products.filter(p => p.type === "Cake");
         setProducts(newProductState);
@@ -44,6 +48,7 @@ function App() {
   useEffect(() => {
     axios.get("http://localhost:4000/all-products").then(res => {
       setProducts(res.data.products);
+      setAllProducts(res.data.products);
     });
   }, []);
 
