@@ -12,10 +12,14 @@ import "./App.css";
 
 function App() {
   const [products, setProducts] = useState([]);
+  const [allProducts, setAllProducts] = useState([]);
 
   const handleSearch = txt => {
     let newProductState = [];
     switch (txt) {
+      case(''):
+        setProducts(allProducts);
+        break;
       case "Cake":
         newProductState = products.filter(p => p.type === "Cake");
         setProducts(newProductState);
@@ -44,6 +48,7 @@ function App() {
   useEffect(() => {
     axios.get("http://localhost:4000/all-products").then(res => {
       setProducts(res.data.products);
+      setAllProducts(res.data.products);
     });
   }, []);
 
@@ -56,12 +61,18 @@ function App() {
           exact
           render={props => <HomePage {...props} products={products} />}
         />
-        <Route products={products} path="/cookies" component={CookiesPage} />
-        <Route products={products} path="/cakes" component={CookiesPage} />
-        <Route products={products} path="/foodprep" component={CookiesPage} />
-        <Route path="/order" component={CheckOut} />
-        <Route path="/feedback" component={CookiesPage} />
-        <Route path="/3" component={AdminPage} />
+        <Route
+          render={props => <CookiesPage {...props} products={products.filter(p => p.type === 'Cookie')} />} path="/cookies" />
+        <Route
+          render={props => <CookiesPage {...props} products={products} />} path="/cakes" />
+        <Route
+        render={props => <CookiesPage {...props} products={products} />} path="/foodprep" />
+        <Route
+          path="/order" component={CheckOut} />
+        <Route
+          path="/feedback" component={CookiesPage} />
+        <Route
+          path="/3" component={AdminPage} />
       </Switch>
     </BrowserRouter>
   );

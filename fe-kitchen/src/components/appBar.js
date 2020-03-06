@@ -78,7 +78,7 @@ const useStyles = makeStyles(theme => ({
 }));
 
 
-export default function SearchAppBar() {
+export default function SearchAppBar(props) {
   const classes = useStyles();
 
   const [anchorEl, setAnchorEl] = React.useState(null);
@@ -118,6 +118,7 @@ export default function SearchAppBar() {
                 input: classes.inputInput
               }}
               inputProps={{ "aria-label": "search" }}
+              onChange={(e) => {props.handleSearch(e.target.value)}}
             />
           </div>
         </Toolbar>
