@@ -14,6 +14,7 @@ import CakeIcon from '@material-ui/icons/CakeTwoTone';
 import CookieIcon from '@material-ui/icons/BlurCircularTwoTone';
 import FoodPrepIcon from '@material-ui/icons/KitchenTwoTone';
 import OrderIcon from '@material-ui/icons/ShoppingCartTwoTone';
+import ShoppingCart from './ShoppingCart';
 
 const useStyles = makeStyles(theme => ({
   root: {
@@ -111,6 +112,13 @@ export default function SearchAppBar(props) {
           <Typography className={classes.title} variant="h6" noWrap>
             <a href='/' className={classes.kitchenIcon}>Lydia's Kitchen</a>
           </Typography>
+          {props.cart.length > 0 ? (<div 
+          style={{flexGrow: 2, width:'16px', height:'16px', border:'1px solid black'}}
+          onMouseOver={props.toggleDrawer(true)}
+          >
+            Cart
+          </div>) : null}
+          <div style={{flexGrow: 3}}></div>
           <div className={classes.search}>
             <div className={classes.searchIcon}>
               <SearchIcon />

@@ -11,11 +11,13 @@ const CookiePage = (props) => {
                 return (
                     <Card
                         key={p.title}
+                        product={p}
                         className='cookie-card'
                         title={p.title}
                         ingredients={p.ingredients}
                         description={p.description}
                         image={p.images[0]}
+                        addToCart={props.addToCart}
                     />
                 );
             }
