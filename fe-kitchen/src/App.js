@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from "react";
 import { BrowserRouter, Route, Switch } from "react-router-dom";
-import SearchAppBar from "./components/AppBar";
+import SearchAppBar from "./components/appBar";
 import HomePage from "./pages/Home";
 import CookiesPage from "./pages/Cookies";
 import AdminPage from "./pages/Admin";
