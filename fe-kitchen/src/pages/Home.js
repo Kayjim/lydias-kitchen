@@ -3,19 +3,7 @@ import Card from '../components/Cards';
 
 import axios from 'axios';
 
-
-
-const fetchTopCookies = () => {
-    //REST call to fetch Cookies to display
-};
-
-const fetchTopCakes = () => {
-    //REST call to fetch Cakes to display
-};
-
 const HomePage = props => {
-    React.useEffect(() => fetchTopCookies());
-    React.useEffect(() => fetchTopCakes());
 
     const products = props.products;
     return (
@@ -25,10 +13,12 @@ const HomePage = props => {
                     <Card
                         key={p.title}
                         className='cookie-card'
+                        product={p}
                         title={p.title}
                         ingredients={p.ingredients}
                         description={p.description}
                         image={p.images[0]}
+                        addToCart={props.addToCart}
                     />
                 );
             }
