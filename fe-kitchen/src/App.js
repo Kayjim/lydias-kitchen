@@ -1,21 +1,27 @@
 import React, { useState, useEffect } from "react";
-import { BrowserRouter, Route, Switch } from "react-router-dom";
+import { BrowserRouter, Route, Switch, Redirect } from "react-router-dom";
 import SearchAppBar from "./components/AppBar";
 import HomePage from "./pages/Home";
 import CookiesPage from "./pages/Cookies";
 import AdminPage from "./pages/Admin";
 import CheckOut from "./components/Checkout/checkout";
 import Drawer from '@material-ui/core/Drawer';
+import Button from '@material-ui/core/Button';
+import {ToastContainer, toast} from 'react-toastify';
 
 import axios from "axios";
 
 import "./App.css";
+import 'react-toastify/dist/ReactToastify.css';
 
 function App() {
   const [products, setProducts] = useState([]);
   const [allProducts, setAllProducts] = useState([]);
   const [cart, setCart] = useState([]);
   const [showCart, setShowCart] = useState(false);
+  const [alertMessage, setAlertMessage] = useState('');
+  const [alertType, setAlertType] = useState('');
+  const [isCheckout, setIsCheckout] = useState(false);
 
   //Search bar functionality
   const handleSearch = txt => {
@@ -56,6 +62,7 @@ function App() {
     setCart(currentCart);
   };
 
+  //remove from shopping cart
   const removeFromCart = (p) => {
     let currentCart = [...cart];
     const idx = currentCart.indexOf(p);
@@ -64,6 +71,17 @@ function App() {
       setCart(currentCart);
     }
   }
+  //create order logic
+  const createOrder = (cart) => {
+    if(cart.length < 1){
+      setAlertMessage('You do not have any items in your shopping cart. Try adding some, and trying again!');
+      setAlertType('error');
+    }
+    else {
+      setAlertMessage('Order form from context logic to be implemented.');
+      setAlertType('success');
+    }
+  };
 
   const toggleDrawer = (open) => event => {
     if (event.type === 'keydown' && (event.key === 'Tab' || event.key === 'Shift')) {
@@ -80,8 +98,41 @@ function App() {
     });
   }, []);
 
+  //after order alertMessage is updated
+  useEffect(() => {
+    switch(alertType){
+      case 'error':
+        toast.error(alertMessage, 
+          {
+            position: "top-right",
+            autoClose: 4000,
+            hideProgressbar: false,
+            closeOnClick: true,
+            pauseOnHover: true,
+            draggable: false,
+            progress: undefined,
+          }
+        );
+        break;
+      case 'success':
+        toast.success(alertMessage, 
+          {
+            position: "top-right",
+            autoClose: 4000,
+            hideProgressbar: false,
+            closeOnClick: true,
+            pauseOnHover: true,
+            draggable: false,
+            progress: undefined,
+          }
+        );
+        break;
+    }
+  }, [alertType]);
+
   return (
     <BrowserRouter>
+      <ToastContainer />
       <SearchAppBar
         handleSearch={handleSearch}
         toggleDrawer={toggleDrawer}
@@ -91,11 +142,17 @@ function App() {
         (<Drawer anchor="top" open={showCart} onClose={toggleDrawer(false)}>
           {cart.map(p => {
             return (
-              <ul key={p.title}>
-                <li key={p.title}>{p.title}</li>
-              </ul>
+              <div id='cart-container'>
+                <ul key={p.title}>
+                  <li key={p.title}>
+                    <img style={{width: '20%', height: 75}} src={p.images[0]}></img>
+                    {p.title}
+                  </li>
+                </ul>
+              </div>
             );
           })}
+                <Button className='orderBtn' size="small" onClick={() => createOrder(cart)}>Proceed to Checkout</Button>
         </Drawer>) :
         null
       }
@@ -112,7 +169,7 @@ function App() {
         <Route
           render={props => <CookiesPage {...props} products={products} />} path="/foodprep" />
         <Route
-          path="/order" component={CheckOut} />
+          render={props => <CheckOut {...props} cart = {cart} /> }path="/order"/>
         <Route
           path="/feedback" component={CookiesPage} />
         <Route

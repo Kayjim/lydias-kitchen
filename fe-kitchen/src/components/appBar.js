@@ -11,7 +11,6 @@ import { fade, makeStyles } from "@material-ui/core/styles";
 import MenuIcon from "@material-ui/icons/Menu";
 import SearchIcon from "@material-ui/icons/Search";
 import CakeIcon from '@material-ui/icons/CakeTwoTone';
-import CookieIcon from '@material-ui/icons/BlurCircularTwoTone';
 import FoodPrepIcon from '@material-ui/icons/KitchenTwoTone';
 import OrderIcon from '@material-ui/icons/ShoppingCartTwoTone';
 import ShoppingCart from './ShoppingCart';
@@ -109,10 +108,9 @@ export default function SearchAppBar(props) {
             <a href='/' className={classes.kitchenIcon}>Lydia's Kitchen</a>
           </Typography>
           {props.cart.length > 0 ? (<div 
-          style={{flexGrow: 2, width:'16px', height:'16px', border:'1px solid black'}}
-          onMouseOver={props.toggleDrawer(true)}
+          onClick={props.toggleDrawer(true)}
           >
-            Cart
+            <ShoppingCart />
           </div>) : null}
           <div style={{flexGrow: 3}}></div>
           <div className={classes.search}>
@@ -140,7 +138,7 @@ export default function SearchAppBar(props) {
       >
         <Link href='/cookies'>
           <MenuItem onClick={handleClose}>
-            <CookieIcon />Cookies
+            Cookies
           </MenuItem>
         </Link>
         <Link href='/cookies'>
@@ -153,7 +151,7 @@ export default function SearchAppBar(props) {
             <FoodPrepIcon />Food Prep
       </MenuItem>
         </Link>
-        <Link href='/cookies'>
+        <Link href='/order'>
           <MenuItem onClick={handleClose}>
             <OrderIcon />Order
       </MenuItem>
