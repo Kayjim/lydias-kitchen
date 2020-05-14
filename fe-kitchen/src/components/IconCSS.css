@@ -1,0 +1,13 @@
+.menu-icon{
+    width: 20px;
+    height: 20px;
+}
+.cookie-icon{
+    background-image: url('../icons/022-cookie.svg');
+}
+.cake-icon{
+    background-image: url('../icons/027-cake-slice.svg');
+}
+.prep-icon{
+    background-image: url('../icons/004-rolling-pin.svg');
+}
