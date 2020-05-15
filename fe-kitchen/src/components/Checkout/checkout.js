@@ -59,26 +59,25 @@ const useStyles = makeStyles(theme => ({
   },
 }));
 
-const steps = ['Shipping address', 'Payment details', 'Review your order'];
+const steps = ['Basic Information', 'Payment details', 'Review your order'];
 
-function getStepContent(step) {
+function getStepContent(step, cart) {
     switch (step) {
     case 0:
        return <AddressForm />;
     case 1:
        return <PaymentForm />;
     case 2:
-       return <Review />;
+       return <Review cart={cart} />;
     default:
       throw new Error('Unknown step');
   }
 }
 
-export default function Checkout() {
+const Checkout = (props) => {
   const classes = useStyles();
   const [activeStep, setActiveStep] = useState(0);
-  const [order, setOrder] = useState({});
-  const [cart, setCart] = useState({});
+  const cart = JSON.parse(localStorage.getItem('cart'));
 
   const handleNext = () => {
     setActiveStep(activeStep + 1);
@@ -116,7 +115,7 @@ export default function Checkout() {
               </React.Fragment>
             ) : (
               <React.Fragment>
-                {getStepContent(activeStep)}
+                {getStepContent(activeStep, cart)}
                 <div className={classes.buttons}>
                   {activeStep !== 0 && (
                     <Button onClick={handleBack} className={classes.button}>
@@ -141,3 +140,5 @@ export default function Checkout() {
     </React.Fragment>
   );
 }
+
+export default Checkout;

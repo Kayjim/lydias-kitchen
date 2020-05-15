@@ -1,12 +1,12 @@
 import React, { useState, useEffect } from "react";
-import { BrowserRouter, Route, Switch, Redirect } from "react-router-dom";
+import { BrowserRouter, Route, Switch } from "react-router-dom";
 import SearchAppBar from "./components/AppBar";
 import HomePage from "./pages/Home";
 import CookiesPage from "./pages/Cookies";
 import AdminPage from "./pages/Admin";
 import CheckOut from "./components/Checkout/checkout";
 import Drawer from '@material-ui/core/Drawer';
-import Button from '@material-ui/core/Button';
+import Link from '@material-ui/core/Link';
 import {ToastContainer, toast} from 'react-toastify';
 
 import axios from "axios";
@@ -14,7 +14,7 @@ import axios from "axios";
 import "./App.css";
 import 'react-toastify/dist/ReactToastify.css';
 
-function App() {
+const App = () => {
   const [products, setProducts] = useState([]);
   const [allProducts, setAllProducts] = useState([]);
   const [cart, setCart] = useState([]);
@@ -78,8 +78,9 @@ function App() {
       setAlertType('error');
     }
     else {
-      setAlertMessage('Order form from context logic to be implemented.');
-      setAlertType('success');
+      // setAlertMessage('Order form from context logic to be implemented.');
+      // setAlertType('success');
+      localStorage.setItem('cart', JSON.stringify(cart));
     }
   };
 
@@ -152,7 +153,7 @@ function App() {
               </div>
             );
           })}
-                <Button className='orderBtn' size="small" onClick={() => createOrder(cart)}>Proceed to Checkout</Button>
+                <Link href='/order' onClick={() => createOrder(cart)} >Proceed to Checkout</Link>
         </Drawer>) :
         null
       }
@@ -168,8 +169,8 @@ function App() {
           render={props => <CookiesPage {...props} products={products} />} path="/cakes" />
         <Route
           render={props => <CookiesPage {...props} products={products} />} path="/foodprep" />
-        <Route
-          render={props => <CheckOut {...props} cart = {cart} /> }path="/order"/>
+        <Route 
+          path="/order" component={CheckOut}/>
         <Route
           path="/feedback" component={CookiesPage} />
         <Route

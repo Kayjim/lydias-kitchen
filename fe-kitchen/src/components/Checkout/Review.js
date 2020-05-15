@@ -1,11 +1,11 @@
 import React from "react";
 
 
-export default function Review() {
+export default function Review(props) {
 
   return (
       <div className='checkout-review__ctr'>
-          Review Form Page
+          {JSON.stringify(props.cart)}
       </div>
   );
 }
