@@ -137,17 +137,17 @@ export default function SearchAppBar(props) {
       >
         <Link href='/cookies'>
           <MenuItem onClick={handleClose}>
-            <div class='menu-icon cookie-icon'></div>Cookies
+            <div className='menu-icon cookie-icon'></div>Cookies
           </MenuItem>
         </Link>
         <Link href='/cakes'>
           <MenuItem onClick={handleClose}>
-          <div class='menu-icon cake-icon'></div>Cakes
+          <div className='menu-icon cake-icon'></div>Cakes
       </MenuItem>
         </Link>
         <Link href='/foodprep'>
           <MenuItem onClick={handleClose}>
-          <div class='menu-icon prep-icon'></div>Food Prep
+          <div className='menu-icon prep-icon'></div>Food Prep
       </MenuItem>
         </Link>
         <Link href='/order'>
