@@ -1,4 +1,5 @@
 import React, { useState, useEffect } from 'react';
+import { Redirect } from 'react-router-dom';
 import { makeStyles } from '@material-ui/core/styles';
 import CssBaseline from '@material-ui/core/CssBaseline';
 import Paper from '@material-ui/core/Paper';
@@ -87,7 +88,7 @@ const Checkout = (props) => {
     setActiveStep(activeStep - 1);
   };
 
-  return (
+  return ( cart !== null ? 
     <React.Fragment>
       <CssBaseline />
       <main className={classes.layout}>
@@ -138,6 +139,7 @@ const Checkout = (props) => {
         <Copyright />
       </main>
     </React.Fragment>
+    : <Redirect to='/noCart' />
   );
 }
 

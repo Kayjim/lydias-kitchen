@@ -14,7 +14,7 @@ import axios from "axios";
 import "./App.css";
 import 'react-toastify/dist/ReactToastify.css';
 
-const App = () => {
+const App = (props) => {
   const [products, setProducts] = useState([]);
   const [allProducts, setAllProducts] = useState([]);
   const [cart, setCart] = useState([]);
@@ -97,6 +97,17 @@ const App = () => {
       setProducts(res.data.products);
       setAllProducts(res.data.products);
     });
+
+    if(typeof(localStorage) !== 'undefined' && localStorage !== null){
+      let cart = localStorage.getItem('cart');
+      if(typeof(cart) !== 'undefined' && cart !== null && cart.length >= 1){
+        setCart(cart);
+      }
+    }
+    if(window.location.href.indexOf('noCart') > -1){
+      setAlertMessage('You do not have any items in your shopping cart. Try adding some, and trying again!');
+      setAlertType('error');
+  }
   }, []);
 
   //after order alertMessage is updated
@@ -105,8 +116,8 @@ const App = () => {
       case 'error':
         toast.error(alertMessage, 
           {
-            position: "top-right",
-            autoClose: 4000,
+            position: "top-center",
+            autoClose: 5000,
             hideProgressbar: false,
             closeOnClick: true,
             pauseOnHover: true,
@@ -118,7 +129,7 @@ const App = () => {
       case 'success':
         toast.success(alertMessage, 
           {
-            position: "top-right",
+            position: "top-center",
             autoClose: 4000,
             hideProgressbar: false,
             closeOnClick: true,
@@ -160,6 +171,11 @@ const App = () => {
       <Switch>
         <Route
           path="/"
+          exact
+          render={props => <HomePage {...props} addToCart={addToCart} products={products} />}
+        />
+        <Route 
+          path='/noCart'
           exact
           render={props => <HomePage {...props} addToCart={addToCart} products={products} />}
         />
