@@ -78,7 +78,7 @@ function getStepContent(step, cart) {
 const Checkout = (props) => {
   const classes = useStyles();
   const [activeStep, setActiveStep] = useState(0);
-  const cart = JSON.parse(localStorage.getItem('cart'));
+  const cart = JSON.parse(sessionStorage.getItem('cart'));
 
   const handleNext = () => {
     setActiveStep(activeStep + 1);

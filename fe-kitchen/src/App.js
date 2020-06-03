@@ -80,7 +80,7 @@ const App = (props) => {
     else {
       // setAlertMessage('Order form from context logic to be implemented.');
       // setAlertType('success');
-      localStorage.setItem('cart', JSON.stringify(cart));
+      sessionStorage.setItem('cart', JSON.stringify(cart));
     }
   };
 
@@ -97,17 +97,16 @@ const App = (props) => {
       setProducts(res.data.products);
       setAllProducts(res.data.products);
     });
-
-    if(typeof(localStorage) !== 'undefined' && localStorage !== null){
-      let cart = localStorage.getItem('cart');
+    if(typeof(sessionStorage) !== 'undefined' && sessionStorage !== null){
+      let cart = sessionStorage.getItem('cart');
       if(typeof(cart) !== 'undefined' && cart !== null && cart.length >= 1){
-        setCart(cart);
+        setCart(JSON.parse(cart));
       }
     }
     if(window.location.href.indexOf('noCart') > -1){
       setAlertMessage('You do not have any items in your shopping cart. Try adding some, and trying again!');
       setAlertType('error');
-  }
+    }
   }, []);
 
   //after order alertMessage is updated
@@ -152,6 +151,7 @@ const App = (props) => {
       ></SearchAppBar>
       {showCart === true ?
         (<Drawer anchor="top" open={showCart} onClose={toggleDrawer(false)}>
+          
           {cart.map(p => {
             return (
               <div id='cart-container'>
