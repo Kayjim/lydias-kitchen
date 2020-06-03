@@ -24,9 +24,6 @@ app.use('/public', express.static(path.join(__dirname, 'public')));
 app.use(bodyParser.urlencoded({ extended: false}));
 app.use(bodyParser.json());
 
-app.use('/3', adminRoutes);
-app.use('/', homeRoutes);
-
 var corsOptions = {
     origin: ['http://www.lydiaskitchen.net', 'http://localhost:3000', 'http://localhost:4000', 'http://localhost:3004'],
     optionsSuccessStatus: 200
@@ -36,7 +33,8 @@ app.use(cors(corsOptions));
 
 
 
-
+app.use('/3', adminRoutes);
+app.use('/', homeRoutes);
 
 
 

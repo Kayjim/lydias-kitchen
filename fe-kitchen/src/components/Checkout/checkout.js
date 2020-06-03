@@ -12,7 +12,7 @@ import Typography from '@material-ui/core/Typography';
 import AddressForm from './AddressForm';
 import PaymentForm from './PaymentForm';
 import Review from './Review';
-import {ToastContainer, toast} from 'react-toastify';
+import { ToastContainer, toast } from 'react-toastify';
 import axios from 'axios';
 
 function Copyright() {
@@ -78,10 +78,18 @@ const Checkout = (props) => {
   const [alertMessage, setAlertMessage] = useState('');
   const [alertType, setAlertType] = useState('');
 
+  let cartTotal = 0;
+
+  if(cart !== null && typeof(cart) !== 'undefined' && cart.length > 0){
+    for(let i = 0; i<cart.length; i++){
+      cartTotal += cart[i].price;
+    }
+  }
+
   useEffect(() => {
-    switch(alertType){
+    switch (alertType) {
       case 'error':
-        toast.error(alertMessage, 
+        toast.error(alertMessage,
           {
             position: "top-center",
             autoClose: 5000,
@@ -94,7 +102,7 @@ const Checkout = (props) => {
         );
         break;
       case 'success':
-        toast.success(alertMessage, 
+        toast.success(alertMessage,
           {
             position: "top-center",
             autoClose: 4000,
@@ -114,7 +122,7 @@ const Checkout = (props) => {
     debugger;
     switch (activeStep) {
       case (0):
-        if(validateContactInfo()){
+        if (validateContactInfo()) {
           setActiveStep(activeStep + 1);
         }
         break;
@@ -162,9 +170,9 @@ const Checkout = (props) => {
         break;
     }
   }
-  
+
   const steps = ['Basic Information', 'Payment details', 'Review your order'];
-  
+
   function getStepContent(step, cart) {
     switch (step) {
       case 0:
@@ -172,65 +180,64 @@ const Checkout = (props) => {
       case 1:
         return <PaymentForm />;
       case 2:
-        return <Review cart={cart} />;
+        return <Review cartTotal={cartTotal} cart={cart} />;
       default:
         throw new Error('Unknown step');
     }
   }
-  
+
   const validateContactInfo = () => {
+    let emailReg = /^(([^<>()\[\]\\.,;:\s@"]+(\.[^<>()\[\]\\.,;:\s@"]+)*)|(".+"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$/;
     setAlertType('');
-    if(firstName === "" || lastName === "" || email === "" || address1 === "" || address2 === "" || city === "" || state === "" || zip === ""){
+    if (firstName === "" || lastName === "" || email === "" || address1 === "" || city === "" || state === "" || zip === "") {
       setAlertMessage('Fill out all required fields and try again.');
       setAlertType('error');
       return false;
-    } else {
+    }
+    else if(!emailReg.test(email)) {
+      setAlertType('error');
+      setAlertMessage('Please provide a valid email format.');
+      return false;
+    }
+     else {
       return true;
     }
   }
 
   const sendOrder = e => {
-    let emailReg = /^(([^<>()\[\]\\.,;:\s@"]+(\.[^<>()\[\]\\.,;:\s@"]+)*)|(".+"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$/;
-    if (!emailReg.test(email)) {
+    axios.post('http://localhost:4000/3/sendOrder', {
+      method: 'post',
+      headers: {
+        'Content-Type': 'application/json',
+      },
+      firstName: firstName,
+      lastName: lastName,
+      email: email,
+      phone: phone,
+      address1: address1,
+      address2: address2,
+      city: city,
+      state: state,
+      zip: zip,
+      cart: cart,
+      total: cartTotal
+    }).then(res => {
+      if (!res.status === 200) {
         setAlertType('error');
-        setAlertMessage('Please provide a valid email format.');
+        setAlertMessage(res.status + ' : ' + res.statusText);
         return;
-    }
-        axios.post('http://localhost:4000/3/sendOrder', {
-            method: 'post',
-            headers: {
-                'Content-Type': 'application/json',
-            },
-            body: JSON.stringify({
-                firstName: firstName,
-                lastName: lastName,
-                email: email,
-                phone: phone,
-                address1: address1,
-                address2: address2,
-                city: city,
-                state, state
-            })
-        }).then(res => {
-          debugger;
-            if(!res.status === 200){
-                setAlertType('error');
-                setAlertMessage(res.status + ' : ' + res.statusText);
-                return;
-            }
-            return res;
-        }).then(data => {
-          debugger;
-          setAlertType('success');
-          setAlertMessage('Thanks for your order! You will receive a confirmation email shortly.');
-          return data;
-        }).catch(err => {
-          debugger;
-          setAlertType('error');
-          setAlertMessage(err);
-          return;
-        });
-    
+      }
+      return res;
+    }).then(data => {
+      setAlertType('success');
+      setAlertMessage('Thanks for your order! You will receive a confirmation email shortly.');
+      return data;
+    }).catch(err => {
+      setAlertType('error');
+      setAlertMessage(err);
+      return;
+    });
+
   };
 
   return (cart !== null ?

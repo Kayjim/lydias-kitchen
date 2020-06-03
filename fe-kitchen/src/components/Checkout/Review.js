@@ -9,9 +9,6 @@ import Divider from '@material-ui/core/Divider';
 export default function Review(props) {
 
   const cart = props.cart;
-  const cartTotal = cart.length > 1 ? cart.reduce((curItem, nextItem) => {
-    return curItem.price + nextItem.price;
-  }) : cart[0].price;
 
   return (
       <Paper className='checkout-review__ctr'>
@@ -27,7 +24,7 @@ export default function Review(props) {
                 </ListItem>)
             })}
             <ListItem key='total'>
-              <ListItemText primary='TOTAL' secondary={'$'+cartTotal}></ListItemText>
+              <ListItemText primary='TOTAL' secondary={'$'+props.cartTotal}></ListItemText>
             </ListItem>
           </List>
       </Paper>

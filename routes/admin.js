@@ -11,8 +11,8 @@ router.use(cors(corsOptions));
 const sendMail = output => {
     sgMail.setApiKey(process.env.SG_API_KEY);
     const msg = {
-        to: 'chrispatrickcodes@gmail.com',
-        from: 'xcmcpx@gmail.com',
+        to: 'lydiapskitchen@gmail.com',
+        from: 'chrispatrickcodes@gmail.com',
         subject: `Lydia's Kitchen test order email`,
         text: 'WE BALLIN',
         html: output
@@ -33,17 +33,15 @@ router.post('/import', async (req, res) => {
     });
 });
 
+const mapCart = (cart) => {
+    let cartList = '';
+    cartList = cart.map(c => {
+        return cartList + `<li>${c.title}</li>`
+    });
+    return cartList
+};
+
 router.post('/sendOrder', async (req, res) => {
-    const mapCart = () => {
-        return (
-            '<ul>' +
-                req.body.cart.map(p => {
-                    '<li>' + p.title + '</li>'
-                    })
-                    +
-            '</ul>'
-        );
-    };
     const output = `
         <h3>You have a new order from Lydia's Kitchen!</h3>
         <h4>Contact Details</h4>
@@ -55,9 +53,14 @@ router.post('/sendOrder', async (req, res) => {
             <li>Address 2: ${req.body.address2}</li>
             <li>City: ${req.body.city}</li>
             <li>State: ${req.body.state}</li>
-        <ul>
+            <li>Zip: ${req.body.zip}</li>
+        </ul>
         <h4>Order Details</h4>
-        ${mapCart}
+        <ul>
+        ${mapCart(req.body.cart).toString().replace(/,/g, '')}
+        </ul>
+        <h4>TOTAL</h4>
+        <p>$${req.body.total}</p>
     `
     sendMail(output);
     res.send('Mail sent');
