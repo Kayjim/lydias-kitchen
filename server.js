@@ -24,9 +24,6 @@ app.use("/public", express.static(path.join(__dirname, "public")));
 app.use(bodyParser.urlencoded({ extended: false }));
 app.use(bodyParser.json());
 
-app.use("/3", adminRoutes);
-app.use("/", homeRoutes);
-
 var corsOptions = {
   origin: [
     "http://www.lydiaskitchen.net",
@@ -40,9 +37,27 @@ app.use(cors(corsOptions));
 if (process.env.NODE_ENV === "production") {
   app.use(express.static("./client/build"));
 
-  app.get("*", (req, res) => {
-    res.sendFile(path.join(__dirname, "client", "build", "index.html"));
-  });
+
+
+
+
+app.use('/3', adminRoutes);
+app.use('/', homeRoutes);
+
+
+
+
+
+
+
+
+
+if(process.env.NODE_ENV === 'production') {
+    app.use(express.static('./client/build'));
+
+    app.get('*', (req, res) => {
+        res.sendFile(path.join(__dirname, 'client', 'build', 'index.html'));
+    });
 }
 
 mongoose

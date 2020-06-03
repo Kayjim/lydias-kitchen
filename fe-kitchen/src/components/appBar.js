@@ -10,11 +10,9 @@ import Link from '@material-ui/core/Link';
 import { fade, makeStyles } from "@material-ui/core/styles";
 import MenuIcon from "@material-ui/icons/Menu";
 import SearchIcon from "@material-ui/icons/Search";
-import CakeIcon from '@material-ui/icons/CakeTwoTone';
-import CookieIcon from '@material-ui/icons/BlurCircularTwoTone';
-import FoodPrepIcon from '@material-ui/icons/KitchenTwoTone';
-import OrderIcon from '@material-ui/icons/ShoppingCartTwoTone';
 import ShoppingCart from './ShoppingCart';
+
+import './IconCSS.css';
 
 const useStyles = makeStyles(theme => ({
   root: {
@@ -112,14 +110,7 @@ export default function SearchAppBar(props) {
           <Typography className={classes.title} variant="h6" noWrap>
             <a href='/' className={classes.kitchenIcon}>Lydia's Kitchen</a>
           </Typography>
-          {props.cart.length > 0 ? (<div 
-          style={{flexGrow: 2, width:'16px', height:'16px', border:'1px solid black'}}
-          onMouseOver={props.toggleDrawer(true)}
-          >
-            Cart
-          </div>) : null}
-          <div style={{flexGrow: 3}}></div>
-          <div className={classes.search}>
+          <div className={classes.search} style={{flexGrow: 2}}>
             <div className={classes.searchIcon}>
               <SearchIcon />
             </div>
@@ -133,6 +124,12 @@ export default function SearchAppBar(props) {
               onChange={handleSearch}
             />
           </div>
+          <div style={{flexGrow: 2}}></div>
+          {props.cart.length > 0 ? (<div 
+          onClick={props.toggleDrawer(true)}
+          >
+            <ShoppingCart height={40} width={40} />
+          </div>) : <div style={{width: 40}}></div>}
         </Toolbar>
       </AppBar>
       <Menu
@@ -144,22 +141,22 @@ export default function SearchAppBar(props) {
       >
         <Link href='/cookies'>
           <MenuItem onClick={handleClose}>
-            <CookieIcon />Cookies
+            <div className='menu-icon cookie-icon'></div>Cookies
           </MenuItem>
         </Link>
-        <Link href='/cookies'>
+        <Link href='/cakes'>
           <MenuItem onClick={handleClose}>
-            <CakeIcon />Cakes
+          <div className='menu-icon cake-icon'></div>Cakes
       </MenuItem>
         </Link>
-        <Link href='/cookies'>
+        <Link href='/foodprep'>
           <MenuItem onClick={handleClose}>
-            <FoodPrepIcon />Food Prep
+          <div className='menu-icon prep-icon'></div>Food Prep
       </MenuItem>
         </Link>
-        <Link href='/cookies'>
+        <Link href='/order'>
           <MenuItem onClick={handleClose}>
-            <OrderIcon />Order
+          <ShoppingCart height={20} width={20} />Order
       </MenuItem>
         </Link>
       </Menu>
