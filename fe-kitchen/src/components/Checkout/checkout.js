@@ -13,6 +13,7 @@ import AddressForm from './AddressForm';
 import PaymentForm from './PaymentForm';
 import Review from './Review';
 import {ToastContainer, toast} from 'react-toastify';
+import axios from 'axios';
 
 function Copyright() {
   return (
@@ -110,11 +111,15 @@ const Checkout = (props) => {
   }, [alertType]);
 
   const handleNext = () => {
+    debugger;
     switch (activeStep) {
       case (0):
         if(validateContactInfo()){
           setActiveStep(activeStep + 1);
         }
+        break;
+      case (2):
+        sendOrder();
         break;
       default:
         setActiveStep(activeStep + 1);
@@ -183,6 +188,50 @@ const Checkout = (props) => {
       return true;
     }
   }
+
+  const sendOrder = e => {
+    let emailReg = /^(([^<>()\[\]\\.,;:\s@"]+(\.[^<>()\[\]\\.,;:\s@"]+)*)|(".+"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$/;
+    if (!emailReg.test(email)) {
+        setAlertType('error');
+        setAlertMessage('Please provide a valid email format.');
+        return;
+    }
+        axios.post('http://localhost:4000/3/sendOrder', {
+            method: 'post',
+            headers: {
+                'Content-Type': 'application/json',
+            },
+            body: JSON.stringify({
+                firstName: firstName,
+                lastName: lastName,
+                email: email,
+                phone: phone,
+                address1: address1,
+                address2: address2,
+                city: city,
+                state, state
+            })
+        }).then(res => {
+          debugger;
+            if(!res.status === 200){
+                setAlertType('error');
+                setAlertMessage(res.status + ' : ' + res.statusText);
+                return;
+            }
+            return res;
+        }).then(data => {
+          debugger;
+          setAlertType('success');
+          setAlertMessage('Thanks for your order! You will receive a confirmation email shortly.');
+          return data;
+        }).catch(err => {
+          debugger;
+          setAlertType('error');
+          setAlertMessage(err);
+          return;
+        });
+    
+  };
 
   return (cart !== null ?
     <React.Fragment>
