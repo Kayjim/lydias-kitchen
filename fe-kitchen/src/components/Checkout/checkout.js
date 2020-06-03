@@ -12,6 +12,7 @@ import Typography from '@material-ui/core/Typography';
 import AddressForm from './AddressForm';
 import PaymentForm from './PaymentForm';
 import Review from './Review';
+import {ToastContainer, toast} from 'react-toastify';
 
 function Copyright() {
   return (
@@ -60,35 +61,130 @@ const useStyles = makeStyles(theme => ({
   },
 }));
 
-const steps = ['Basic Information', 'Payment details', 'Review your order'];
-
-function getStepContent(step, cart) {
-    switch (step) {
-    case 0:
-       return <AddressForm />;
-    case 1:
-       return <PaymentForm />;
-    case 2:
-       return <Review cart={cart} />;
-    default:
-      throw new Error('Unknown step');
-  }
-}
-
 const Checkout = (props) => {
   const classes = useStyles();
   const [activeStep, setActiveStep] = useState(0);
   const cart = JSON.parse(sessionStorage.getItem('cart'));
+  const [firstName, setFirstName] = useState('');
+  const [lastName, setLastName] = useState('');
+  const [email, setEmail] = useState('');
+  const [phone, setPhone] = useState('');
+  const [address1, setAddress1] = useState('');
+  const [address2, setAddress2] = useState('');
+  const [city, setCity] = useState('');
+  const [state, setState] = useState('');
+  const [zip, setZip] = useState('');
+  const [alertMessage, setAlertMessage] = useState('');
+  const [alertType, setAlertType] = useState('');
+
+  useEffect(() => {
+    switch(alertType){
+      case 'error':
+        toast.error(alertMessage, 
+          {
+            position: "top-center",
+            autoClose: 5000,
+            hideProgressbar: false,
+            closeOnClick: true,
+            pauseOnHover: true,
+            draggable: false,
+            progress: undefined,
+          }
+        );
+        break;
+      case 'success':
+        toast.success(alertMessage, 
+          {
+            position: "top-center",
+            autoClose: 4000,
+            hideProgressbar: false,
+            closeOnClick: true,
+            pauseOnHover: true,
+            draggable: false,
+            progress: undefined,
+          }
+        );
+        break;
+    }
+    setAlertType('');
+  }, [alertType]);
 
   const handleNext = () => {
-    setActiveStep(activeStep + 1);
+    switch (activeStep) {
+      case (0):
+        if(validateContactInfo()){
+          setActiveStep(activeStep + 1);
+        }
+        break;
+      default:
+        setActiveStep(activeStep + 1);
+        break;
+    }
   };
 
   const handleBack = () => {
     setActiveStep(activeStep - 1);
   };
 
-  return ( cart !== null ? 
+  const handleChange = (e) => {
+    switch (e.target.id) {
+      case ('fname'):
+        setFirstName(e.target.value);
+        break;
+      case ('lname'):
+        setLastName(e.target.value);
+        break;
+      case ('email'):
+        setEmail(e.target.value);
+        break;
+      case ('phone'):
+        setPhone(e.target.value);
+        break;
+      case ('address1'):
+        setAddress1(e.target.value);
+        break;
+      case ('address2'):
+        setAddress2(e.target.value);
+        break;
+      case ('city'):
+        setCity(e.target.value);
+        break;
+      case ('state'):
+        setState(e.target.value);
+        break;
+      case ('zip'):
+        setZip(e.target.value);
+        break;
+    }
+  }
+  
+  const steps = ['Basic Information', 'Payment details', 'Review your order'];
+  
+  function getStepContent(step, cart) {
+    switch (step) {
+      case 0:
+        return <AddressForm handleChange={handleChange} />;
+      case 1:
+        return <PaymentForm />;
+      case 2:
+        return <Review cart={cart} />;
+      default:
+        throw new Error('Unknown step');
+    }
+  }
+  
+  const validateContactInfo = () => {
+    setAlertType('');
+    if(firstName === "" || lastName === "" || email === "" || address1 === "" || address2 === "" || city === "" || state === "" || zip === ""){
+      setAlertMessage('Fill out all required fields and try again.');
+      setAlertType('error');
+      return false;
+    } else {
+      return true;
+    }
+  }
+
+  return (cart !== null ?
     <React.Fragment>
       <CssBaseline />
       <main className={classes.layout}>
@@ -115,25 +211,25 @@ const Checkout = (props) => {
                 </Typography>
               </React.Fragment>
             ) : (
-              <React.Fragment>
-                {getStepContent(activeStep, cart)}
-                <div className={classes.buttons}>
-                  {activeStep !== 0 && (
-                    <Button onClick={handleBack} className={classes.button}>
-                      Back
+                <React.Fragment>
+                  {getStepContent(activeStep, cart)}
+                  <div className={classes.buttons}>
+                    {activeStep !== 0 && (
+                      <Button onClick={handleBack} className={classes.button}>
+                        Back
+                      </Button>
+                    )}
+                    <Button
+                      variant="contained"
+                      color="primary"
+                      onClick={handleNext}
+                      className={classes.button}
+                    >
+                      {activeStep === steps.length - 1 ? 'Place order' : 'Next'}
                     </Button>
-                  )}
-                  <Button
-                    variant="contained"
-                    color="primary"
-                    onClick={handleNext}
-                    className={classes.button}
-                  >
-                    {activeStep === steps.length - 1 ? 'Place order' : 'Next'}
-                  </Button>
-                </div>
-              </React.Fragment>
-            )}
+                  </div>
+                </React.Fragment>
+              )}
           </React.Fragment>
         </Paper>
         <Copyright />

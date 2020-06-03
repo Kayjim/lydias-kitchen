@@ -12,7 +12,6 @@ export default function Review(props) {
   const cartTotal = cart.length > 1 ? cart.reduce((curItem, nextItem) => {
     return curItem.price + nextItem.price;
   }) : cart[0].price;
-  debugger;
 
   return (
       <Paper className='checkout-review__ctr'>
