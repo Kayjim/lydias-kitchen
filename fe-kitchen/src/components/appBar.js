@@ -90,6 +90,10 @@ export default function SearchAppBar(props) {
     setAnchorEl(null);
   };
 
+  const handleSearch = (e) => {
+    props.handleSearch(e.target.value);
+  }
+
   return (
     <div className={classes.root}>
       <AppBar className={classes.root} position="static">
@@ -117,7 +121,7 @@ export default function SearchAppBar(props) {
                 input: classes.inputInput
               }}
               inputProps={{ "aria-label": "search" }}
-              onChange={(e) => {props.handleSearch(e.target.value)}}
+              onChange={handleSearch}
             />
           </div>
           <div style={{flexGrow: 2}}></div>
