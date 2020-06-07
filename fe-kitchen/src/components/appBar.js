@@ -11,8 +11,7 @@ import { fade, makeStyles } from "@material-ui/core/styles";
 import MenuIcon from "@material-ui/icons/Menu";
 import SearchIcon from "@material-ui/icons/Search";
 import ShoppingCart from './ShoppingCart';
-
-import './IconCSS.css';
+import '../css/iconography.css';
 
 const useStyles = makeStyles(theme => ({
   root: {
