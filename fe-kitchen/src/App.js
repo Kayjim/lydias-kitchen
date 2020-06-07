@@ -93,7 +93,7 @@ const App = (props) => {
 
   //render
   useEffect(() => {
-    axios.get("http://localhost:4000/all-products").then(res => {
+    axios.get("https://lydias-kitchen.herokuapp.com/all-products").then(res => {
       setProducts(res.data.products);
       setAllProducts(res.data.products);
     });

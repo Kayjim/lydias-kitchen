@@ -49,7 +49,7 @@ const AdminPage = () => {
 
     const handleImport = () => {
         console.log(products);
-        axios.post('http://localhost:4000/3/import', products)
+        axios.post('https://lydias-kitchen.herokuapp.com/3/import', products)
             .then(res => {
                 console.log(res);
                 console.log(res.data);
