@@ -119,7 +119,6 @@ const Checkout = (props) => {
   }, [alertType]);
 
   const handleNext = () => {
-    debugger;
     switch (activeStep) {
       case (0):
         if (validateContactInfo()) {

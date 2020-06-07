@@ -1,19 +1,17 @@
 import React, { useState, useEffect } from 'react';
 import Card from '../components/Cards';
 
-import axios from 'axios';
 
-const HomePage = props => {
-
+const CakesPage = (props) => {
     const products = props.products;
     return (
-        <div className='cookie-container card-container'>
+        <div className='cake-container card-container'>
             {products.map(p => {
                 return (
                     <Card
                         key={p.title}
-                        className='product-card'
                         product={p}
+                        className='cake-card'
                         title={p.title}
                         ingredients={p.ingredients}
                         description={p.description}
@@ -27,4 +25,4 @@ const HomePage = props => {
     );
 };
 
-export default HomePage;
+export default CakesPage;
