@@ -16,18 +16,24 @@ import '../css/iconography.css';
 const useStyles = makeStyles(theme => ({
   root: {
     flexGrow: 1,
-    backgroundImage: "linear-gradient(35deg, #A7414A, #962715)",
+    backgroundColor: '#A7414A',
     color: "#fff"
   },
   menuButton: {
-    marginRight: theme.spacing(2)
+    marginRight: theme.spacing(2),
+    color: "white",
+    '&:hover': {
+      color: '#6A8A82',
+      backgroundColor: '#A7414A'
+    }
   },
   title: {
     flexGrow: 1,
     display: "none",
     [theme.breakpoints.up("sm")]: {
       display: "block"
-    }
+    },
+    color: '#282726'
   },
   search: {
     position: "relative",
@@ -70,7 +76,7 @@ const useStyles = makeStyles(theme => ({
     textDecoration: "none",
     color: "white",
     '&:hover': {
-      color: '#7FFFD4',
+      color: '#6A8A82',
     },
   }
 }));

@@ -9,7 +9,7 @@ import Typography from '@material-ui/core/Typography';
 const useStyles = makeStyles({
   card: {
     minWidth: 275,
-    transform: 'translateZ(0)'
+    transform: 'translateZ(0)',
   },
   bullet: {
     display: 'inline-block',
@@ -17,13 +17,27 @@ const useStyles = makeStyles({
     transform: 'scale(0.8)',
   },
   title: {
-    fontSize: 14,
+    fontSize: 18,
   },
   pos: {
+    fontSize: 14,
     marginBottom: 12,
+    '&:hover': {
+      cursor: 'pointer',
+    }
+  },
+  ingredients: {
+    fontSize: 12,
+    '&:hover': {
+      cursor: 'pointer',
+    }
   },
   button: {
-    margin: 'auto'
+    margin: 'auto',
+    color: '#282726',
+    '&:hover': {
+      backgroundColor: '#6A8A82',
+    }
   }
 });
 
@@ -32,22 +46,57 @@ export default function SimpleCard(props) {
 
   const product = props.product;
 
+  const showMore = (e) => {
+    e.preventDefault();
+    if(e.target.classList.contains('MuiTypography-noWrap')){
+      e.target.classList.remove('MuiTypography-noWrap')
+    } 
+    else {
+      e.target.classList.add('MuiTypography-noWrap')
+    }
+    
+  };
+
   return (
     <Card className={props.className}>
       <CardContent>
-        <Typography className={classes.title} style={{textAlign: 'center'}} color="textSecondary" gutterBottom>
+        <Typography 
+          className={classes.title} 
+          style={{textAlign: 'center'}} 
+          gutterBottom>
           {props.title}
         </Typography>
-          <img style={{width: '100%', maxHeight: 325}} src={props.image}></img>
-        <Typography className={classes.pos} style={{textAlign: 'center'}} color="textSecondary">
-        {props.description}
+          <img style={{width: '100%', maxHeight: 325, height: 200}} src={props.image}></img>
+        <Typography 
+          id='description'
+          className={classes.pos} 
+          style={{textAlign: 'center'}}
+          noWrap
+          onClick={showMore}
+          >
+            {props.description}
         </Typography>
-        <Typography variant="body2" style={{textAlign: 'center'}} component="p">
-          {props.ingredients.toString()}
+        <Typography 
+          id='ingredients'
+          className={classes.ingredients}
+          variant="body2" 
+          style={{textAlign: 'center'}} 
+          component="p"
+          noWrap
+          onClick={showMore}
+          >
+            {props.ingredients.toString()}
         </Typography>
       </CardContent>
       <CardActions>
-        <Button className={classes.button} size="small" onClick={() => props.addToCart(product)}>Add to Cart</Button>
+        <Button 
+          className={classes.button} 
+          size="small" 
+          onClick={() => props.addToCart(product)}
+          variant='outlined'
+          >
+            Add to Cart
+          </Button>
       </CardActions>
     </Card>
   );

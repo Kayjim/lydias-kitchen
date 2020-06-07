@@ -1,18 +1,30 @@
 import React, { useState, useEffect } from "react";
 import { BrowserRouter, Route, Switch } from "react-router-dom";
+import { withStyles } from '@material-ui/core/styles';
 import SearchAppBar from "./components/appBar";
 import HomePage from "./pages/Home";
 import CookiesPage from "./pages/Cookies";
+import CakesPage from "./pages/Cakes"
 import AdminPage from "./pages/Admin";
 import CheckOut from "./components/Checkout/checkout";
 import Drawer from '@material-ui/core/Drawer';
 import Link from '@material-ui/core/Link';
+import CloseIcon from '@material-ui/icons/Close';
+import Button from '@material-ui/core/Button';
+import RemoveIcon from '@material-ui/icons/Remove';
 import {ToastContainer, toast} from 'react-toastify';
 
 import axios from "axios";
 
 import "./App.css";
 import 'react-toastify/dist/ReactToastify.css';
+
+const StyledDrawer = withStyles({
+  paper: {
+    display: 'flex',
+    alignItems: 'center'
+  }
+})(Drawer);
 
 const App = (props) => {
   const [products, setProducts] = useState([]);
@@ -150,22 +162,23 @@ const App = (props) => {
         cart={cart}
       ></SearchAppBar>
       {showCart === true ?
-        (<Drawer anchor="top" open={showCart} onClose={toggleDrawer(false)}>
-          
+        (<StyledDrawer anchor="top" open={showCart} onClose={toggleDrawer(false)}>
+          <CloseIcon id='close' onClick={() => setShowCart(false)} />
           {cart.map(p => {
             return (
-              <div id='cart-container'>
-                <ul key={p.title}>
+              <div id='cart-item-container' key={p.title}>
+                <ul className='cart-list' key={p.title}>
                   <li key={p.title}>
-                    <img style={{width: '20%', height: 75}} src={p.images[0]}></img>
-                    {p.title}
+                    <img style={{width: 150, height: 150}} src={p.images[0]}></img>
+                    <p>{p.title}</p>
+                    <Button variant='outlined' color='secondary' onClick={() => removeFromCart(p)}><RemoveIcon /></Button>
                   </li>
                 </ul>
               </div>
             );
           })}
-                <Link href='/order' onClick={() => createOrder(cart)} >Proceed to Checkout</Link>
-        </Drawer>) :
+            <Link className='checkout-btn' href='/order' onClick={() => createOrder(cart)}>Proceed to Checkout</Link>
+        </StyledDrawer>) :
         null
       }
       <Switch>
@@ -182,13 +195,13 @@ const App = (props) => {
         <Route
           render={props => <CookiesPage {...props} addToCart={addToCart} products={products.filter(p => p.type === 'Cookie')} />} path="/cookies" />
         <Route
-          render={props => <CookiesPage {...props} products={products} />} path="/cakes" />
-        <Route
-          render={props => <CookiesPage {...props} products={products} />} path="/foodprep" />
+          render={props => <CakesPage {...props} products={products.filter(p => p.type === 'Cake')} />} path="/cakes" />
+        {/* <Route
+          render={props => <CookiesPage {...props} products={products} />} path="/foodprep" /> */}
         <Route 
           path="/order" component={CheckOut}/>
-        <Route
-          path="/feedback" component={CookiesPage} />
+        {/* <Route
+          path="/feedback" component={CookiesPage} /> */}
         <Route
           path="/3" component={AdminPage} />
       </Switch>
