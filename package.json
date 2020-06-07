@@ -1,4 +1,11 @@
 {
+  "name": "lydiaskitchen",
+  "version": "0.1.0",
+  "private": true,
+  "engines": {
+    "node": "10.15.2",
+    "npm": "5.7.1"
+  },
   "dependencies": {
     "@material-ui/core": "^4.8.3",
     "@material-ui/icons": "^4.5.1",
