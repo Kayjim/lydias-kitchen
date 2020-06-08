@@ -170,7 +170,7 @@ const App = (props) => {
               <div id='cart-item-container' key={p.title}>
                 <ul className='cart-list' key={p.title}>
                   <li key={p.title}>
-                    <img style={{width: "200px", height: "200px"}} src={p.images[0]}></img>
+                    <img className="checkout-img" src={p.images[0]}></img>
                     <p>{p.title}</p>
                     <Button variant='outlined' color='secondary' onClick={() => removeFromCart(p)}><RemoveIcon /></Button>
                   </li>

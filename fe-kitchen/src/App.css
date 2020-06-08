@@ -31,6 +31,7 @@
 
 .cart-container{
   display: flex;
+  flex-direction: row;
   align-items: center;
 }
 
@@ -62,4 +63,9 @@
 .checkout-btn:hover{
   text-decoration: none;
   color: #282726;
+}
+
+.checkout-img {
+  width: 200px;
+  height: 200px;
 }
