@@ -17,13 +17,16 @@ import {ToastContainer, toast} from 'react-toastify';
 import axios from "axios";
 
 import "./App.css";
-import './css/media-queries.css'
+import "./css/media-queries.css";
 import 'react-toastify/dist/ReactToastify.css';
 
 const StyledDrawer = withStyles({
   paper: {
     display: 'flex',
-    alignItems: 'center'
+    alignItems: 'center',
+    flexFlow: 'row wrap',
+    justifyContent: 'space-between',
+    padding: '20px'
   }
 })(Drawer);
 
