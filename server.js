@@ -27,6 +27,7 @@ app.use(bodyParser.json());
 var corsOptions = {
   origin: [
     "http://www.lydiaskitchen.net",
+    "https://lydias-kitchen.herokuapp.com",
     "http://localhost:3000",
     "http://localhost:4000",
     "http://localhost:3004"
@@ -35,7 +36,7 @@ var corsOptions = {
 };
 app.use(cors(corsOptions));
 if (process.env.NODE_ENV === "production") {
-  app.use(express.static("./client/build"));
+  app.use(express.static("./fe-kitchen/build"));
 }
 
 
@@ -53,10 +54,10 @@ app.use('/', homeRoutes);
 
 
 if(process.env.NODE_ENV === 'production') {
-    app.use(express.static('./client/build'));
+    app.use(express.static('./fe-kitchen/build'));
 
     app.get('*', (req, res) => {
-        res.sendFile(path.join(__dirname, 'client', 'build', 'index.html'));
+        res.sendFile(path.join(__dirname, 'fe-kitchen', 'build', 'index.html'));
     });
 }
 
