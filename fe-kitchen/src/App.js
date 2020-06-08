@@ -170,7 +170,7 @@ const App = (props) => {
               <div id='cart-item-container' key={p.title}>
                 <ul className='cart-list' key={p.title}>
                   <li key={p.title}>
-                    <img style={{width: 150, height: 150}} src={p.images[0]}></img>
+                    <img style={{width: "200px", height: "200px"}} src={p.images[0]}></img>
                     <p>{p.title}</p>
                     <Button variant='outlined' color='secondary' onClick={() => removeFromCart(p)}><RemoveIcon /></Button>
                   </li>
@@ -178,7 +178,7 @@ const App = (props) => {
               </div>
             );
           })}
-            <Link className='checkout-btn' href='/order' onClick={() => createOrder(cart)}>Proceed to Checkout</Link>
+            <Link className="checkout-btn" href='/order' onClick={() => createOrder(cart)}>Proceed to Checkout</Link>
         </StyledDrawer>) :
         null
       }
