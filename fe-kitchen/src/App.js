@@ -12,6 +12,7 @@ import {ToastContainer, toast} from 'react-toastify';
 import axios from "axios";
 
 import "./App.css";
+import './css/media-queries.css'
 import 'react-toastify/dist/ReactToastify.css';
 
 const App = (props) => {
