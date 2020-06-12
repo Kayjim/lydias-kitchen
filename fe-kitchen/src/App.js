@@ -6,6 +6,7 @@ import HomePage from "./pages/Home";
 import CookiesPage from "./pages/Cookies";
 import CakesPage from "./pages/Cakes"
 import AdminPage from "./pages/Admin";
+import MaintenancePage from "./pages/Maintenance";
 import CheckOut from "./components/Checkout/checkout";
 import Drawer from '@material-ui/core/Drawer';
 import Link from '@material-ui/core/Link';
@@ -188,6 +189,11 @@ const App = (props) => {
       <Switch>
         <Route
           path="/"
+          exact
+          render={props => <MaintenancePage />}
+        />
+        <Route
+          path="/home"
           exact
           render={props => <HomePage {...props} addToCart={addToCart} products={products} />}
         />
