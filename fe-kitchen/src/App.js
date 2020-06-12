@@ -112,7 +112,6 @@ const App = (props) => {
     axios.get("https://lydias-kitchen.herokuapp.com/all-products").then(res => {
       setProducts(res.data.products);
       setAllProducts(res.data.products);
-      console.log(res);
     }).catch(e => { console.log(e)});
     if(typeof(sessionStorage) !== 'undefined' && sessionStorage !== null){
       let cart = sessionStorage.getItem('cart');
