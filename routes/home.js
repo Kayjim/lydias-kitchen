@@ -10,7 +10,7 @@ router.use(cors(corsOptions));
 
 
 router.get('/all-products', async (req, res) => {
-    console.log(req);
+    console.log(req.protocol);
     const products = await productController.getAllProducts();
     res.send({
         msg: 'Success!',
