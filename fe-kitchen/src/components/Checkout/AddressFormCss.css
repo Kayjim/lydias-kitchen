@@ -1,6 +1,14 @@
 #address-form{
     display: flex;
     flex-direction: column;
+    justify-content: space-between;
+}
+.address-form__input {
+    margin: 5px !important;
+}
+.MuiStepIcon-root.MuiStepIcon-active
+ {
+    color: #A7414A !important;
 }
 #city{
 }
