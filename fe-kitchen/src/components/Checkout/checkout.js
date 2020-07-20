@@ -1,6 +1,5 @@
 import React, { useState, useEffect } from 'react';
 import { Redirect } from 'react-router-dom';
-import { makeStyles } from '@material-ui/core/styles';
 import CssBaseline from '@material-ui/core/CssBaseline';
 import Paper from '@material-ui/core/Paper';
 import Stepper from '@material-ui/core/Stepper';
@@ -14,6 +13,8 @@ import PaymentForm from './PaymentForm';
 import Review from './Review';
 import { ToastContainer, toast } from 'react-toastify';
 import axios from 'axios';
+import MuiThemeProvider from '@material-ui/core/styles/MuiThemeProvider';
+import { makeStyles, withStyles, createMuiTheme } from '@material-ui/core/styles';
 
 function Copyright() {
   return (
@@ -52,6 +53,9 @@ const useStyles = makeStyles(theme => ({
   stepper: {
     padding: theme.spacing(3, 0, 5),
   },
+  activeStep: {
+    color: '#6A8A82',
+  },
   buttons: {
     display: 'flex',
     justifyContent: 'flex-end',
@@ -59,6 +63,11 @@ const useStyles = makeStyles(theme => ({
   button: {
     marginTop: theme.spacing(3),
     marginLeft: theme.spacing(1),
+    backgroundColor: '#6A8A82',
+    color: '#282726',
+    '&:hover': {
+      backgroundColor: '#6A8A82',
+    }
   },
 }));
 
@@ -238,8 +247,12 @@ const Checkout = (props) => {
     });
 
   };
-
-  return (cart !== null ?
+  /*must check for null & length > 0 cause if we create a cart in session 
+  and then remove all items from cart, the session variable is still existing
+  therefor, cart !== null will be true, and if we don't check length then we will
+  not get correct validation
+  */
+  return (cart !== null && cart.length > 0 ?
     <React.Fragment>
       <CssBaseline />
       <main className={classes.layout}>
@@ -247,13 +260,13 @@ const Checkout = (props) => {
           <Typography component="h1" variant="h4" align="center">
             Checkout
           </Typography>
-          <Stepper activeStep={activeStep} className={classes.stepper}>
-            {steps.map(label => (
-              <Step key={label}>
-                <StepLabel>{label}</StepLabel>
-              </Step>
-            ))}
-          </Stepper>
+            <Stepper activeStep={activeStep} className={classes.stepper}>
+              {steps.map(label => (
+                <Step key={label}>
+                  <StepLabel StepIconProps={{classes: { active: classes.activeStep }}}>{label}</StepLabel>
+                </Step>
+              ))}
+            </Stepper>
           <React.Fragment>
             {activeStep === steps.length ? (
               <React.Fragment>
