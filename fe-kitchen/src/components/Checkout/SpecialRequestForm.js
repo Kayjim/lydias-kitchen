@@ -5,13 +5,26 @@ import TextField from '@material-ui/core/TextField';
 export default function SpecialRequestForm(props) {
     return (
         <div className='checkout-review__ctr'>
-            <form id='address-form'>
-                <TextField onChange={props.handleChange} id='fname' className='address-form__input' label='First name' required placeholder='First Name' variant='outlined' />
-                <TextField onChange={props.handleChange} id='lname' className='address-form__input' label='Last name' required placeholder='Last Name' variant='outlined' />
-                <TextField onChange={props.handleChange} id='email' className='address-form__input' label='Email' required placeholder='Email' variant='outlined' />
-                <TextField onChange={props.handleChange} id='phone' className='address-form__input' placeholder='Phone(optional)' variant='outlined' />
-                <TextField onChange={props.handleChange} id='address1' className='address-form__input' label='Address Line 1' required placeholder='Address Line 1' variant='outlined' />
-            </form>
+            <div classname='special-event__container'>
+                <h3>
+                    Lydia's Kitchen holds the right to not fulfill special request orders. However, in the case of special events i.e.(Birthday, Anniversary, Graduation, etc)
+                    or other requests outside of the current advertised event, Lydia's Kitchen will accept your request and respond accordingly. Please feel free to browse 
+                     <a href='/home' target='_blank'>all products</a> and leave a message containing your request and desired products.
+                </h3>
+                <form id='address-form'>
+                    <TextField 
+                    onChange={props.handleChange} 
+                    id='specialRequest' 
+                    className='spclReq-form__input' 
+                    label='Special Request' 
+                    multiline
+                    rows={5}
+                    rowsMax={5}
+                    required 
+                    placeholder='Enter your request here...' 
+                    variant='outlined' />
+                </form>
+            </div>
         </div>
     );
 }
