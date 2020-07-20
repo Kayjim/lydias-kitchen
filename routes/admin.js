@@ -5,9 +5,10 @@ const cors = require('cors');
 
 const corsOptions = require('../middleware/cors-config');
 const saveProduct = require('../middleware/save-product');
+const saveEvent = require('../middleware/save-event');
 
 router.use(cors(corsOptions));
-
+//#region SendGrid Stuff
 const sendMail = output => {
     sgMail.setApiKey(process.env.SG_API_KEY);
     const msg = {
@@ -19,8 +20,9 @@ const sendMail = output => {
     }
     sgMail.send(msg);
 };
+//#endregion
 
-
+//#region Saving Methods
 router.post('/import', async (req, res) => {
     const products = req.body;
 
@@ -32,6 +34,25 @@ router.post('/import', async (req, res) => {
         msg: 'Success!'
     });
 });
+
+router.post('/createEvent', async(req, res) => {
+    const event = req.cdata.event;
+    try{
+        saveEvent(event);
+    } 
+    catch (err){
+        res.send({
+            msg: 'Create Event failed.'
+        });
+        throw err;
+    }
+
+    res.send({
+        msg: 'Event Created'
+    })
+
+});
+//#endregion
 
 const mapCart = (cart) => {
     let cartList = '';
@@ -65,5 +86,6 @@ router.post('/sendOrder', async (req, res) => {
     sendMail(output);
     res.send('Mail sent');
 });
+
 
 module.exports = router;

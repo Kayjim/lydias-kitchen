@@ -21,6 +21,7 @@ import "./App.css";
 import "./css/media-queries.css";
 import 'react-toastify/dist/ReactToastify.css';
 
+
 const StyledDrawer = withStyles({
   paper: {
     display: 'flex',
@@ -76,6 +77,7 @@ const App = (props) => {
   const addToCart = (p) => {
     let currentCart = [...cart];
     currentCart.push(p);
+    sessionStorage.setItem('cart', JSON.stringify(currentCart));
     setCart(currentCart);
   };
 
@@ -86,18 +88,14 @@ const App = (props) => {
     if(idx !== -1){
       currentCart.splice(idx, 1);
       setCart(currentCart);
+      sessionStorage.setItem('cart', JSON.stringify(currentCart));
     }
   }
   //create order logic
-  const createOrder = (cart) => {
+  const validateCart = (cart) => {
     if(cart.length < 1){
       setAlertMessage('You do not have any items in your shopping cart. Try adding some, and trying again!');
       setAlertType('error');
-    }
-    else {
-      // setAlertMessage('Order form from context logic to be implemented.');
-      // setAlertType('success');
-      sessionStorage.setItem('cart', JSON.stringify(cart));
     }
   };
 
@@ -182,7 +180,7 @@ const App = (props) => {
               </div>
             );
           })}
-            <Link className="checkout-btn" href='/order' onClick={() => createOrder(cart)}>Proceed to Checkout</Link>
+            <Link className="checkout-btn" href='/order' onClick={() => validateCart(cart)}>Proceed to Checkout</Link>
         </StyledDrawer>) :
         null
       }

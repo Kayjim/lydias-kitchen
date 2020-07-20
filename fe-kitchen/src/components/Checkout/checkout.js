@@ -1,6 +1,5 @@
 import React, { useState, useEffect } from 'react';
 import { Redirect } from 'react-router-dom';
-import { makeStyles } from '@material-ui/core/styles';
 import CssBaseline from '@material-ui/core/CssBaseline';
 import Paper from '@material-ui/core/Paper';
 import Stepper from '@material-ui/core/Stepper';
@@ -10,10 +9,13 @@ import Button from '@material-ui/core/Button';
 import Link from '@material-ui/core/Link';
 import Typography from '@material-ui/core/Typography';
 import AddressForm from './AddressForm';
+import OrderTypeForm from './OrderTypeForm';
 import PaymentForm from './PaymentForm';
 import Review from './Review';
 import { ToastContainer, toast } from 'react-toastify';
 import axios from 'axios';
+import MuiThemeProvider from '@material-ui/core/styles/MuiThemeProvider';
+import { makeStyles, withStyles, createMuiTheme } from '@material-ui/core/styles';
 
 function Copyright() {
   return (
@@ -52,6 +54,9 @@ const useStyles = makeStyles(theme => ({
   stepper: {
     padding: theme.spacing(3, 0, 5),
   },
+  activeStep: {
+    color: '#6A8A82',
+  },
   buttons: {
     display: 'flex',
     justifyContent: 'flex-end',
@@ -60,6 +65,9 @@ const useStyles = makeStyles(theme => ({
     marginTop: theme.spacing(3),
     marginLeft: theme.spacing(1),
     backgroundColor: '#A7414A',
+    '&:hover': {
+      backgroundColor:'#6A8A82',
+    },
   },
 }));
 
@@ -78,6 +86,7 @@ const Checkout = (props) => {
   const [zip, setZip] = useState('');
   const [alertMessage, setAlertMessage] = useState('');
   const [alertType, setAlertType] = useState('');
+  const [hasAnswered, setHasAnswered] = useState(false);
 
   let cartTotal = 0;
 
@@ -119,6 +128,10 @@ const Checkout = (props) => {
     setAlertType('');
   }, [alertType]);
 
+  const handleCTA = () => {
+    setHasAnswered(true);
+  }
+
   const handleNext = () => {
     switch (activeStep) {
       case (0):
@@ -126,7 +139,7 @@ const Checkout = (props) => {
           setActiveStep(activeStep + 1);
         }
         break;
-      case (2):
+      case (3):
         sendOrder();
         break;
       default:
@@ -171,15 +184,17 @@ const Checkout = (props) => {
     }
   }
 
-  const steps = ['Basic Information', 'Payment details', 'Review your order'];
+  const steps = ['Basic Information', 'Order Type', 'Payment details', 'Review your order'];
 
   function getStepContent(step, cart) {
     switch (step) {
       case 0:
         return <AddressForm handleChange={handleChange} />;
       case 1:
-        return <PaymentForm />;
+        return <OrderTypeForm handleCTA={handleCTA} />;
       case 2:
+        return <PaymentForm />;
+      case 3:
         return <Review cartTotal={cartTotal} cart={cart} />;
       default:
         throw new Error('Unknown step');
@@ -239,8 +254,12 @@ const Checkout = (props) => {
     });
 
   };
-
-  return (cart !== null ?
+  /*must check for null & length > 0 cause if we create a cart in session 
+  and then remove all items from cart, the session variable is still existing
+  therefor, cart !== null will be true, and if we don't check length then we will
+  not get correct validation
+  */
+  return (cart !== null && cart.length > 0 ?
     <React.Fragment>
       <CssBaseline />
       <main className={classes.layout}>
@@ -248,13 +267,13 @@ const Checkout = (props) => {
           <Typography component="h1" variant="h4" align="center">
             Checkout
           </Typography>
-          <Stepper activeStep={activeStep} className={classes.stepper}>
-            {steps.map(label => (
-              <Step key={label}>
-                <StepLabel>{label}</StepLabel>
-              </Step>
-            ))}
-          </Stepper>
+            <Stepper activeStep={activeStep} className={classes.stepper}>
+              {steps.map(label => (
+                <Step key={label}>
+                  <StepLabel StepIconProps={{classes: { active: classes.activeStep }}}>{label}</StepLabel>
+                </Step>
+              ))}
+            </Stepper>
           <React.Fragment>
             {activeStep === steps.length ? (
               <React.Fragment>
@@ -275,7 +294,18 @@ const Checkout = (props) => {
                         Back
                       </Button>
                     )}
-                    <Button
+                    {(activeStep === 1 && hasAnswered === false) ? (
+                      <Button
+                        variant="contained"
+                        color="primary"
+                        onClick={handleNext}
+                        disabled
+                        className={classes.button}
+                      >
+                        {activeStep === steps.length - 1 ? 'Place order' : 'Next'}
+                      </Button>
+                    ) : (
+                      <Button
                       variant="contained"
                       color="primary"
                       onClick={handleNext}
@@ -283,6 +313,8 @@ const Checkout = (props) => {
                     >
                       {activeStep === steps.length - 1 ? 'Place order' : 'Next'}
                     </Button>
+                    )
+                    }
                   </div>
                 </React.Fragment>
               )}

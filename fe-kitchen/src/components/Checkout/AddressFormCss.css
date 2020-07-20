@@ -9,7 +9,11 @@
 .MuiStepIcon-root.MuiStepIcon-active
  {
     color: #A7414A !important;
-}
+ }
+.MuiStepIcon-root.MuiStepIcon-completed
+ {
+    color: #6A8A82 !important;
+ }
 #city{
 }
 #state{
