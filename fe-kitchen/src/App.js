@@ -84,7 +84,8 @@ const App = (props) => {
   //remove from shopping cart
   const removeFromCart = (p) => {
     let currentCart = [...cart];
-    const idx = currentCart.indexOf(p);
+    debugger;
+    const idx = currentCart.findIndex(prod => prod.id === p.id);
     if(idx !== -1){
       currentCart.splice(idx, 1);
       setCart(currentCart);
@@ -206,8 +207,8 @@ const App = (props) => {
           render={props => <CakesPage {...props} products={products.filter(p => p.type === 'Cake')} />} path="/cakes" />
         {/* <Route
           render={props => <CookiesPage {...props} products={products} />} path="/foodprep" /> */}
-        <Route 
-          path="/order" component={CheckOut}/>
+        <Route
+        render={props => <CheckOut { ...props } addToCart={addToCart} removeFromCart={removeFromCart} />} path="/order"/>
         {/* <Route
           path="/feedback" component={CookiesPage} /> */}
         <Route

@@ -11,59 +11,89 @@ import './CurrentEventForm.css';
 export default function CurrentEventForm(props) {
 
     const [event, setEvent] = useState({});
-    const [isChecked, setIsChecked] = useState(false);
 
     const EVENT = {
         title: 'test title',
         description: 'test description',
         products: [
             {
+                id:"2345524323452541",
                 title: 'cake',
                 description: 'testcake',
                 price: 30
             },
             {
+                id:"2345524323452542",
                 title: 'cookie',
                 description: 'testcookie',
                 price: 10
             },
             {
+                id:"2345524323452544",
                 title: 'cookie',
                 description: 'testcookie',
                 price: 10
             },
             {
+                id:"2345524323452545",
                 title: 'cookie',
                 description: 'testcookie',
                 price: 10
             },
             {
+                id:"2345524323452546",
                 title: 'cookie',
                 description: 'testcookie',
                 price: 10
             },
             {
+                id:"2345524323452547",
                 title: 'cookie',
                 description: 'testcookie',
                 price: 10
             },
             {
+                id:"2345524323452548",
                 title: 'cookie',
                 description: 'testcookie',
                 price: 10
             },
             {
+                id:"2345524323452549",
                 title: 'cookie',
                 description: 'testcookie',
                 price: 10
             },
             {
+                id:"2345524323452540",
                 title: 'cookie',
                 description: 'testcookie',
                 price: 10
             }
         ]
     }
+
+    const addToCart = props.addToCart;
+    const removeFromCart = props.removeFromCart;
+
+    const handleCheckboxClick = e => {
+
+        let product = {};
+
+        switch(document.getElementById(e.target.id).checked){
+            case(true):
+                product= EVENT.products.find(p => p.id === document.getElementById(e.target.id).value);
+                props.addToCart(product);
+                break;
+            case(false):
+                product = EVENT.products.find(p => p.id === document.getElementById(e.target.id).value);
+                props.removeFromCart(product);
+                break;
+        }
+
+
+    };
+
 
     const mapEventProducts = (event) => {
         
@@ -74,9 +104,10 @@ export default function CurrentEventForm(props) {
                     key={p.title} 
                     id={p.title}
                     color='primary'
-                    label={p.title}
+                    onChange={handleCheckboxClick}
                     /> }
                     label={p.title}
+                    value={p.id}
                 />
             );
         });

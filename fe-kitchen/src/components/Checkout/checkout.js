@@ -191,7 +191,7 @@ const Checkout = (props) => {
       case 0:
         return <AddressForm handleChange={handleChange} />;
       case 1:
-        return <OrderTypeForm handleCTA={handleCTA} />;
+        return <OrderTypeForm removeFromCart={props.removeFromCart} addToCart={props.addToCart} handleCTA={handleCTA} />;
       case 2:
         return <PaymentForm />;
       case 3:

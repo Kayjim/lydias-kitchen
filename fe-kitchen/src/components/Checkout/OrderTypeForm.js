@@ -58,7 +58,7 @@ export default function OrderTypeForm(props) {
             ) : 
             (
                 currentEvent === true ? 
-                <CurrentEventForm /> : 
+                <CurrentEventForm removeFromCart={props.removeFromCart} addToCart={props.addToCart} /> : 
                 <SpecialRequestForm />
             )
             }
