@@ -1,19 +1,98 @@
-import React from "react";
+import React, { useState, useEffect } from "react";
 import TextField from '@material-ui/core/TextField';
+import Checkbox from '@material-ui/core/Checkbox';
+import CheckBoxOutlineBlankIcon from '@material-ui/icons/CheckBoxOutlineBlank';
+import CheckBoxIcon from '@material-ui/icons/CheckBox';
+import FormGroup from '@material-ui/core/FormGroup';
+import FormControlLabel from '@material-ui/core/FormControlLabel';
+
+import './CurrentEventForm.css';
 
 export default function CurrentEventForm(props) {
+
+    const [event, setEvent] = useState({});
+    const [isChecked, setIsChecked] = useState(false);
+
+    const EVENT = {
+        title: 'test title',
+        description: 'test description',
+        products: [
+            {
+                title: 'cake',
+                description: 'testcake',
+                price: 30
+            },
+            {
+                title: 'cookie',
+                description: 'testcookie',
+                price: 10
+            },
+            {
+                title: 'cookie',
+                description: 'testcookie',
+                price: 10
+            },
+            {
+                title: 'cookie',
+                description: 'testcookie',
+                price: 10
+            },
+            {
+                title: 'cookie',
+                description: 'testcookie',
+                price: 10
+            },
+            {
+                title: 'cookie',
+                description: 'testcookie',
+                price: 10
+            },
+            {
+                title: 'cookie',
+                description: 'testcookie',
+                price: 10
+            },
+            {
+                title: 'cookie',
+                description: 'testcookie',
+                price: 10
+            },
+            {
+                title: 'cookie',
+                description: 'testcookie',
+                price: 10
+            }
+        ]
+    }
+
+    const mapEventProducts = (event) => {
+        
+        return event.products.map(p => {
+            return (
+                <FormControlLabel
+                    control={ <Checkbox 
+                    key={p.title} 
+                    id={p.title}
+                    color='primary'
+                    label={p.title}
+                    /> }
+                    label={p.title}
+                />
+            );
+        });
+    }
+
     return (
         <div className='checkout-review__ctr'>
             <form id='address-form'>
-                <TextField onChange={props.handleChange} id='fname' className='address-form__input' label='First name' required placeholder='First Name' variant='outlined' />
-                <TextField onChange={props.handleChange} id='lname' className='address-form__input' label='Last name' required placeholder='Last Name' variant='outlined' />
-                <TextField onChange={props.handleChange} id='email' className='address-form__input' label='Email' required placeholder='Email' variant='outlined' />
-                <TextField onChange={props.handleChange} id='phone' className='address-form__input' placeholder='Phone(optional)' variant='outlined' />
-                <TextField onChange={props.handleChange} id='address1' className='address-form__input' label='Address Line 1' required placeholder='Address Line 1' variant='outlined' />
-                <TextField onChange={props.handleChange} id='address2' className='address-form__input' placeholder='Address Line 2' variant='outlined' />
-                <TextField onChange={props.handleChange} id='city' className='address-form__input' label='City' required placeholder='City' variant='outlined' />
-                <TextField onChange={props.handleChange} id='state' className='address-form__input' label='State' required placeholder='State' variant='outlined' />
-                <TextField onChange={props.handleChange} id='zip' className='address-form__input' label='Zip/Postal' required placeholder='Zip/Postal' variant='outlined' />
+                <div className='current-event__ctr'>
+                    <h3 className='event-title'>{ EVENT.title }</h3>
+                    <p className='event-description'>{ EVENT.description }</p>
+                    <p className='event-order__cta'>Please check which products from the event you would like from below.</p>
+                </div>
+                <FormGroup>
+                {mapEventProducts(EVENT)}
+                </FormGroup>
             </form>
         </div>
     );
