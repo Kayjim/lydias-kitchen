@@ -26,13 +26,13 @@ export default function OrderTypeForm(props) {
     const handleYesClick = (e) => {
         setCurrentEvent(true);
         setIsFirstRender(false);
-        props.handleCTA();
+        props.handleCTA(e);
     };
 
     const handleNoClick = (e) => {
         setCurrentEvent(false);
         setIsFirstRender(false);
-        props.handleCTA();
+        props.handleCTA(e);
     };
 
     const classes = useStyles();
@@ -47,10 +47,10 @@ export default function OrderTypeForm(props) {
                     <h3>Is this order related to the current Lydia's Kitchen Event?</h3>
                 </div>
                 <div className='cta-btns__container'>
-                    <Button onClick={handleYesClick} className={classes.button}>
+                    <Button id='yes' onClick={handleYesClick} label="Yes" className={classes.button}>
                         Yes
                     </Button>
-                    <Button onClick={handleNoClick} className={classes.button}>
+                    <Button id='no' onClick={handleNoClick} className={classes.button}>
                         No
                     </Button>
                 </div>
@@ -58,8 +58,8 @@ export default function OrderTypeForm(props) {
             ) : 
             (
                 currentEvent === true ? 
-                <CurrentEventForm removeFromCart={props.removeFromCart} addToCart={props.addToCart} /> : 
-                <SpecialRequestForm />
+                <CurrentEventForm handleChange={props.handleChange} removeFromCart={props.removeFromCart} addToCart={props.addToCart} /> : 
+                <SpecialRequestForm handleChange={props.handleChange} />
             )
             }
         </div>
