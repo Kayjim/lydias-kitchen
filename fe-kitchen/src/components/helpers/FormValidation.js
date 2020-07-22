@@ -51,59 +51,72 @@ const validateContactInfo = (data) => {
 };
 const validateOrderType = (data) => {
     let resp = {};
-    if(data.isCurrentEvent){
-        if(!data.hasOwnProperty('oneBox') && !data.hasOwnProperty('twoBox') && !data.hasOwnProperty('threeBox') && !data.hasOwnProperty('fourBox')){
+    if (data.isCurrentEvent) {
+        if (!data.hasOwnProperty('oneBox') && !data.hasOwnProperty('twoBox') && !data.hasOwnProperty('threeBox') && !data.hasOwnProperty('fourBox')) {
             resp = {
                 msg: 'Please choose how many boxes you would like to order',
                 alertType: 'error',
                 success: false
             }
-        }else 
-        if(data.hasOwnProperty('hasSpecialRequest') && data.hasSpecialRequest === true){
-            if(!data.hasOwnProperty('specialRequest') || data.specialRequest === ""){
-                resp = {
-                    msg: 'Please enter a special request message.',
-                    alertType: 'error',
-                    success: false
+        } else
+            if (data.hasOwnProperty('hasSpecialRequest') && data.hasSpecialRequest === true) {
+                if (!data.hasOwnProperty('specialRequest') || data.specialRequest === "") {
+                    resp = {
+                        msg: 'Please enter a special request message.',
+                        alertType: 'error',
+                        success: false
+                    }
                 }
-            }
-            else {
+                else {
+                    resp = {
+                        msg: 'Success',
+                        alertType: 'success',
+                        success: true
+                    }
+                }
+            } else {
                 resp = {
                     msg: 'Success',
                     alertType: 'success',
                     success: true
                 }
             }
-        } else {
+    } else {
+        if (!data.hasOwnProperty('specialRequest') || data['specialRequest'] === '') {
+            resp = {
+                msg: 'Please enter a special request message.',
+                alertType: 'error',
+                success: false
+            }
+        }
+        else {
             resp = {
                 msg: 'Success',
                 alertType: 'success',
                 success: true
             }
         }
-    }else{
-        console.log('made it to spec request validate')
     }
     return resp;
 };
 const validateDeliveryDetails = (data) => {
     let resp = {};
-    if(!data.hasOwnProperty('delivery') && !data.hasOwnProperty('pickup')){
+    if (!data.hasOwnProperty('delivery') && !data.hasOwnProperty('pickup')) {
         resp = {
             msg: 'Please choose an option.',
             alertType: 'error',
             success: false
         }
     }
-    else if(data.hasOwnProperty('diffAddy')){
+    else if (data.hasOwnProperty('diffAddy')) {
         debugger;
-        if(!data.hasOwnProperty('diffAddress1') || data.diffAddress1 === "" || !data.hasOwnProperty('diffCity') ||  data.diffCity === "" || !data.hasOwnProperty('diffState') ||  data.diffState === "" || !data.hasOwnProperty('diffZip') ||  data.diffZip === ""){
+        if (!data.hasOwnProperty('diffAddress1') || data.diffAddress1 === "" || !data.hasOwnProperty('diffCity') || data.diffCity === "" || !data.hasOwnProperty('diffState') || data.diffState === "" || !data.hasOwnProperty('diffZip') || data.diffZip === "") {
             resp = {
                 msg: 'Please enter address details.',
                 alertType: 'error',
                 success: false
             }
-        }else {
+        } else {
             resp = {
                 msg: 'Success',
                 alertType: 'success',
@@ -122,15 +135,14 @@ const validateDeliveryDetails = (data) => {
 };
 const validatePaymentDetails = (data) => {
     let resp = {};
-debugger;
-    if(!data.hasOwnProperty('zelle') && !data.hasOwnProperty('venmo') && !data.hasOwnProperty('cod') && !data.hasOwnProperty('paypal')){
+    if (!data.hasOwnProperty('zelle') && !data.hasOwnProperty('venmo') && !data.hasOwnProperty('cod') && !data.hasOwnProperty('paypal')) {
         resp = {
             msg: 'Please choose a payment option.',
             alertType: 'error',
             success: false
         }
     }
-    else{
+    else {
         resp = {
             msg: 'Success!',
             alertType: 'success',
