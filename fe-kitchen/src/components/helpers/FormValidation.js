@@ -12,6 +12,7 @@ const validateForms = (activeStep, data) => {
             resp = validateDeliveryDetails(data);
             break;
         case (3):
+            resp = validatePaymentDetails(data);
             break;
         case (4):
             break;
@@ -119,5 +120,25 @@ const validateDeliveryDetails = (data) => {
     }
     return resp;
 };
+const validatePaymentDetails = (data) => {
+    let resp = {};
+debugger;
+    if(!data.hasOwnProperty('zelle') && !data.hasOwnProperty('venmo') && !data.hasOwnProperty('cod') && !data.hasOwnProperty('paypal')){
+        resp = {
+            msg: 'Please choose a payment option.',
+            alertType: 'error',
+            success: false
+        }
+    }
+    else{
+        resp = {
+            msg: 'Success!',
+            alertType: 'success',
+            success: true
+        }
+    }
+    return resp;
+};
+
 
 export default validateForms;

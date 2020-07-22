@@ -193,7 +193,7 @@ const Checkout = (props) => {
       case 2:
         return <DeliveryDetailsForm handleChange={handleChange} />;
       case 3:
-        return <PaymentForm />;
+        return <PaymentForm handleChange={handleChange} />;
       case 4:
         return <Review cartTotal={cartTotal} cart={cart} />;
       default:
