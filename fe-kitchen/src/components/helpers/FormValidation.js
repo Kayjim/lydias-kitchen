@@ -1,4 +1,4 @@
-
+//#region form validation helpers
 const validateForms = (activeStep, data) => {
     let resp = {};
     switch (activeStep) {
@@ -19,7 +19,6 @@ const validateForms = (activeStep, data) => {
     }
     return resp;
 }
-
 const validateContactInfo = (data) => {
     let emailReg = /^(([^<>()\[\]\\.,;:\s@"]+(\.[^<>()\[\]\\.,;:\s@"]+)*)|(".+"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$/;
     let errorMsg = '';
@@ -108,8 +107,7 @@ const validateDeliveryDetails = (data) => {
             success: false
         }
     }
-    else if (data.hasOwnProperty('diffAddy')) {
-        debugger;
+    else if (data.hasOwnProperty('diffAddy') && data['diffAddy'] === true) {
         if (!data.hasOwnProperty('diffAddress1') || data.diffAddress1 === "" || !data.hasOwnProperty('diffCity') || data.diffCity === "" || !data.hasOwnProperty('diffState') || data.diffState === "" || !data.hasOwnProperty('diffZip') || data.diffZip === "") {
             resp = {
                 msg: 'Please enter address details.',
@@ -151,6 +149,6 @@ const validatePaymentDetails = (data) => {
     }
     return resp;
 };
-
+//#endregion
 
 export default validateForms;
