@@ -81,6 +81,7 @@ const Checkout = (props) => {
   const [alertMessage, setAlertMessage] = useState('');
   const [alertType, setAlertType] = useState('');
   const [hasAnswered, setHasAnswered] = useState(false);
+  const [backFromDelivery, setBackFromDelivery] = useState(false);
 
   let cartTotal = 0;
 
@@ -124,9 +125,9 @@ const Checkout = (props) => {
 
   const handleCTA = (e) => {
     let currentData = data;
-    if(e.currentTarget.id === 'yes'){
+    if (e.currentTarget.id === 'yes') {
       currentData['isCurrentEvent'] = true;
-    } else{
+    } else {
       currentData['isCurrentEvent'] = false;
     }
     setData(currentData);
@@ -149,30 +150,48 @@ const Checkout = (props) => {
           break;
       }
     }
-     else {
-       setAlertMessage(validationResp.msg);
-       setAlertType(validationResp.alertType);
-     }
+    else {
+      setAlertMessage(validationResp.msg);
+      setAlertType(validationResp.alertType);
+    }
   };
 
   const handleBack = () => {
+    let currentData = data;
+    switch (activeStep) {
+      case (0):
+        break;
+      case (1):
+        setBackFromDelivery(false);
+        break;
+      case (2):
+        setBackFromDelivery(true);
+        break;
+      case (3):
+        setBackFromDelivery(false);
+        break;
+      case (4):
+        setBackFromDelivery(false);
+        break;
+    }
     setActiveStep(activeStep - 1);
+    setData(currentData);
   };
 
   const handleChange = (e) => {
     const key = e.target.id;
     let value = '';
-    switch(e.currentTarget.type){
-      case('checkbox'):
+    switch (e.currentTarget.type) {
+      case ('checkbox'):
         value = e.currentTarget.checked;
         break;
-      case('text'):
+      case ('text'):
         value = e.currentTarget.value;
         break;
-      case('textarea'):
+      case ('textarea'):
         value = e.currentTarget.value;
         break;
-      case('radio'):
+      case ('radio'):
         value = e.currentTarget.value;
         break;
     }
@@ -187,9 +206,9 @@ const Checkout = (props) => {
   function getStepContent(step, cart) {
     switch (step) {
       case 0:
-        return <AddressForm handleChange={handleChange} />;
+        return <AddressForm data={data} handleChange={handleChange} />;
       case 1:
-        return <OrderTypeForm handleChange={handleChange} removeFromCart={props.removeFromCart} addToCart={props.addToCart} handleCTA={handleCTA} />;
+        return <OrderTypeForm backFromDelivery={backFromDelivery} data={data} handleChange={handleChange} removeFromCart={props.removeFromCart} addToCart={props.addToCart} handleCTA={handleCTA} />;
       case 2:
         return <DeliveryDetailsForm handleChange={handleChange} />;
       case 3:

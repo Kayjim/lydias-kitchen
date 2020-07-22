@@ -12,6 +12,18 @@ export default function OrderTypeForm(props) {
     const [currentEvent, setCurrentEvent] = useState(false);
     const [isFirstRender, setIsFirstRender] = useState(true);
 
+    useEffect(() => {
+        if(props.backFromDelivery){
+            setIsFirstRender(false);
+            if(props.data['isCurrentEvent']){
+                setCurrentEvent(true);
+            }
+            else {
+                setCurrentEvent(false);
+            }
+        }
+    }, []); 
+
     const useStyles = makeStyles(theme => ({
         button: {
           marginTop: theme.spacing(3),
