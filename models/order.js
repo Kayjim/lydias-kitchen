@@ -23,9 +23,10 @@ const orderSchema = new Schema({
         type: String,
         require: true
     },
-    referer: {
-        type: String,
-        require: false
+    numBoxes: {
+        type: Number,
+        require: false,
+        default: 0
     },
     product_keys: [
         {

@@ -5,6 +5,8 @@ import { makeStyles } from '@material-ui/core/styles';
 import CurrentEventForm from './CurrentEventForm';
 import SpecialRequestForm from './SpecialRequestForm';
 
+import './OrderType.css';
+
 export default function OrderTypeForm(props) {
 
     const [currentEvent, setCurrentEvent] = useState(false);
@@ -40,18 +42,23 @@ export default function OrderTypeForm(props) {
             {
             isFirstRender === true ? 
             (
-            <div className='cta-btns'>
-                <Button onClick={handleYesClick} className={classes.button}>
-                    Yes
-                </Button>
-                <Button onClick={handleNoClick} className={classes.button}>
-                    No
-                </Button>
+            <div className='cta-container'>
+                <div className='cta-dialogue__container'>
+                    <h3>Is this order related to the current Lydia's Kitchen Event?</h3>
+                </div>
+                <div className='cta-btns__container'>
+                    <Button onClick={handleYesClick} className={classes.button}>
+                        Yes
+                    </Button>
+                    <Button onClick={handleNoClick} className={classes.button}>
+                        No
+                    </Button>
+                </div>
             </div>
             ) : 
             (
                 currentEvent === true ? 
-                <CurrentEventForm /> : 
+                <CurrentEventForm removeFromCart={props.removeFromCart} addToCart={props.addToCart} /> : 
                 <SpecialRequestForm />
             )
             }

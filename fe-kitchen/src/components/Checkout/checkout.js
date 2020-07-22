@@ -10,6 +10,7 @@ import Link from '@material-ui/core/Link';
 import Typography from '@material-ui/core/Typography';
 import AddressForm from './AddressForm';
 import OrderTypeForm from './OrderTypeForm';
+import DeliveryDetailsForm from './DeliveryDetailsForm';
 import PaymentForm from './PaymentForm';
 import Review from './Review';
 import { ToastContainer, toast } from 'react-toastify';
@@ -139,7 +140,7 @@ const Checkout = (props) => {
           setActiveStep(activeStep + 1);
         }
         break;
-      case (3):
+      case (4):
         sendOrder();
         break;
       default:
@@ -184,17 +185,19 @@ const Checkout = (props) => {
     }
   }
 
-  const steps = ['Basic Information', 'Order Type', 'Payment details', 'Review your order'];
+  const steps = ['Basic Information', 'Order Type','Delivery Details', 'Payment details', 'Review your order'];
 
   function getStepContent(step, cart) {
     switch (step) {
       case 0:
         return <AddressForm handleChange={handleChange} />;
       case 1:
-        return <OrderTypeForm handleCTA={handleCTA} />;
+        return <OrderTypeForm removeFromCart={props.removeFromCart} addToCart={props.addToCart} handleCTA={handleCTA} />;
       case 2:
-        return <PaymentForm />;
+        return <DeliveryDetailsForm />;
       case 3:
+        return <PaymentForm />;
+      case 4:
         return <Review cartTotal={cartTotal} cart={cart} />;
       default:
         throw new Error('Unknown step');

@@ -1,0 +1,5 @@
+.MuiFormGroup-root.payment-options{
+    display: flex;
+    flex-direction: column !important;
+    align-content: center;
+}
