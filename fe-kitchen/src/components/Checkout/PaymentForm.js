@@ -8,12 +8,13 @@ import RadioGroup from '@material-ui/core/RadioGroup';
 
 import './PaymentForm.css'
 
-export default function PaymentForm() {
+export default function PaymentForm(props) {
 
     const [payment, setPayment] = React.useState('');
 
     const handlePaymentClick = e => {
         setPayment(e.target.value);
+        props.handleChange(e);
     };
 
     return (
@@ -24,6 +25,7 @@ export default function PaymentForm() {
                     <RadioGroup className='payment-options' name='paymentOptions' value={payment} onChange={handlePaymentClick}>
                         <FormControlLabel
                                 control={ <Radio 
+                                id='zelle'
                                 className='radio' 
                                 color='primary'
                                 name='zelleRadio'
@@ -34,6 +36,7 @@ export default function PaymentForm() {
                         />
                         <FormControlLabel
                                 control={ <Radio 
+                                id='venmo'
                                 className='radio' 
                                 color='primary'
                                 name='venmoRadio'
@@ -43,7 +46,8 @@ export default function PaymentForm() {
                             label='Venmo'
                         />
                         <FormControlLabel
-                                control={ <Radio 
+                                control={ <Radio
+                                id='paypal'
                                 className='radio' 
                                 color='primary'
                                 name='paypalRadio'
@@ -54,6 +58,7 @@ export default function PaymentForm() {
                         />
                         <FormControlLabel
                                 control={ <Radio 
+                                id='cod'
                                 className='radio' 
                                 color='primary'
                                 name='codRadio'

@@ -15,7 +15,7 @@ export default function CurrentEventForm(props) {
     const [check3, setCheck3] = useState(false);
     const [check4, setCheck4] = useState(false);
     const [isSpecReq, setIsSpecReq] = useState(false);
-
+    const [reqMsg, setReqMsg] = useState('');
 
     const EVENT = {
         title: 'Cupcake Orders From Lydia\'s Kitchen',
@@ -87,10 +87,12 @@ export default function CurrentEventForm(props) {
                 setCheck1(false);
                 break;
         }
+        props.handleChange(e);
     };
 
     const handleSpecialRequestClick = e => {
         setIsSpecReq(e.target.checked);
+        props.handleChange(e);
         return isSpecReq;
     };
 
@@ -131,6 +133,7 @@ export default function CurrentEventForm(props) {
                 <div className='order-options__ctr'>
                     <FormControlLabel
                         control={ <Checkbox
+                        id='oneBox'
                         className='ckbox'  
                         color='primary'
                         checked={check1}
@@ -143,6 +146,7 @@ export default function CurrentEventForm(props) {
                     />
                     <FormControlLabel
                         control={ <Checkbox 
+                        id='twoBox'
                         className='ckbox' 
                         color='primary'
                         value={2}
@@ -155,6 +159,7 @@ export default function CurrentEventForm(props) {
                     <FormControlLabel
                         control={ <Checkbox  
                         className='ckbox'
+                        id='threeBox'
                         color='primary'
                         name='check3'
                         value={3}
@@ -166,6 +171,7 @@ export default function CurrentEventForm(props) {
                     <FormControlLabel
                         control={ <Checkbox 
                         className='ckbox' 
+                        id='fourBox'
                         color='primary'
                         name='check4'
                         value={4}
@@ -178,9 +184,10 @@ export default function CurrentEventForm(props) {
                 <div className='special-request__ctr'>
                 <FormControlLabel
                         control={ <Checkbox 
+                        id='hasSpecialRequest'
                         className='ckbox' 
                         color='primary'
-                        name='specialRequest'
+                        name='hasSpecialRequest'
                         checked={isSpecReq}
                         onChange={handleSpecialRequestClick}
                         /> }
@@ -194,6 +201,8 @@ export default function CurrentEventForm(props) {
                         placeholder='If you have a special request or comment about your order please leave it here.'
                         rows={5}
                         fullWidth
+                        onChange={props.handleChange}
+                        value={reqMsg}
                     /> 
                  </div>
             </form>

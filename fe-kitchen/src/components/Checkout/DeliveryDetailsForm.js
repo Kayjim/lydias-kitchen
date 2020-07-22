@@ -6,7 +6,7 @@ import FormControlLabel from '@material-ui/core/FormControlLabel';
 import Radio from '@material-ui/core/Radio';
 import RadioGroup from '@material-ui/core/RadioGroup';
 
-export default function DeliveryDetailsForm() {
+export default function DeliveryDetailsForm(props) {
 
     const [delivery, setDelivery] = React.useState('');
     const [isDiffAddy, setIsDiffAddy] = React.useState(false);
@@ -16,9 +16,11 @@ export default function DeliveryDetailsForm() {
         if(e.target.value === 'pickup'){
             setIsDiffAddy(false);
         }
+        props.handleChange(e);
     };
     const handleDiffAddyClick = e => {
         setIsDiffAddy(e.target.checked);
+        props.handleChange(e);
     };
 
     return (
@@ -28,9 +30,10 @@ export default function DeliveryDetailsForm() {
                     <h4>Delivery Options - Please note that a $1 fee will be added for deliveries</h4>
                     {/* 
                      */}
-                    <RadioGroup name='deliveryOptions' value={delivery} onChange={handleDeliveryClick}>
+                    <RadioGroup id='deliveryOption' name='deliveryOptions' value={delivery} onChange={handleDeliveryClick}>
                         <FormControlLabel
                                 control={ <Radio 
+                                id='delivery'
                                 className='radio' 
                                 color='primary'
                                 name='deliveryRadio'
@@ -40,7 +43,8 @@ export default function DeliveryDetailsForm() {
                             label='Please deliver to my home - someone will be there to receive the cookies Friday between 3:00 and 4:00 PM.'
                         />
                         <FormControlLabel
-                                control={ <Radio 
+                                control={ <Radio  
+                                id='pickup'
                                 className='radio' 
                                 color='primary'
                                 name='pickupRadio'
@@ -53,7 +57,8 @@ export default function DeliveryDetailsForm() {
                 </div>
                 {(delivery === 'delivery') &&
                 <FormControlLabel
-                        control={ <Checkbox 
+                        control={ <Checkbox
+                        id='diffAddy'
                         className='ckbox' 
                         color='primary'
                         name='diffAddy'
@@ -66,11 +71,11 @@ export default function DeliveryDetailsForm() {
                 }
                 {(delivery === 'delivery') && isDiffAddy &&
                 <div classname='delivery-address__ctr'>
-                    <TextField id='address1' className='address-form__input' label='Address Line 1' required placeholder='Address Line 1' variant='outlined' />
-                    <TextField id='address2' className='address-form__input' placeholder='Address Line 2' variant='outlined' />
-                    <TextField id='city' className='address-form__input' label='City' required placeholder='City' variant='outlined' />
-                    <TextField id='state' className='address-form__input' label='State' required placeholder='State' variant='outlined' />
-                    <TextField id='zip' className='address-form__input' label='Zip/Postal' required placeholder='Zip/Postal' variant='outlined' />
+                    <TextField id='diffAddress1' className='address-form__input' label='Address Line 1' required placeholder='Address Line 1' variant='outlined' onChange={props.handleChange} />
+                    <TextField id='diffAddress2' className='address-form__input' placeholder='Address Line 2' variant='outlined' onChange={props.handleChange} />
+                    <TextField id='diffCity' className='address-form__input' label='City' required placeholder='City' variant='outlined' onChange={props.handleChange} />
+                    <TextField id='diffState' className='address-form__input' label='State' required placeholder='State' variant='outlined' onChange={props.handleChange} />
+                    <TextField id='diffZip' className='address-form__input' label='Zip/Postal' required placeholder='Zip/Postal' variant='outlined' onChange={props.handleChange} />
                 </div>
                 }
             </form>

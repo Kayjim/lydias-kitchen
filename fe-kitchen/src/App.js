@@ -84,7 +84,6 @@ const App = (props) => {
   //remove from shopping cart
   const removeFromCart = (p) => {
     let currentCart = [...cart];
-    debugger;
     const idx = currentCart.findIndex(prod => prod.id === p.id);
     if(idx !== -1){
       currentCart.splice(idx, 1);
