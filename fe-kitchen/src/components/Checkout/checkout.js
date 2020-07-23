@@ -18,6 +18,8 @@ import axios from 'axios';
 import MuiThemeProvider from '@material-ui/core/styles/MuiThemeProvider';
 import { makeStyles, withStyles, createMuiTheme } from '@material-ui/core/styles';
 import validateForms from '../helpers/FormValidation';
+import turnOffOtherOptions from '../helpers/EventCheckBoxes';
+import clearData from '../helpers/ClearExtraData';
 
 function Copyright() {
   return (
@@ -168,10 +170,8 @@ const Checkout = (props) => {
         setBackFromDelivery(true);
         break;
       case (3):
-        setBackFromDelivery(false);
         break;
       case (4):
-        setBackFromDelivery(false);
         break;
     }
     setActiveStep(activeStep - 1);
@@ -184,6 +184,7 @@ const Checkout = (props) => {
     switch (e.currentTarget.type) {
       case ('checkbox'):
         value = e.currentTarget.checked;
+        setData(turnOffOtherOptions(e.currentTarget.id, data));
         break;
       case ('text'):
         value = e.currentTarget.value;
@@ -193,6 +194,7 @@ const Checkout = (props) => {
         break;
       case ('radio'):
         value = e.currentTarget.value;
+        setData(clearData(e.currentTarget.id, data));
         break;
     }
     let currentData = data;
@@ -208,13 +210,13 @@ const Checkout = (props) => {
       case 0:
         return <AddressForm data={data} handleChange={handleChange} />;
       case 1:
-        return <OrderTypeForm backFromDelivery={backFromDelivery} data={data} handleChange={handleChange} removeFromCart={props.removeFromCart} addToCart={props.addToCart} handleCTA={handleCTA} />;
+        return <OrderTypeForm data={data} backFromDelivery={backFromDelivery} data={data} handleChange={handleChange} removeFromCart={props.removeFromCart} addToCart={props.addToCart} handleCTA={handleCTA} />;
       case 2:
-        return <DeliveryDetailsForm handleChange={handleChange} />;
+        return <DeliveryDetailsForm data={data} handleChange={handleChange} />;
       case 3:
-        return <PaymentForm handleChange={handleChange} />;
+        return <PaymentForm data={data} handleChange={handleChange} />;
       case 4:
-        return <Review cartTotal={cartTotal} cart={cart} />;
+        return <Review data={data} cartTotal={cartTotal} cart={cart} />;
       default:
         throw new Error('Unknown step');
     }

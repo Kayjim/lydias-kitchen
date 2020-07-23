@@ -1,11 +1,24 @@
-import React from "react";
+import React,{useState, useEffect} from "react";
 import TextField from '@material-ui/core/TextField';
 
 
 export default function SpecialRequestForm(props) {
+
+    const [reqMsg, setReqMsg] = useState('');
+    
+    useEffect(() => {
+        if(props.data.specialRequest)
+        setReqMsg(props.data.specialRequest);
+    }, []);
+
+    const handleSpecialRequestMessage = e => {
+        setReqMsg(e.target.value);
+        props.handleChange(e);
+    };
+
     return (
         <div className='checkout-review__ctr'>
-            <div classname='special-event__container'>
+            <div className='special-event__container'>
                 <h3>
                     Lydia's Kitchen holds the right to not fulfill special request orders. However, in the case of special events i.e.(Birthday, Anniversary, Graduation, etc)
                     or other requests outside of the current advertised event, Lydia's Kitchen will accept your request and respond accordingly. Please feel free to browse 
@@ -13,7 +26,7 @@ export default function SpecialRequestForm(props) {
                 </h3>
                 <form id='address-form'>
                     <TextField 
-                    onChange={props.handleChange} 
+                    onChange={handleSpecialRequestMessage} 
                     id='specialRequest' 
                     className='spclReq-form__input' 
                     label='Special Request' 
@@ -22,7 +35,8 @@ export default function SpecialRequestForm(props) {
                     rowsMax={5}
                     required 
                     placeholder='Enter your request here...' 
-                    variant='outlined' />
+                    variant='outlined'
+                    value={reqMsg} />
                 </form>
             </div>
         </div>

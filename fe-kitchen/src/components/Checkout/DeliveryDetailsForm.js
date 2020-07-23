@@ -8,8 +8,34 @@ import RadioGroup from '@material-ui/core/RadioGroup';
 
 export default function DeliveryDetailsForm(props) {
 
-    const [delivery, setDelivery] = React.useState('');
-    const [isDiffAddy, setIsDiffAddy] = React.useState(false);
+    const [delivery, setDelivery] = useState('');
+    const [isDiffAddy, setIsDiffAddy] = useState(false);
+    const [diffAddy1, setDiffAddy1] = useState('');
+    const [diffAddy2, setDiffAddy2] = useState('');
+    const [diffCity, setDiffCity] = useState('');
+    const [diffState, setDiffState] = useState('');
+    const [diffZip, setDiffZip] = useState('');
+
+
+
+    useEffect(() => {
+        if(props.data.delivery)
+            setDelivery(props.data.delivery);
+        if(props.data.pickup)
+            setDelivery('pickup');
+        if(props.data.diffAddy)
+            setIsDiffAddy(true);
+        if(props.data.diffAddress1)
+            setDiffAddy1(props.data.diffAddress1);
+        if(props.data.diffAddress2)
+            setDiffAddy2(props.data.diffAddress2);
+        if(props.data.diffState)
+            setDiffState(props.data.diffState);
+        if(props.data.diffCity)
+            setDiffCity(props.data.diffCity);
+        if(props.data.diffZip)
+            setDiffZip(props.data.diffZip);
+    });
 
     const handleDeliveryClick = e => {
         setDelivery(e.target.value);
@@ -22,6 +48,26 @@ export default function DeliveryDetailsForm(props) {
         setIsDiffAddy(e.target.checked);
         props.handleChange(e);
     };
+    const handleTextboxChanges = e => {
+        switch(e.target.id){
+            case('diffAddress1'):
+                setDiffAddy1(e.target.value);
+                break;
+            case('diffAddress2'):
+                setDiffAddy2(e.target.value);
+                break;
+            case('diffCity'):
+                setDiffCity(e.target.value);
+                break;
+            case('diffState'):
+                setDiffState(e.target.value);
+                break;
+            case('diffZip'):
+                setDiffZip(e.target.value);
+                break;
+        }
+        props.handleChange(e);
+    }
 
     return (
         <div className='checkout-review__ctr'>
@@ -71,11 +117,11 @@ export default function DeliveryDetailsForm(props) {
                 }
                 {(delivery === 'delivery') && isDiffAddy &&
                 <div classname='delivery-address__ctr'>
-                    <TextField id='diffAddress1' className='address-form__input' label='Address Line 1' required placeholder='Address Line 1' variant='outlined' onChange={props.handleChange} />
-                    <TextField id='diffAddress2' className='address-form__input' placeholder='Address Line 2' variant='outlined' onChange={props.handleChange} />
-                    <TextField id='diffCity' className='address-form__input' label='City' required placeholder='City' variant='outlined' onChange={props.handleChange} />
-                    <TextField id='diffState' className='address-form__input' label='State' required placeholder='State' variant='outlined' onChange={props.handleChange} />
-                    <TextField id='diffZip' className='address-form__input' label='Zip/Postal' required placeholder='Zip/Postal' variant='outlined' onChange={props.handleChange} />
+                    <TextField id='diffAddress1' className='address-form__input' label='Address Line 1' required placeholder='Address Line 1' variant='outlined' onChange={handleTextboxChanges} value={diffAddy1} />
+                    <TextField id='diffAddress2' className='address-form__input' placeholder='Address Line 2' variant='outlined' onChange={handleTextboxChanges} value={diffAddy2}/>
+                    <TextField id='diffCity' className='address-form__input' label='City' required placeholder='City' variant='outlined' onChange={handleTextboxChanges} value={diffCity}/>
+                    <TextField id='diffState' className='address-form__input' label='State' required placeholder='State' variant='outlined' onChange={handleTextboxChanges} value={diffState}/>
+                    <TextField id='diffZip' className='address-form__input' label='Zip/Postal' required placeholder='Zip/Postal' variant='outlined' onChange={handleTextboxChanges} value={diffZip}/>
                 </div>
                 }
             </form>

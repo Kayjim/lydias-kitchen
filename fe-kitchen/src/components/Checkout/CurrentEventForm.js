@@ -5,7 +5,7 @@ import FormGroup from '@material-ui/core/FormGroup';
 import FormControlLabel from '@material-ui/core/FormControlLabel';
 
 import './CurrentEventForm.css';
-import { STATES } from "mongoose";
+import { STATES, set } from "mongoose";
 
 export default function CurrentEventForm(props) {
 
@@ -60,6 +60,21 @@ export default function CurrentEventForm(props) {
         ]
     }
 
+    useEffect(() => {
+        if(props.data.oneBox)
+            setCheck1(true);
+        if(props.data.twoBox)
+            setCheck2(true);
+        if(props.data.threeBox)
+            setCheck3(true);
+        if(props.data.fourBox)
+            setCheck4(true);
+        if(props.data.hasSpecialRequest)
+            setIsSpecReq(true);
+        if(props.data.specialRequest)
+            setReqMsg(props.data.specialRequest);
+    }, []);
+
     const handleCheckboxClick = e => {
         switch (e.target.name) {
             case ('check1'):
@@ -94,6 +109,11 @@ export default function CurrentEventForm(props) {
         setIsSpecReq(e.target.checked);
         props.handleChange(e);
         return isSpecReq;
+    };
+
+    const handleSpecialRequestMessage = e => {
+        setReqMsg(e.target.value);
+        props.handleChange(e);
     };
 
 
@@ -201,7 +221,7 @@ export default function CurrentEventForm(props) {
                         placeholder='If you have a special request or comment about your order please leave it here.'
                         rows={5}
                         fullWidth
-                        onChange={props.handleChange}
+                        onChange={handleSpecialRequestMessage}
                         value={reqMsg}
                     /> 
                  </div>
