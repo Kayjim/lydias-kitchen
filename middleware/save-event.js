@@ -9,9 +9,8 @@ module.exports = saveEvent =  (e) => {
         date: e.date,
         images: e.images,
         products: e.products,
-        ctas: e.ctas,
-        discounts: e.discounts,
-        location: e.location,
+        announcement: e.announcement,
+        isCurrentEvent: e.isCurrentEvent
     });
     eventController.createEvent(eventToSave)
     .then((err, e) => {

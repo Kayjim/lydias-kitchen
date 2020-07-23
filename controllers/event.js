@@ -11,9 +11,8 @@ module.exports = {
             date: args.date,
             images: args.images,
             products: args.products,
-            ctas: args.ctas,
-            discounts: args.discounts,
-            location: args.location,
+            announcement: args.announcement,
+            isCurrentEvent: args.isCurrentEvent
         });
 
         let createdEvent;
@@ -27,6 +26,20 @@ module.exports = {
         } catch(err){
             console.log(err);
             throw(err);
+        }
+    },
+    getCurrentEvent: async(args, req) => {
+        try{
+            const event = await Event.findOne({isCurrentEvent: true}).populate('products');
+            if(!event){
+                throw new Error('No current event!');
+            }
+
+             const transformedEvent = transformEvent(event);
+
+            return transformedEvent;
+        }catch(err){
+            throw err;
         }
     },
     getAllEvents: async (args, req) => {

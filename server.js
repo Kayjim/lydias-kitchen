@@ -37,11 +37,6 @@ var corsOptions = {
   optionsSuccessStatus: 200
 };
 app.use(cors(corsOptions));
-if (process.env.NODE_ENV === "production") {
-  app.use(express.static("./fe-kitchen/build"));
-}
-
-
 
 
 app.use('/3', adminRoutes);

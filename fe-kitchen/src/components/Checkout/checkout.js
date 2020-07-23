@@ -200,7 +200,6 @@ const Checkout = (props) => {
     let currentData = data;
     currentData[key] = value;
     setData(currentData);
-    console.log(currentData);
   }
 
   const steps = ['Basic Information', 'Order Type', 'Delivery Details', 'Payment details', 'Review your order'];
