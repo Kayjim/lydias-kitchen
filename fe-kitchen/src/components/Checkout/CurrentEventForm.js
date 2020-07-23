@@ -5,7 +5,7 @@ import FormGroup from '@material-ui/core/FormGroup';
 import FormControlLabel from '@material-ui/core/FormControlLabel';
 
 import './CurrentEventForm.css';
-import { STATES } from "mongoose";
+import { STATES, set } from "mongoose";
 
 export default function CurrentEventForm(props) {
 
@@ -59,6 +59,14 @@ export default function CurrentEventForm(props) {
             },
         ]
     }
+
+    useEffect(() => {
+        setCheck1(props.data.oneBox);
+        setCheck2(props.data.twoBox);
+        setCheck3(props.data.threeBox);
+        setCheck4(props.data.fourBox);
+
+    }, []);
 
     const handleCheckboxClick = e => {
         switch (e.target.name) {
