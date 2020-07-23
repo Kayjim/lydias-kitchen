@@ -19,6 +19,7 @@ import MuiThemeProvider from '@material-ui/core/styles/MuiThemeProvider';
 import { makeStyles, withStyles, createMuiTheme } from '@material-ui/core/styles';
 import validateForms from '../helpers/FormValidation';
 import turnOffOtherOptions from '../helpers/EventCheckBoxes';
+import clearData from '../helpers/ClearExtraData';
 
 function Copyright() {
   return (
@@ -193,6 +194,7 @@ const Checkout = (props) => {
         break;
       case ('radio'):
         value = e.currentTarget.value;
+        setData(clearData(e.currentTarget.id, data));
         break;
     }
     let currentData = data;

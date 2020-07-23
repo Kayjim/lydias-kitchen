@@ -61,11 +61,18 @@ export default function CurrentEventForm(props) {
     }
 
     useEffect(() => {
-        setCheck1(props.data.oneBox);
-        setCheck2(props.data.twoBox);
-        setCheck3(props.data.threeBox);
-        setCheck4(props.data.fourBox);
-
+        if(props.data.oneBox)
+            setCheck1(true);
+        if(props.data.twoBox)
+            setCheck2(true);
+        if(props.data.threeBox)
+            setCheck3(true);
+        if(props.data.fourBox)
+            setCheck4(true);
+        if(props.data.hasSpecialRequest)
+            setIsSpecReq(true);
+        if(props.data.specialRequest)
+            setReqMsg(props.data.specialRequest);
     }, []);
 
     const handleCheckboxClick = e => {
@@ -102,6 +109,11 @@ export default function CurrentEventForm(props) {
         setIsSpecReq(e.target.checked);
         props.handleChange(e);
         return isSpecReq;
+    };
+
+    const handleSpecialRequestMessage = e => {
+        setReqMsg(e.target.value);
+        props.handleChange(e);
     };
 
 
@@ -209,7 +221,7 @@ export default function CurrentEventForm(props) {
                         placeholder='If you have a special request or comment about your order please leave it here.'
                         rows={5}
                         fullWidth
-                        onChange={props.handleChange}
+                        onChange={handleSpecialRequestMessage}
                         value={reqMsg}
                     /> 
                  </div>
