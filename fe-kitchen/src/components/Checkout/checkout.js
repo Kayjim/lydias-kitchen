@@ -209,7 +209,7 @@ const Checkout = (props) => {
       case 0:
         return <AddressForm data={data} handleChange={handleChange} />;
       case 1:
-        return <OrderTypeForm data={data} backFromDelivery={backFromDelivery} data={data} handleChange={handleChange} removeFromCart={props.removeFromCart} addToCart={props.addToCart} handleCTA={handleCTA} />;
+        return <OrderTypeForm data={data} backFromDelivery={backFromDelivery} data={data} handleChange={handleChange} handleCTA={handleCTA} />;
       case 2:
         return <DeliveryDetailsForm data={data} handleChange={handleChange} />;
       case 3:

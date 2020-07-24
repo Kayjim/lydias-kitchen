@@ -193,21 +193,21 @@ const App = (props) => {
         <Route
           path="/home"
           exact
-          render={props => <HomePage {...props} addToCart={addToCart} products={products} />}
+          render={props => <HomePage {...props} products={products} />}
         />
-        <Route 
+        {/* <Route 
           path='/noCart'
           exact
-          render={props => <HomePage {...props} addToCart={addToCart} products={products} />}
-        />
+          render={props => <HomePage {...props}products={products} />}
+        /> */}
+        {/* <Route
+          render={props => <CookiesPage {...props} products={products.filter(p => p.type === 'Cookie')} />} path="/cookies" />
         <Route
-          render={props => <CookiesPage {...props} addToCart={addToCart} products={products.filter(p => p.type === 'Cookie')} />} path="/cookies" />
-        <Route
-          render={props => <CakesPage {...props} products={products.filter(p => p.type === 'Cake')} />} path="/cakes" />
+          render={props => <CakesPage {...props} products={products.filter(p => p.type === 'Cake')} />} path="/cakes" /> */}
         {/* <Route
           render={props => <CookiesPage {...props} products={products} />} path="/foodprep" /> */}
         <Route
-        render={props => <CheckOut { ...props } addToCart={addToCart} removeFromCart={removeFromCart} />} path="/order"/>
+        render={props => <CheckOut { ...props } />} path="/order"/>
         {/* <Route
           path="/feedback" component={CookiesPage} /> */}
         <Route

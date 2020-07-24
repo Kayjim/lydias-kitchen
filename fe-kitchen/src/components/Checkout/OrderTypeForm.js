@@ -70,7 +70,7 @@ export default function OrderTypeForm(props) {
             ) : 
             (
                 currentEvent === true ? 
-                <CurrentEventForm data={props.data} handleChange={props.handleChange} removeFromCart={props.removeFromCart} addToCart={props.addToCart} /> : 
+                <CurrentEventForm data={props.data} handleChange={props.handleChange} /> : 
                 <SpecialRequestForm data={props.data} handleChange={props.handleChange} />
             )
             }
