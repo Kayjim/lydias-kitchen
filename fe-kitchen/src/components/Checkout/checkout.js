@@ -85,14 +85,6 @@ const Checkout = (props) => {
   const [hasAnswered, setHasAnswered] = useState(false);
   const [backFromDelivery, setBackFromDelivery] = useState(false);
 
-  let cartTotal = 0;
-
-  if (cart !== null && typeof (cart) !== 'undefined' && cart.length > 0) {
-    for (let i = 0; i < cart.length; i++) {
-      cartTotal += cart[i].price;
-    }
-  }
-
   useEffect(() => {
     switch (alertType) {
       case 'error':
@@ -215,7 +207,7 @@ const Checkout = (props) => {
       case 3:
         return <PaymentForm data={data} handleChange={handleChange} />;
       case 4:
-        return <Review data={data} cartTotal={cartTotal} cart={cart} />;
+        return <Review data={data} />;
       default:
         throw new Error('Unknown step');
     }
@@ -249,22 +241,12 @@ const Checkout = (props) => {
   //   }
 
   const sendOrder = e => {
-    axios.post('https://lydias-kitchen.herokuapp.com/3/sendOrder', {
+    axios.post('http://localhost:4000/3/sendOrder', {
       method: 'post',
       headers: {
         'Content-Type': 'application/json',
       },
-      firstName: data.fname,
-      lastName: data.lname,
-      email: data.email,
-      phone: data.phone,
-      address1: data.address1,
-      address2: data.address2,
-      city: data.city,
-      state: data.state,
-      zip: data.zip,
-      cart: cart,
-      total: cartTotal
+      data: data,
     }).then(res => {
       if (!res.status === 200) {
         setAlertType('error');
@@ -288,7 +270,7 @@ const Checkout = (props) => {
   therefor, cart !== null will be true, and if we don't check length then we will
   not get correct validation
   */
-  return (cart !== null && cart.length > 0 ?
+  return (
     <React.Fragment>
       <CssBaseline />
       <main className={classes.layout}>
@@ -352,7 +334,6 @@ const Checkout = (props) => {
         <Copyright />
       </main>
     </React.Fragment>
-    : <Redirect to='/noCart' />
   );
 }
 

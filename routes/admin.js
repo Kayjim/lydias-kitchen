@@ -35,12 +35,12 @@ router.post('/import', async (req, res) => {
     });
 });
 
-router.post('/createEvent', async(req, res) => {
+router.post('/createEvent', async (req, res) => {
     const event = req.cdata.event;
-    try{
+    try {
         saveEvent(event);
-    } 
-    catch (err){
+    }
+    catch (err) {
         res.send({
             msg: 'Create Event failed.'
         });
@@ -54,36 +54,85 @@ router.post('/createEvent', async(req, res) => {
 });
 //#endregion
 
-const mapCart = (cart) => {
-    let cartList = '';
-    cartList = cart.map(c => {
-        return cartList + `<li>${c.title}</li>`
-    });
-    return cartList
+//#region Helper Methods
+const buildOrder = data => {
+    let order = {};
+    order.firstName = data.fname;
+    order.lastName = data.lname;
+    order.email = data.email;
+    order.phone = data.phone;
+    order.address1 = data.address1;
+    order.address2 = data.address2 ? data.address2 : '';
+    order.city = data.city;
+    order.state = data.state;
+    order.zip = data.zip;
+    order.diffAddress1 = data.diffAddress1 ? data.diffAddress1 : order.address1;
+    order.diffAddress2 = data.diffAddress2 ? data.diffAddress2 : order.address2;
+    order.diffCity = data.diffCity ? data.diffCity : order.city;
+    order.diffState = data.diffState ? data.diffState : order.state;
+    order.diffZip = data.diffZip ? data.diffZip : order.zip;
+    order.preferredPayment = data.zelle ? 'Zelle' : data.paypal ? 'Paypal' : data.venmo ? 'Venmo' : 'Cash on Delivery';
+    order.specReq = data.specialRequest ? data.specialRequest : 'N/A';
+    if (data.isCurrentEvent) {
+        order.numBoxes = data.oneBox ? '1 box' : data.twoBox ? '2 boxes' : data.threeBox ? '3 boxes' : data.fourBox ? '4 boxes' : false;
+    }
+    order.isCurrentEvent = data.isCurrentEvent;
+    order.hasSpecialRequest = data.hasSpecialRequest;
+    order.diffAddy = data.diffAddy;
+    order.delivery = data.delivery ? 'Delivery' : 'Pickup';
+    return order;
 };
+//#endregion
 
 router.post('/sendOrder', async (req, res) => {
-    const output = `
+    try {
+        const order = buildOrder(req.body.data);
+        let output = `
         <h3>You have a new order from Lydia's Kitchen!</h3>
         <h4>Contact Details</h4>
         <ul>
-            <li>Name: ${req.body.firstName} ${req.body.lastName}</li>
-            <li>Email: ${req.body.email}</li>
-            <li>(Phone): ${req.body.phone}</li>
-            <li>Address 1: ${req.body.address1}</li>
-            <li>Address 2: ${req.body.address2}</li>
-            <li>City: ${req.body.city}</li>
-            <li>State: ${req.body.state}</li>
-            <li>Zip: ${req.body.zip}</li>
+            <li>Name: ${order.firstName} ${order.lastName}</li>
+            <li>Email: ${order.email}</li>
+            <li>(Phone): ${order.phone}</li>
+            <li>Address 1: ${order.address1}</li>
+            <li>Address 2: ${order.address2}</li>
+            <li>City: ${order.city}</li>
+            <li>State: ${order.state}</li>
+            <li>Zip: ${order.zip}</li>
         </ul>
         <h4>Order Details</h4>
+        <p>This order was set for <strong>${order.delivery}</strong></p>
+        `;
+        if (order.numBoxes) {
+            output += `<p>${order.numBoxes}</p>`
+        } else {
+            output += `<p>${order.specReq}</p>`
+        }
+        if (order.diffAddy) {
+            output += `<h4>Delivery Details</h4>
         <ul>
-        ${mapCart(req.body.cart).toString().replace(/,/g, '')}
-        </ul>
-        <h4>TOTAL</h4>
-        <p>$${req.body.total}</p>
-    `
-    sendMail(output);
+            <li>Address 1: ${order.diffAddress1}</li>
+            <li>Address 2: ${order.diffAddress2}</li>
+            <li>City: ${order.diffCity}</li>
+            <li>State: ${order.diffState}</li>
+            <li>Zip: ${order.diffZip}</li>
+        </ul>`;
+        }
+        output += `
+        <h4>Payment Details</h4>
+        <p>
+            ${order.preferredPayment}
+        </p>
+        `
+        if (order.isCurrentEvent && order.hasSpecialRequest) {
+            output += `<h4>Special Request</h4>
+                   <p>${order.specReq}</p>`
+        }
+        sendMail(output);
+    }
+    catch (err) {
+        console.log(err);
+    }
     res.send('Mail sent');
 });
 

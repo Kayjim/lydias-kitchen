@@ -6,7 +6,6 @@ import FormControlLabel from '@material-ui/core/FormControlLabel';
 import axios from 'axios'
 
 import './CurrentEventForm.css';
-import { STATES, set } from "mongoose";
 
 export default function CurrentEventForm(props) {
 
@@ -18,49 +17,6 @@ export default function CurrentEventForm(props) {
     const [isSpecReq, setIsSpecReq] = useState(false);
     const [reqMsg, setReqMsg] = useState('');
 
-    const EVENT = {
-        title: 'Cupcake Orders From Lydia\'s Kitchen',
-        description: 'Cupcakes abound: Here is what is in the box: (All cupcakes and frostings  are made from scratch - no mixes or boxes. Flavors made from real fruits and fruit zest). ',
-        products: [
-            {
-                id: "1",
-                title: 'Vanilla Bean Buttercream',
-                description: 'Vanilla Bean Batter with Vanilla Bean Buttercream Frosting',
-                price: 30
-            },
-            {
-                id: "2",
-                title: 'Chocolate Fudge ',
-                description: ' Dark Chocolate cupcakes with a Dark Chocolate Buttercream Frosting',
-                price: 10
-            },
-            {
-                id: "4",
-                title: 'German Chocolate Towers',
-                description: 'Dark Chocolate cupcakes with a Coconut and Pecan Custard Topping  encased in  a Dark Chocolate Buttercream Frosting',
-                price: 10
-            },
-            {
-                id: "5",
-                title: 'Strawberriest',
-                description: 'Strawberry blended cupcakes with a Strawberry infused Buttercream Frosting',
-                price: 10
-            },
-            {
-                id: "7",
-                title: 'Key Lime Zest',
-                description: ' Key Lime Cupcakes with Cream Cheese Frosting infused with fresh lime zest.',
-                price: 10
-            },
-            {
-                id: "6",
-                title: 'Early Gray',
-                description: ' Earl Gray Infused Cupcake with a Blackberry Buttercream Frosting.',
-                price: 10
-            },
-        ]
-    }
-
     useEffect(() => {
         axios.
             get("http://localhost:4000/current-event").
@@ -68,7 +24,6 @@ export default function CurrentEventForm(props) {
                 setEvent(res.data.event);
             }).
             catch(e => { console.log(e) });
-
         if (props.data.oneBox)
             setCheck1(true);
         if (props.data.twoBox)
