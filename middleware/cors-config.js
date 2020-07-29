@@ -7,7 +7,9 @@ var corsOptions = {
         "http://lydias-kitchen.herokuapp.com",
         "lydias-kitchen.herokuapp.com",
         "http://localhost:3000",
+        "http://localhost:3000/3",
         "http://localhost:4000",
+        "http://localhost:4000/3",
         "http://localhost:3004"
       ],
     optionsSuccessStatus: 200

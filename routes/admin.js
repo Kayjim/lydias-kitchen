@@ -3,6 +3,9 @@ var router = express.Router();
 const sgMail = require('@sendgrid/mail');
 const cors = require('cors');
 
+const eventController = require('../controllers/event');
+
+
 const corsOptions = require('../middleware/cors-config');
 const saveProduct = require('../middleware/save-product');
 const saveEvent = require('../middleware/save-event');
@@ -12,7 +15,8 @@ router.use(cors(corsOptions));
 const sendMail = output => {
     sgMail.setApiKey(process.env.SG_API_KEY);
     const msg = {
-        to: 'lydiapskitchen@gmail.com',
+        //to: 'lydiapskitchen@gmail.com',
+        to: 'xcmcpx@gmail.com',
         from: 'chrispatrickcodes@gmail.com',
         subject: `Lydia's Kitchen test order email`,
         text: 'WE BALLIN',
@@ -21,6 +25,7 @@ const sendMail = output => {
     sgMail.send(msg);
 };
 //#endregion
+
 
 //#region Saving Methods
 router.post('/import', async (req, res) => {
@@ -84,7 +89,7 @@ const buildOrder = data => {
 };
 //#endregion
 
-router.post('/sendOrder', async (req, res) => {
+router.post('/sendOrder', async (req, res, next) => {
     try {
         const order = buildOrder(req.body.data);
         let output = `
@@ -136,5 +141,16 @@ router.post('/sendOrder', async (req, res) => {
     res.send('Mail sent');
 });
 
+router.get('/allEvents', async (req, res, next) => {
+    try{
+        const events = await eventController.getAllEvents();
+        res.send({
+            msg: 'Success!',
+            events: events
+        })
+    } catch(err) {
+        console.log(err);
+    }
+});
 
 module.exports = router;

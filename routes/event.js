@@ -17,4 +17,6 @@ router.get('/current-event', async (req, res) => {
     });
 });
 
+
+
 module.exports = router;

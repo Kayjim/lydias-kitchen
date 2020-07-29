@@ -6,6 +6,7 @@ import HomePage from "./pages/Home";
 import CookiesPage from "./pages/Cookies";
 import CakesPage from "./pages/Cakes"
 import AdminPage from "./pages/Admin";
+import EventsPage from "./pages/Events";
 import MaintenancePage from "./pages/Maintenance";
 import CheckOut from "./components/Checkout/checkout";
 import Drawer from '@material-ui/core/Drawer';
@@ -194,6 +195,11 @@ const App = (props) => {
           path="/home"
           exact
           render={props => <HomePage {...props} products={products} />}
+        />
+        <Route
+          path="/3/events"
+          exact
+          render={props => <EventsPage {...props} />}
         />
         {/* <Route 
           path='/noCart'
