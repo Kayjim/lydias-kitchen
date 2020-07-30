@@ -10,12 +10,16 @@ import Link from '@material-ui/core/Link';
 import Typography from '@material-ui/core/Typography';
 import AddressForm from './AddressForm';
 import OrderTypeForm from './OrderTypeForm';
+import DeliveryDetailsForm from './DeliveryDetailsForm';
 import PaymentForm from './PaymentForm';
 import Review from './Review';
 import { ToastContainer, toast } from 'react-toastify';
 import axios from 'axios';
 import MuiThemeProvider from '@material-ui/core/styles/MuiThemeProvider';
 import { makeStyles, withStyles, createMuiTheme } from '@material-ui/core/styles';
+import validateForms from '../helpers/FormValidation';
+import turnOffOtherOptions from '../helpers/EventCheckBoxes';
+import clearData from '../helpers/ClearExtraData';
 
 function Copyright() {
   return (
@@ -66,7 +70,7 @@ const useStyles = makeStyles(theme => ({
     marginLeft: theme.spacing(1),
     backgroundColor: '#A7414A',
     '&:hover': {
-      backgroundColor:'#6A8A82',
+      backgroundColor: '#6A8A82',
     },
   },
 }));
@@ -75,26 +79,11 @@ const Checkout = (props) => {
   const classes = useStyles();
   const [activeStep, setActiveStep] = useState(0);
   const cart = JSON.parse(sessionStorage.getItem('cart'));
-  const [firstName, setFirstName] = useState('');
-  const [lastName, setLastName] = useState('');
-  const [email, setEmail] = useState('');
-  const [phone, setPhone] = useState('');
-  const [address1, setAddress1] = useState('');
-  const [address2, setAddress2] = useState('');
-  const [city, setCity] = useState('');
-  const [state, setState] = useState('');
-  const [zip, setZip] = useState('');
+  const [data, setData] = useState({});
   const [alertMessage, setAlertMessage] = useState('');
   const [alertType, setAlertType] = useState('');
   const [hasAnswered, setHasAnswered] = useState(false);
-
-  let cartTotal = 0;
-
-  if(cart !== null && typeof(cart) !== 'undefined' && cart.length > 0){
-    for(let i = 0; i<cart.length; i++){
-      cartTotal += cart[i].price;
-    }
-  }
+  const [backFromDelivery, setBackFromDelivery] = useState(false);
 
   useEffect(() => {
     switch (alertType) {
@@ -128,114 +117,136 @@ const Checkout = (props) => {
     setAlertType('');
   }, [alertType]);
 
-  const handleCTA = () => {
+  const handleCTA = (e) => {
+    let currentData = data;
+    if (e.currentTarget.id === 'yes') {
+      currentData['isCurrentEvent'] = true;
+    } else {
+      currentData['isCurrentEvent'] = false;
+    }
+    setData(currentData);
     setHasAnswered(true);
   }
 
   const handleNext = () => {
-    switch (activeStep) {
-      case (0):
-        if (validateContactInfo()) {
+    setAlertType('');
+    let validationResp = validateForms(activeStep, data);
+    if (validationResp.success === true) {
+      switch (activeStep) {
+        case (0):
           setActiveStep(activeStep + 1);
-        }
-        break;
-      case (3):
-        sendOrder();
-        break;
-      default:
-        setActiveStep(activeStep + 1);
-        break;
+          break;
+        case (4):
+          sendOrder();
+          break;
+        default:
+          setActiveStep(activeStep + 1);
+          break;
+      }
+    }
+    else {
+      setAlertMessage(validationResp.msg);
+      setAlertType(validationResp.alertType);
     }
   };
 
   const handleBack = () => {
+    let currentData = data;
+    switch (activeStep) {
+      case (0):
+        break;
+      case (1):
+        setBackFromDelivery(false);
+        break;
+      case (2):
+        setBackFromDelivery(true);
+        break;
+      case (3):
+        break;
+      case (4):
+        break;
+    }
     setActiveStep(activeStep - 1);
+    setData(currentData);
   };
 
   const handleChange = (e) => {
-    switch (e.target.id) {
-      case ('fname'):
-        setFirstName(e.target.value);
+    const key = e.target.id;
+    let value = '';
+    switch (e.currentTarget.type) {
+      case ('checkbox'):
+        value = e.currentTarget.checked;
+        setData(turnOffOtherOptions(e.currentTarget.id, data));
         break;
-      case ('lname'):
-        setLastName(e.target.value);
+      case ('text'):
+        value = e.currentTarget.value;
         break;
-      case ('email'):
-        setEmail(e.target.value);
+      case ('textarea'):
+        value = e.currentTarget.value;
         break;
-      case ('phone'):
-        setPhone(e.target.value);
-        break;
-      case ('address1'):
-        setAddress1(e.target.value);
-        break;
-      case ('address2'):
-        setAddress2(e.target.value);
-        break;
-      case ('city'):
-        setCity(e.target.value);
-        break;
-      case ('state'):
-        setState(e.target.value);
-        break;
-      case ('zip'):
-        setZip(e.target.value);
+      case ('radio'):
+        value = e.currentTarget.value;
+        setData(clearData(e.currentTarget.id, data));
         break;
     }
+    let currentData = data;
+    currentData[key] = value;
+    setData(currentData);
   }
 
-  const steps = ['Basic Information', 'Order Type', 'Payment details', 'Review your order'];
+  const steps = ['Basic Information', 'Order Type', 'Delivery Details', 'Payment details', 'Review your order'];
 
   function getStepContent(step, cart) {
     switch (step) {
       case 0:
-        return <AddressForm handleChange={handleChange} />;
+        return <AddressForm data={data} handleChange={handleChange} />;
       case 1:
-        return <OrderTypeForm handleCTA={handleCTA} />;
+        return <OrderTypeForm data={data} backFromDelivery={backFromDelivery} data={data} handleChange={handleChange} handleCTA={handleCTA} />;
       case 2:
-        return <PaymentForm />;
+        return <DeliveryDetailsForm data={data} handleChange={handleChange} />;
       case 3:
-        return <Review cartTotal={cartTotal} cart={cart} />;
+        return <PaymentForm data={data} handleChange={handleChange} />;
+      case 4:
+        return <Review data={data} />;
       default:
         throw new Error('Unknown step');
     }
   }
 
-  const validateContactInfo = () => {
-    let emailReg = /^(([^<>()\[\]\\.,;:\s@"]+(\.[^<>()\[\]\\.,;:\s@"]+)*)|(".+"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$/;
-    setAlertType('');
-    if (firstName === "" || lastName === "" || email === "" || address1 === "" || city === "" || state === "" || zip === "") {
-      setAlertMessage('Fill out all required fields and try again.');
-      setAlertType('error');
-      return false;
-    }
-    else if(!emailReg.test(email)) {
-      setAlertType('error');
-      setAlertMessage('Please provide a valid email format.');
-      return false;
-    }
-     else {
-      return true;
-    }
-  }
+  // const validateForms = (formId) => {
+
+  //   switch(formId){
+  //     case('address-form'):
+  //       validateContactInfo();
+  //   }
+
+  // }
+
+  //   const validateContactInfo = () => {
+  //     let emailReg = /^(([^<>()\[\]\\.,;:\s@"]+(\.[^<>()\[\]\\.,;:\s@"]+)*)|(".+"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$/;
+  //     setAlertType('');
+  //     if (firstName === "" || lastName === "" || email === "" || address1 === "" || city === "" || state === "" || zip === "") {
+  //       setAlertMessage('Fill out all required fields and try again.');
+  //       setAlertType('error');
+  //       return false;
+  //     }
+  //     else if(!emailReg.test(email)) {
+  //       setAlertType('error');
+  //       setAlertMessage('Please provide a valid email format.');
+  //       return false;
+  //     }
+  //      else {
+  //       return true;
+  //     }
+  //   }
 
   const sendOrder = e => {
-    axios.post('https://lydias-kitchen.herokuapp.com/3/sendOrder', {
+    axios.post('http://localhost:4000/3/sendOrder', {
       method: 'post',
       headers: {
         'Content-Type': 'application/json',
       },
-      firstName: firstName,
-      lastName: lastName,
-      email: email,
-      phone: phone,
-      address1: address1,
-      address2: address2,
-      city: city,
-      state: state,
-      zip: zip,
-      cart: cart,
-      total: cartTotal
+      data: data,
     }).then(res => {
       if (!res.status === 200) {
         setAlertType('error');
@@ -259,7 +270,7 @@ const Checkout = (props) => {
   therefor, cart !== null will be true, and if we don't check length then we will
   not get correct validation
   */
-  return (cart !== null && cart.length > 0 ?
+  return (
     <React.Fragment>
       <CssBaseline />
       <main className={classes.layout}>
@@ -267,13 +278,13 @@ const Checkout = (props) => {
           <Typography component="h1" variant="h4" align="center">
             Checkout
           </Typography>
-            <Stepper activeStep={activeStep} className={classes.stepper}>
-              {steps.map(label => (
-                <Step key={label}>
-                  <StepLabel StepIconProps={{classes: { active: classes.activeStep }}}>{label}</StepLabel>
-                </Step>
-              ))}
-            </Stepper>
+          <Stepper activeStep={activeStep} className={classes.stepper}>
+            {steps.map(label => (
+              <Step key={label}>
+                <StepLabel StepIconProps={{ classes: { active: classes.activeStep } }}>{label}</StepLabel>
+              </Step>
+            ))}
+          </Stepper>
           <React.Fragment>
             {activeStep === steps.length ? (
               <React.Fragment>
@@ -305,15 +316,15 @@ const Checkout = (props) => {
                         {activeStep === steps.length - 1 ? 'Place order' : 'Next'}
                       </Button>
                     ) : (
-                      <Button
-                      variant="contained"
-                      color="primary"
-                      onClick={handleNext}
-                      className={classes.button}
-                    >
-                      {activeStep === steps.length - 1 ? 'Place order' : 'Next'}
-                    </Button>
-                    )
+                        <Button
+                          variant="contained"
+                          color="primary"
+                          onClick={handleNext}
+                          className={classes.button}
+                        >
+                          {activeStep === steps.length - 1 ? 'Place order' : 'Next'}
+                        </Button>
+                      )
                     }
                   </div>
                 </React.Fragment>
@@ -323,7 +334,6 @@ const Checkout = (props) => {
         <Copyright />
       </main>
     </React.Fragment>
-    : <Redirect to='/noCart' />
   );
 }
 

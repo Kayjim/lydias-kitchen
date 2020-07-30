@@ -1,0 +1,4 @@
+.event-images-ctr{
+    display: flex;
+    flex-direction: column;
+}

@@ -5,10 +5,24 @@ import { makeStyles } from '@material-ui/core/styles';
 import CurrentEventForm from './CurrentEventForm';
 import SpecialRequestForm from './SpecialRequestForm';
 
+import './OrderType.css';
+
 export default function OrderTypeForm(props) {
 
     const [currentEvent, setCurrentEvent] = useState(false);
     const [isFirstRender, setIsFirstRender] = useState(true);
+
+    useEffect(() => {
+        if(props.backFromDelivery){
+            setIsFirstRender(false);
+            if(props.data['isCurrentEvent']){
+                setCurrentEvent(true);
+            }
+            else {
+                setCurrentEvent(false);
+            }
+        }
+    }, []); 
 
     const useStyles = makeStyles(theme => ({
         button: {
@@ -24,13 +38,13 @@ export default function OrderTypeForm(props) {
     const handleYesClick = (e) => {
         setCurrentEvent(true);
         setIsFirstRender(false);
-        props.handleCTA();
+        props.handleCTA(e);
     };
 
     const handleNoClick = (e) => {
         setCurrentEvent(false);
         setIsFirstRender(false);
-        props.handleCTA();
+        props.handleCTA(e);
     };
 
     const classes = useStyles();
@@ -40,19 +54,24 @@ export default function OrderTypeForm(props) {
             {
             isFirstRender === true ? 
             (
-            <div className='cta-btns'>
-                <Button onClick={handleYesClick} className={classes.button}>
-                    Yes
-                </Button>
-                <Button onClick={handleNoClick} className={classes.button}>
-                    No
-                </Button>
+            <div className='cta-container'>
+                <div className='cta-dialogue__container'>
+                    <h3>Is this order related to the current Lydia's Kitchen Event?</h3>
+                </div>
+                <div className='cta-btns__container'>
+                    <Button id='yes' onClick={handleYesClick} label="Yes" className={classes.button}>
+                        Yes
+                    </Button>
+                    <Button id='no' onClick={handleNoClick} className={classes.button}>
+                        No
+                    </Button>
+                </div>
             </div>
             ) : 
             (
                 currentEvent === true ? 
-                <CurrentEventForm /> : 
-                <SpecialRequestForm />
+                <CurrentEventForm data={props.data} handleChange={props.handleChange} /> : 
+                <SpecialRequestForm data={props.data} handleChange={props.handleChange} />
             )
             }
         </div>

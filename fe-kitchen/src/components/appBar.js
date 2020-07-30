@@ -115,7 +115,7 @@ export default function SearchAppBar(props) {
           <Typography className={classes.title} variant="h6" noWrap>
             <a href='/' className={classes.kitchenIcon}>Lydia's Kitchen</a>
           </Typography>
-          <div className={classes.search} style={{flexGrow: 2}}>
+          <div className={classes.search} style={{ flexGrow: 2 }}>
             <div className={classes.searchIcon}>
               <SearchIcon />
             </div>
@@ -129,12 +129,12 @@ export default function SearchAppBar(props) {
               onChange={handleSearch}
             />
           </div>
-          <div style={{flexGrow: 2}}></div>
-          {props.cart.length > 0 ? (<div 
-          onClick={props.toggleDrawer(true)}
+          <div style={{ flexGrow: 2 }}></div>
+          {props.cart.length > 0 ? (<div
+            onClick={props.toggleDrawer(true)}
           >
             <ShoppingCart height={40} width={40} />
-          </div>) : <div style={{width: 40}}></div>}
+          </div>) : <div style={{ width: 40 }}></div>}
         </Toolbar>
       </AppBar>
       <Menu
@@ -144,7 +144,12 @@ export default function SearchAppBar(props) {
         open={Boolean(anchorEl)}
         onClose={handleClose}
       >
-        <Link href='/cookies'>
+        <Link href='/home'>
+          <MenuItem onClick={handleClose}>
+            <div className='menu-icon home-icon'></div>Home
+        </MenuItem>
+        </Link>
+        {/* <Link href='/cookies'>
           <MenuItem onClick={handleClose}>
             <div className='menu-icon cookie-icon'></div>Cookies
           </MenuItem>
@@ -158,10 +163,10 @@ export default function SearchAppBar(props) {
           <MenuItem onClick={handleClose}>
           <div className='menu-icon prep-icon'></div>Food Prep
       </MenuItem>
-        </Link>
+        </Link> */}
         <Link href='/order'>
           <MenuItem onClick={handleClose}>
-          <ShoppingCart height={20} width={20} />Order
+            <ShoppingCart height={20} width={20} />Order
       </MenuItem>
         </Link>
       </Menu>

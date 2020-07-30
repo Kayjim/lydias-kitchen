@@ -1,0 +1,12 @@
+.payment-options__ctr{
+    display: flex;
+    flex-direction: column !important;
+    align-content: center;
+    text-align: center;
+}
+
+.MuiFormGroup-root.payment-options{
+    display: flex;
+    flex-direction: column !important;
+    align-content: center;
+}

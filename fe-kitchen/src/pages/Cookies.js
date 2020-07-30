@@ -5,7 +5,7 @@ import Card from '../components/Cards';
 const CookiePage = (props) => {
     const products = props.products;
     return (
-        <div className='cookie-container card-container'>
+        <div className='display-ctr'>
             {products.map(p => {
                 return (
                     <Card
@@ -16,7 +16,6 @@ const CookiePage = (props) => {
                         ingredients={p.ingredients}
                         description={p.description}
                         image={p.images[0]}
-                        addToCart={props.addToCart}
                     />
                 );
             }

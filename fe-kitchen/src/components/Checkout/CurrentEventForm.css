@@ -1,0 +1,59 @@
+.MuiCheckbox-root{
+    color: #282726 !important;
+}
+
+.MuiCheckbox-colorPrimary.Mui-checked {
+    color: #6A8A82 !important;
+}
+
+.MuiFormGroup-root {
+    flex-direction: row !important;
+    justify-content: center;
+}
+
+#deliveryOption {
+    flex-direction: column !important;
+    justify-content: center;
+}
+
+.current-event__ctr {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+}
+.event-order__cta {
+    font-size: 0.8em;
+    font-style: italic;
+    text-align: center;
+}
+
+.order-options__ctr{
+    display: flex;
+    flex-direction: row;
+    justify-content: center;
+    margin-bottom: 10px;
+    padding-bottom: 10px;
+}
+
+.product{
+    padding: 10px;
+    font-size: 12px;
+}
+
+.special-request__ctr{
+    margin-top: 10px;
+    padding-top: 10px;
+}
+
+.special-request__label{
+    margin-bottom: 5px;
+    padding-bottom: 5px;
+}
+
+.announcement{
+    font-size: 10px;
+    align-self: flex-start;
+}
+.announcement-ctr{
+    width: 93.5%
+}

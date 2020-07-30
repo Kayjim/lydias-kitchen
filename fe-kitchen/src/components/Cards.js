@@ -88,16 +88,6 @@ export default function SimpleCard(props) {
             {props.ingredients.toString()}
         </Typography>
       </CardContent>
-      <CardActions>
-        <Button 
-          className={classes.button} 
-          size="small" 
-          onClick={() => props.addToCart(product)}
-          variant='outlined'
-          >
-            Add to Cart
-          </Button>
-      </CardActions>
     </Card>
   );
 }
