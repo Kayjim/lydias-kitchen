@@ -12,7 +12,6 @@ const EventImages = (props) => {
 
     useEffect(() => {
         setImages(props.images);
-        debugger;
     }, [props.images]);
 
     const addNew = () => {

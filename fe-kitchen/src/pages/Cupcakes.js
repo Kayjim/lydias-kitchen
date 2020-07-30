@@ -5,7 +5,7 @@ import Card from '../components/Cards';
 const CupcakePage = (props) => {
     const products = props.products;
     return (
-        <div className='cupcake-ctr'>
+        <div className='display-ctr'>
             {products.map(p => {
                 return (
                     <Card

@@ -49,3 +49,11 @@
     margin-bottom: 5px;
     padding-bottom: 5px;
 }
+
+.announcement{
+    font-size: 10px;
+    align-self: flex-start;
+}
+.announcement-ctr{
+    width: 93.5%
+}

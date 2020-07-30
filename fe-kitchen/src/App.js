@@ -14,7 +14,7 @@ import Link from '@material-ui/core/Link';
 import CloseIcon from '@material-ui/icons/Close';
 import Button from '@material-ui/core/Button';
 import RemoveIcon from '@material-ui/icons/Remove';
-import {ToastContainer, toast} from 'react-toastify';
+import { ToastContainer, toast } from 'react-toastify';
 
 import axios from "axios";
 
@@ -40,7 +40,7 @@ const App = (props) => {
   const [showCart, setShowCart] = useState(false);
   const [alertMessage, setAlertMessage] = useState('');
   const [alertType, setAlertType] = useState('');
-  const [isCheckout, setIsCheckout] = useState(false);
+  const [search, setSearch] = useState('');
 
   //Search bar functionality
   const handleSearch = txt => {
@@ -48,26 +48,37 @@ const App = (props) => {
     switch (txt) {
       case (''):
         setProducts(allProducts);
+        setSearch('');
         break;
       case "Cake":
         newProductState = products.filter(p => p.type === "Cake");
         setProducts(newProductState);
+        setSearch('cakes');
         break;
       case "Cakes":
         newProductState = products.filter(p => p.type === "Cake");
         setProducts(newProductState);
+        setSearch('cakes');
         break;
       case "Cookie":
         newProductState = products.filter(p => p.type === "Cookie");
         setProducts(newProductState);
+        setSearch('cookies');
         break;
       case "Cookies":
         newProductState = products.filter(p => p.type === "Cookie");
         setProducts(newProductState);
+        setSearch('cookies');
         break;
-      case "Food Prep":
-        newProductState = products.filter(p => p.type === "Cake");
+      case "Cupcakes":
+        newProductState = products.filter(p => p.type === "Cupcake");
         setProducts(newProductState);
+        setSearch('cupcakes');
+        break;
+      case "Cupcake":
+        newProductState = products.filter(p => p.type === "Cupcake");
+        setProducts(newProductState);
+        setSearch('cupcakes');
         break;
       default:
         break;
@@ -86,7 +97,7 @@ const App = (props) => {
   const removeFromCart = (p) => {
     let currentCart = [...cart];
     const idx = currentCart.findIndex(prod => prod.id === p.id);
-    if(idx !== -1){
+    if (idx !== -1) {
       currentCart.splice(idx, 1);
       setCart(currentCart);
       sessionStorage.setItem('cart', JSON.stringify(currentCart));
@@ -94,7 +105,7 @@ const App = (props) => {
   }
   //create order logic
   const validateCart = (cart) => {
-    if(cart.length < 1){
+    if (cart.length < 1) {
       setAlertMessage('You do not have any items in your shopping cart. Try adding some, and trying again!');
       setAlertType('error');
     }
@@ -112,14 +123,14 @@ const App = (props) => {
     axios.get("https://lydias-kitchen.herokuapp.com/all-products").then(res => {
       setProducts(res.data.products);
       setAllProducts(res.data.products);
-    }).catch(e => { console.log(e)});
-    if(typeof(sessionStorage) !== 'undefined' && sessionStorage !== null){
+    }).catch(e => { console.log(e) });
+    if (typeof (sessionStorage) !== 'undefined' && sessionStorage !== null) {
       let cart = sessionStorage.getItem('cart');
-      if(typeof(cart) !== 'undefined' && cart !== null && cart.length >= 1){
+      if (typeof (cart) !== 'undefined' && cart !== null && cart.length >= 1) {
         setCart(JSON.parse(cart));
       }
     }
-    if(window.location.href.indexOf('noCart') > -1){
+    if (window.location.href.indexOf('noCart') > -1) {
       setAlertMessage('You do not have any items in your shopping cart. Try adding some, and trying again!');
       setAlertType('error');
     }
@@ -127,9 +138,9 @@ const App = (props) => {
 
   //after order alertMessage is updated
   useEffect(() => {
-    switch(alertType){
+    switch (alertType) {
       case 'error':
-        toast.error(alertMessage, 
+        toast.error(alertMessage,
           {
             position: "top-center",
             autoClose: 5000,
@@ -142,7 +153,7 @@ const App = (props) => {
         );
         break;
       case 'success':
-        toast.success(alertMessage, 
+        toast.success(alertMessage,
           {
             position: "top-center",
             autoClose: 4000,
@@ -181,7 +192,7 @@ const App = (props) => {
               </div>
             );
           })}
-            <Link className="checkout-btn" href='/order' onClick={() => validateCart(cart)}>Proceed to Checkout</Link>
+          <Link className="checkout-btn" href='/order' onClick={() => validateCart(cart)}>Proceed to Checkout</Link>
         </StyledDrawer>) :
         null
       }
@@ -189,12 +200,12 @@ const App = (props) => {
         <Route
           path="/"
           exact
-          render={props => <MaintenancePage />}
+          render={props => <HomePage {...props} search={search} products={products} />}
         />
         <Route
           path="/home"
           exact
-          render={props => <HomePage {...props} products={products} />}
+          render={props => <HomePage {...props} search={search} products={products} />}
         />
         <Route
           path="/3/events"
@@ -213,7 +224,7 @@ const App = (props) => {
         {/* <Route
           render={props => <CookiesPage {...props} products={products} />} path="/foodprep" /> */}
         <Route
-        render={props => <CheckOut { ...props } />} path="/order"/>
+          render={props => <CheckOut {...props} />} path="/order" />
         {/* <Route
           path="/feedback" component={CookiesPage} /> */}
         <Route

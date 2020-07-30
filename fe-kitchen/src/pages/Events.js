@@ -188,7 +188,6 @@ useEffect( () => {
         axios.post('http://localhost:4000/3/deleteCurrentEvent', {
             cdata: { id: event._id }
         }).then(res => {
-            debugger;
             if (!res.status === 200) {
                 setAlertType('error');
                 setAlertMessage(res.status + ' : ' + res.statusText);
@@ -196,7 +195,6 @@ useEffect( () => {
             }
             return res;
         }).catch(err => {
-            debugger;
             setAlertType('error');
             setAlertMessage(err);
             return;
