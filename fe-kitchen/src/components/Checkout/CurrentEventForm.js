@@ -21,6 +21,7 @@ export default function CurrentEventForm(props) {
         axios.
             get("http://localhost:4000/current-event").
             then(res => {
+                debugger;
                 setEvent(res.data.event);
             }).
             catch(e => { console.log(e) });
@@ -87,17 +88,7 @@ export default function CurrentEventForm(props) {
         if(event.products){
             return event.products.map(p => {
                 return (
-                    <h5 key={p._id}>{p.title}</h5>
-                    // <FormControlLabel
-                    // //     control={ <Checkbox 
-                    // //     key={p.title} 
-                    // //     id={p.title}
-                    // //     color='primary'
-                    // //     onChange={handleCheckboxClick}
-                    // //     /> }
-                    // //     label={p.title}
-                    // //     value={p.id}
-                    //  />
+                    <p className='product' key={p._id}>{p.title}</p>
                 );
             });
         }
@@ -109,7 +100,9 @@ export default function CurrentEventForm(props) {
                 <div className='current-event__ctr'>
                     <h3 className='event-title'>{event.title}</h3>
                     <p className='event-description'>{event.description}</p>
-                    <FormGroup>
+                    <img style={{width: '100%', maxHeight: 325, height: 200}} src={event ? event.images ? event.images[0] : null : null}></img>
+                    <h4 className='row1'>What's in the box?</h4>
+                    <FormGroup >
                         {mapEventProducts(event)}
                     </FormGroup>
                     <p className='event-order__cta'>Please check how many boxes you would like to order blow.

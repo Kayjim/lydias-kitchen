@@ -10,6 +10,8 @@ import PaymentReview from './PaymentReview';
 
 import axios from 'axios';
 
+import './ReviewCss.css';
+
 export default function Review(props) {
 
   const data = props.data;
@@ -80,7 +82,7 @@ export default function Review(props) {
   return (
     <Paper className='checkout-review__ctr'>
       {Object.keys(event).length === 0 ? <h4>Loading...</h4> :
-        <List>
+        <List className='checkout-review__list'>
           <ListSubheader className='review-cart__title' component="div" id="nested-list-subheader">
             Your Order
         </ListSubheader>
