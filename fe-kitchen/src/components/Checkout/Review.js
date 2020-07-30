@@ -23,7 +23,7 @@ export default function Review(props) {
   useEffect(() => {
 
     axios.
-      get("http://localhost:4000/current-event").
+      get("https://lydias-kitchen.herokuapp.com/current-event").
       then(res => {
         setEvent(res.data.event);
         let holder = 0;

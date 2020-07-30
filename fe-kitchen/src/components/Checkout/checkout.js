@@ -241,7 +241,7 @@ const Checkout = (props) => {
   //   }
 
   const sendOrder = e => {
-    axios.post('http://localhost:4000/3/sendOrder', {
+    axios.post('https://lydias-kitchen.herokuapp.com/3/sendOrder', {
       method: 'post',
       headers: {
         'Content-Type': 'application/json',

@@ -35,7 +35,7 @@ const EventsPage = (props) => {
     const [alertType, setAlertType] = useState('');
 
     useEffect(() => {
-        axios.get("http://localhost:4000/3/allEvents")
+        axios.get("https://lydias-kitchen.herokuapp.com/3/allEvents")
             .then(res => {
                 let allEvents = res.data.events;
                 setEvents(allEvents);
@@ -53,7 +53,7 @@ const EventsPage = (props) => {
             .catch(err => {
                 console.log(err);
             });
-        axios.get('http://localhost:4000/all-products')
+        axios.get('https://lydias-kitchen.herokuapp.com/all-products')
             .then(res => {
                 setProducts(res.data.products);
             }).catch(err => {
@@ -118,7 +118,7 @@ useEffect( () => {
     const handleCheckboxClick = (e) => {
         let id = e.target.id;
         let isCurrentEvent = e.target.checked;
-        axios.post('http://localhost:4000/3/updateCurrentEvent', {
+        axios.post('https://lydias-kitchen.herokuapp.com/3/updateCurrentEvent', {
             method: 'post',
             headers: {
                 'Content-Type': 'application/json',
@@ -154,7 +154,7 @@ useEffect( () => {
     const handleSaveClick = () => {
 
         let event = currentEvent;
-        axios.post('http://localhost:4000/3/saveEvent', {
+        axios.post('https://lydias-kitchen.herokuapp.com/3/saveEvent', {
             method: 'post',
             headers: {
                 'Content-Type': 'application/json',
@@ -185,7 +185,7 @@ useEffect( () => {
 
     const handleDeleteClick = (e) => {
         let event = currentEvent;
-        axios.post('http://localhost:4000/3/deleteCurrentEvent', {
+        axios.post('https://lydias-kitchen.herokuapp.com/3/deleteCurrentEvent', {
             cdata: { id: event._id }
         }).then(res => {
             if (!res.status === 200) {
