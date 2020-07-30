@@ -9,22 +9,24 @@ const Products = (props) => {
 
     useEffect(() => {
         let newList = [];
-        props.products.forEach(p => {
-            console.log(props.event.products?.includes(p._id));
-            console.log(checked);
-            if(props.event.products?.includes(p._id)){
-                newList.push('p-'+p._id);
-            }
-        });
-        console.log(newList);
-        setChecked(newList);
+        if (props.products) {
+            props.products.forEach(p => {
+                if (props.event) {
+                    if (props.event.products) {
+                        if (props.event.products.includes(p._id)) {
+                            newList.push('p-' + p._id);
+                        }
+                    }
+                }
+            });
+            setChecked(newList);
+        }
     }, [props.products]);
 
 
     const handleCheckChange = (e) => {
         const newList = checked?.includes(e.target.id) ? checked?.filter(p => p !== e.target.id) : [...(checked ?? []), e.target.id]
         setChecked(newList);
-        console.log(newList);
     }
 
     const handleAddRemoveProduct = (e) => {
@@ -40,11 +42,11 @@ const Products = (props) => {
                     <FormControlLabel
                         key={p._id}
                         control={<Checkbox
-                            id={'p-'+p._id}
+                            id={'p-' + p._id}
                             className='ckbox'
                             color='primary'
                             onChange={handleAddRemoveProduct}
-                            checked={checked.includes('p-'+p._id)}
+                            checked={checked.includes('p-' + p._id)}
                             value={p._id}
                             name={p.title}
                             key={p._id}

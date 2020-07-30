@@ -6,6 +6,7 @@ import FormGroup from '@material-ui/core/FormGroup';
 import FormControlLabel from '@material-ui/core/FormControlLabel';
 import Button from '@material-ui/core/Button';
 import DateFnsUtils from '@date-io/date-fns';
+import { ToastContainer, toast } from 'react-toastify';
 import {
     MuiPickersUtilsProvider,
     KeyboardDatePicker,
@@ -18,14 +19,20 @@ import axios from 'axios';
 
 import '../css/EventsCss.css'
 
+const useForceUpdate = () => useState()[1];
+
 const EventsPage = (props) => {
 
     const [events, setEvents] = useState([]);
+    const [title, setTitle] = useState([]);
+    const [description, setDescription] = useState([]);
+    const [announcement, setAnnouncement] = useState([]);
     const [images, setImages] = useState([]);
     const [products, setProducts] = useState([]);
-    const [currentEvent, setCurrentEvent] = useState();
+    const [currentEvent, setCurrentEvent] = useState({});
     const [selectedDate, setSelectedDate] = useState();
-    const [objEP, setObjEP] = useState({});
+    const [alertMessage, setAlertMessage] = useState('');
+    const [alertType, setAlertType] = useState('');
 
     useEffect(() => {
         axios.get("http://localhost:4000/3/allEvents")
@@ -34,12 +41,14 @@ const EventsPage = (props) => {
                 setEvents(allEvents);
                 let currEvent = allEvents.find(e => { return e.isCurrentEvent === true });
                 if (currEvent !== undefined) {
+                    setTitle(currEvent.title);
+                    setDescription(currEvent.description);
+                    setAnnouncement(currEvent.announcement);
                     setCurrentEvent(currEvent);
                     const date = new Date(currEvent.date);
                     setSelectedDate(date);
                     setImages(currEvent.images);
                 }
-                debugger;
             })
             .catch(err => {
                 console.log(err);
@@ -51,41 +60,179 @@ const EventsPage = (props) => {
                 console.log(err)
             });
     }, []);
+      //after order alertMessage is updated
+  useEffect(() => {
+    switch(alertType){
+      case 'error':
+        toast.error(alertMessage, 
+          {
+            position: "top-center",
+            autoClose: 5000,
+            hideProgressbar: false,
+            closeOnClick: true,
+            pauseOnHover: true,
+            draggable: false,
+            progress: undefined,
+          }
+        );
+        break;
+      case 'success':
+        toast.success(alertMessage, 
+          {
+            position: "top-center",
+            autoClose: 4000,
+            hideProgressbar: false,
+            closeOnClick: true,
+            pauseOnHover: true,
+            draggable: false,
+            progress: undefined,
+          }
+        );
+        break;
+    }
+  }, [alertType]);
+
+useEffect( () => {
+    console.log(currentEvent);
+}, [currentEvent])
 
     const handleTextboxChanges = (e) => {
-
+        let event = currentEvent;
+        switch(e.target.id){
+            case('title'):
+                event.title = e.target.value;
+                setTitle(e.target.value);
+                break;
+            case('description'):
+                event.description = e.target.value;
+                setDescription(e.target.value);
+                break;
+            case('announcement'):
+                event.announcement = e.target.value;
+                setAnnouncement(e.target.value);
+                break;
+        }
+        setCurrentEvent(event);
     };
 
     const handleCheckboxClick = (e) => {
-
+        let id = e.target.id;
+        let isCurrentEvent = e.target.checked;
+        axios.post('http://localhost:4000/3/updateCurrentEvent', {
+            method: 'post',
+            headers: {
+                'Content-Type': 'application/json',
+            },
+            cdata: {
+                id: id,
+                isCurrentEvent: isCurrentEvent
+            }
+        }).then(res => {
+            if (!res.status === 200) {
+                setAlertType('error');
+                setAlertMessage(res.status + ' : ' + res.statusText);
+                return;
+            }
+            return res;
+        }).then(data => {
+            if(data.data.uE.isCurrentEvent){
+                setCurrentEvent(data.data.uE);
+            } else {
+                setCurrentEvent({})
+            }
+            setAlertType('success');
+            setAlertMessage('Current Event has been changed!');
+            return data;
+        }).catch(err => {
+            setAlertType('error');
+            setAlertMessage(err);
+            return;
+        });
+        window.location.reload(true);
     };
 
-    const handleSaveClick = (e) => {
+    const handleSaveClick = () => {
 
+        let event = currentEvent;
+        axios.post('http://localhost:4000/3/saveEvent', {
+            method: 'post',
+            headers: {
+                'Content-Type': 'application/json',
+            },
+            cdata: {
+                event: event,
+            }
+        }).then(res => {
+            if (!res.status === 200) {
+                setAlertType('error');
+                setAlertMessage(res.status + ' : ' + res.statusText);
+                return;
+            }
+            return res;
+        }).then(data => {
+            setAlertType('success');
+            setAlertMessage('Current Event has been saved!');
+            return data;
+        }).catch(err => {
+            setAlertType('error');
+            setAlertMessage(err);
+            return;
+        });
+        window.location.reload(true);
     };
+
+    const forceUpdate = useForceUpdate();
 
     const handleDeleteClick = (e) => {
-
+        let event = currentEvent;
+        axios.post('http://localhost:4000/3/deleteCurrentEvent', {
+            cdata: { id: event._id }
+        }).then(res => {
+            debugger;
+            if (!res.status === 200) {
+                setAlertType('error');
+                setAlertMessage(res.status + ' : ' + res.statusText);
+                return;
+            }
+            return res;
+        }).catch(err => {
+            debugger;
+            setAlertType('error');
+            setAlertMessage(err);
+            return;
+        })
+        window.location.reload(true);
     };
 
     const handleDateChange = (date) => {
-        console.log(typeof (date));
+        let event = currentEvent;
         setSelectedDate(date);
+        event.date = date;
+        setCurrentEvent(event);
     };
 
-    const handleAddRemoveProduct = (e) => {
+    const handleImageChange = (imgs) => {
         let event = currentEvent;
-        debugger;
+        if(images !== imgs){
+            setImages(imgs);
+        }
+        event.images = imgs;
+        setCurrentEvent(event);
+    }
+
+    const handleAddRemoveProduct = (e) => {
+        let event = currentEvent ? currentEvent : {};
+        let products = event.products ? event.products: [];
         if (e.target.checked) {
-            event.products.push(e.target.value);
+            products.push(e.target.value);
         }
         else {
             const idx = event.products.findIndex(p => p === e.target.value);
             if (idx !== -1) {
-                event.products.splice(idx, 1);
+                products.splice(idx, 1);
             }
         }
-        debugger;
+        event.products = products;
         setCurrentEvent(event);
         console.log(currentEvent);
     };
@@ -108,8 +255,8 @@ const EventsPage = (props) => {
             <h3>Current Event</h3>
             <div className='edit-event__ctr'>
                 <form id='edit-event__form'>
-                    <TextField onChange={handleTextboxChanges} value={currentEvent ? currentEvent.title : ''} id='title' className='event-form__input' label='Title' required placeholder='Title' variant='outlined' />
-                    <TextField onChange={handleTextboxChanges} value={currentEvent ? currentEvent.description : ''} id='description' className='event-form__input' label='Description' required placeholder='Description' variant='outlined' />
+                    <TextField onChange={handleTextboxChanges} value={title} id='title' className='event-form__input' label='Title' required placeholder='Title' variant='outlined' />
+                    <TextField onChange={handleTextboxChanges} value={description} id='description' className='event-form__input' label='Description' required placeholder='Description' variant='outlined' />
                     <MuiPickersUtilsProvider utils={DateFnsUtils}>
                         <KeyboardDatePicker
                             disableToolbar
@@ -139,9 +286,9 @@ const EventsPage = (props) => {
                             Upload
                         </Button>
                     </label> */}
-                    <EventImages images={images} />
-                    <Products products={products} event={currentEvent} handleAddRemoveProduct={handleAddRemoveProduct}  />
-                    <TextField onChange={handleTextboxChanges} value={currentEvent ? currentEvent.announcement : ''} id='announcement' className='event-form__input' label='Announcement' required placeholder='Announcement' variant='outlined' />
+                    <EventImages images={images} handleImageChange={handleImageChange} />
+                    <Products products={products} event={currentEvent} handleAddRemoveProduct={handleAddRemoveProduct} />
+                    <TextField onChange={handleTextboxChanges} value={announcement} id='announcement' className='event-form__input' label='Announcement' required placeholder='Announcement' variant='outlined' />
                     <div className='btns'>
                         <Button id='delete' onClick={handleDeleteClick} label="Delete" className={classes.button}>
                             Delete
@@ -159,16 +306,16 @@ const EventsPage = (props) => {
                         return (<li key={e._id}>
                             <FormControlLabel
                                 control={<Checkbox
-                                    id={`e-${e.id}`}
+                                    id={e._id}
                                     className='ckbox'
                                     color='primary'
                                     value={1}
-                                    name={`e-${e.id}`}
-                                    key={`e-${e.id}`}
+                                    name={`${e.id}`}
+                                    key={`${e.id}`}
+                                    checked={e._id === currentEvent._id ? true : false}
                                     onChange={handleCheckboxClick}
                                 />}
                                 label={e.title}
-
                             />
                         </li>);
                     })}

@@ -9,6 +9,8 @@ const eventController = require('../controllers/event');
 const corsOptions = require('../middleware/cors-config');
 const saveProduct = require('../middleware/save-product');
 const saveEvent = require('../middleware/save-event');
+const deleteEvent = require('../middleware/delete-event');
+const updateCurrentEvent = require('../middleware/update-current-event');
 
 router.use(cors(corsOptions));
 //#region SendGrid Stuff
@@ -40,24 +42,62 @@ router.post('/import', async (req, res) => {
     });
 });
 
-router.post('/createEvent', async (req, res) => {
-    const event = req.cdata.event;
+router.post('/updateCurrentEvent', async (req, res) => {
     try {
-        saveEvent(event);
+        const id = req.body.cdata.id;
+        const isCurrentEvent = req.body.cdata.isCurrentEvent;
+        const updatedEvent = await updateCurrentEvent(id, isCurrentEvent);
+        res.status(200).send({
+            msg: 'Updating event success',
+            uE: updatedEvent
+        })
     }
     catch (err) {
         res.send({
-            msg: 'Create Event failed.'
+            msg: 'Updating event failed.'
         });
         throw err;
     }
+});
 
-    res.send({
-        msg: 'Event Created'
-    })
+router.post('/saveEvent', async (req, res) => {
+    try{
+        const event = req.body.cdata.event;
 
+        const updatedEvent = await saveEvent(event);
+        res.status(200).send({
+            msg: 'Save Event success',
+            uE: updatedEvent
+        })
+    } catch (err){
+        res.send({
+            msg: 'Save Event failed.'
+        });
+        throw err;
+    }
 });
 //#endregion
+
+//#region deletion methods
+router.post('/deleteCurrentEvent', async (req, res, next) => {
+    try {
+        const id = req.body.cdata.id;
+
+        const deletedEvent = await deleteEvent(id);
+            res.status(200).send({
+                msg: 'Deleted Event'
+            });
+    } catch(err){
+        res.send({
+            msg: 'Delete Event failed.'
+        });
+        throw err;
+    }
+});
+
+
+//#endregion
+
 
 //#region Helper Methods
 const buildOrder = data => {
