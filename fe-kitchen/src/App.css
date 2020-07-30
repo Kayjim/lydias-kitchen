@@ -2,17 +2,19 @@
   display: flex;
   flex-wrap: wrap;
 }
+.display-ctr{
+  display: flex;
+  flex-direction: row;
+  flex-wrap: wrap;
+  justify-content: center;
+  align-items: center;
+  width: 100%;
+}
 
-.cookie-container{
-  display: flex;
-  flex-direction: row;
-  width: 100%;
+.section-hdr{
+  font-size: 2em;
 }
-.cake-container{
-  display: flex;
-  flex-direction: row;
-  width: 100%;
-}
+
 .cookie-card{
   width: 22%;
   margin: 1em;
@@ -27,17 +29,6 @@
   width: 22%;
   margin: 1em;
   background-color: #A7414A;
-}
-
-.cart-container{
-  display: flex;
-  flex-direction: row;
-  align-items: center;
-}
-
-.cart-list{
-  list-style: none;
-  padding: 0;
 }
 
 #close{

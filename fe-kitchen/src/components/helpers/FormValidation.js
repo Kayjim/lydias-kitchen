@@ -15,6 +15,9 @@ const validateForms = (activeStep, data) => {
             resp = validatePaymentDetails(data);
             break;
         case (4):
+            resp = {
+                success: true
+            }
             break;
     }
     return resp;

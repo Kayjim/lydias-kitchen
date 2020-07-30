@@ -31,17 +31,14 @@ var corsOptions = {
     "http://lydias-kitchen.herokuapp.com",
     "lydias-kitchen.herokuapp.com",
     "http://localhost:3000",
+    "http://localhost:3000/3",
     "http://localhost:4000",
+    "http://localhost:4000/3",
     "http://localhost:3004"
   ],
   optionsSuccessStatus: 200
 };
 app.use(cors(corsOptions));
-if (process.env.NODE_ENV === "production") {
-  app.use(express.static("./fe-kitchen/build"));
-}
-
-
 
 
 app.use('/3', adminRoutes);
@@ -71,6 +68,7 @@ mongoose
   .then(() => {
     app.listen(PORT);
     console.log("Connected to DB and listening on port: " + PORT);
+    console.log(process.env.NODE_ENV);
   })
   .catch(err => {
     console.log(err);

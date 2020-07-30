@@ -116,7 +116,7 @@ export default function DeliveryDetailsForm(props) {
                     />
                 }
                 {(delivery === 'delivery') && isDiffAddy &&
-                <div classname='delivery-address__ctr'>
+                <div className='delivery-address__ctr'>
                     <TextField id='diffAddress1' className='address-form__input' label='Address Line 1' required placeholder='Address Line 1' variant='outlined' onChange={handleTextboxChanges} value={diffAddy1} />
                     <TextField id='diffAddress2' className='address-form__input' placeholder='Address Line 2' variant='outlined' onChange={handleTextboxChanges} value={diffAddy2}/>
                     <TextField id='diffCity' className='address-form__input' label='City' required placeholder='City' variant='outlined' onChange={handleTextboxChanges} value={diffCity}/>

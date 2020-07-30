@@ -74,7 +74,6 @@ const event = async eventId => {
             ...event._doc,
             _id: event.id,
             products: () => productsLoader.loadMany(event._doc.products),
-            images: () => imagesLoader.loadmany(event._doc.images)
         };
     } catch(err) {
         throw err;
@@ -95,11 +94,11 @@ const transformEvent = e => {
     return {
         ...e._doc,
         _id: e._id,
-        products: e.products,
+        products:  e.products,
         images: e.images
     }
 }
 //#endregion
 
 exports.transformProduct = transformProduct;
-exports.transformProduct = transformEvent;
+exports.transformEvent = transformEvent;

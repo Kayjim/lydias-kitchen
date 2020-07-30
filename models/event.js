@@ -1,5 +1,4 @@
 const mongoose = require('mongoose');
-const productSchema = require('./product').schema;
 
 
 const Schema = mongoose.Schema;
@@ -9,10 +8,14 @@ const eventSchema = new Schema({
     description: String,
     date: Date,
     images: [String],
-    products: [productSchema],
-    ctas: [String],
-    discounts: [String],
-    location: [String],
+    products: [
+        {
+        type: Schema.Types.ObjectId,
+        ref: 'Product'
+        }
+    ],
+    announcement: String,
+    isCurrentEvent: Boolean
 });
 
 module.exports = mongoose.model('Event', eventSchema);

@@ -3,9 +3,9 @@ import TextField from '@material-ui/core/TextField';
 import Checkbox from '@material-ui/core/Checkbox';
 import FormGroup from '@material-ui/core/FormGroup';
 import FormControlLabel from '@material-ui/core/FormControlLabel';
+import axios from 'axios'
 
 import './CurrentEventForm.css';
-import { STATES, set } from "mongoose";
 
 export default function CurrentEventForm(props) {
 
@@ -17,62 +17,27 @@ export default function CurrentEventForm(props) {
     const [isSpecReq, setIsSpecReq] = useState(false);
     const [reqMsg, setReqMsg] = useState('');
 
-    const EVENT = {
-        title: 'Cupcake Orders From Lydia\'s Kitchen',
-        description: 'Cupcakes abound: Here is what is in the box: (All cupcakes and frostings  are made from scratch - no mixes or boxes. Flavors made from real fruits and fruit zest). ',
-        products: [
-            {
-                id:"1",
-                title: 'Vanilla Bean Buttercream',
-                description: 'Vanilla Bean Batter with Vanilla Bean Buttercream Frosting',
-                price: 30
-            },
-            {
-                id:"2",
-                title: 'Chocolate Fudge ',
-                description: ' Dark Chocolate cupcakes with a Dark Chocolate Buttercream Frosting',
-                price: 10
-            },
-            {
-                id:"4",
-                title: 'German Chocolate Towers',
-                description: 'Dark Chocolate cupcakes with a Coconut and Pecan Custard Topping  encased in  a Dark Chocolate Buttercream Frosting',
-                price: 10
-            },
-            {
-                id:"5",
-                title: 'Strawberriest',
-                description: 'Strawberry blended cupcakes with a Strawberry infused Buttercream Frosting',
-                price: 10
-            },
-            {
-                id:"7",
-                title: 'Key Lime Zest',
-                description: ' Key Lime Cupcakes with Cream Cheese Frosting infused with fresh lime zest.',
-                price: 10
-            },
-            {
-                id:"6",
-                title: 'Early Gray',
-                description: ' Earl Gray Infused Cupcake with a Blackberry Buttercream Frosting.',
-                price: 10
-            },
-        ]
-    }
-
     useEffect(() => {
-        if(props.data.oneBox)
+        axios.
+            get("http://localhost:4000/current-event").
+            then(res => {
+                setEvent(res.data.event);
+            }).
+            catch(e => { console.log(e) });
+        if (props.data.oneBox)
             setCheck1(true);
-        if(props.data.twoBox)
+        if (props.data.twoBox)
             setCheck2(true);
-        if(props.data.threeBox)
+        if (props.data.threeBox)
             setCheck3(true);
-        if(props.data.fourBox)
+        if (props.data.fourBox)
             setCheck4(true);
-        if(props.data.hasSpecialRequest)
+        if (props.data.hasSpecialRequest)
             setIsSpecReq(true);
-        if(props.data.specialRequest)
+        if (props.data.specialRequest)
             setReqMsg(props.data.specialRequest);
+
+
     }, []);
 
     const handleCheckboxClick = e => {
@@ -119,32 +84,28 @@ export default function CurrentEventForm(props) {
 
 
     const mapEventProducts = (event) => {
-        
-        return event.products.map(p => {
-            return (
-                <h5 key={p.id}>{p.title}</h5>
-                // <FormControlLabel
-                // //     control={ <Checkbox 
-                // //     key={p.title} 
-                // //     id={p.title}
-                // //     color='primary'
-                // //     onChange={handleCheckboxClick}
-                // //     /> }
-                // //     label={p.title}
-                // //     value={p.id}
-                //  />
-            );
-        });
+        if(event.products){
+            return event.products.map(p => {
+                return (
+                    <p className='product' key={p._id}>{p.title}</p>
+                );
+            });
+        }
     }
 
     return (
         <div className='checkout-review__ctr'>
             <form id='address-form'>
                 <div className='current-event__ctr'>
-                    <h3 className='event-title'>{ EVENT.title }</h3>
-                    <p className='event-description'>{ EVENT.description }</p>
-                    <FormGroup>
-                        {mapEventProducts(EVENT)}
+                    <h3 className='event-title'>{event.title}</h3>
+                    <p className='event-description'>{event.description}</p>
+                    <img style={{width: '100%', maxHeight: 325, height: 200}} src={event ? event.images ? event.images[0] : null : null}></img>
+                    <h4 className='row1'>What's in the box?</h4>
+                    <div className='announcement-ctr'>
+                        <p className='announcement'><i>*{event.announcement}</i></p>
+                    </div>
+                    <FormGroup >
+                        {mapEventProducts(event)}
                     </FormGroup>
                     <p className='event-order__cta'>Please check how many boxes you would like to order blow.
                     <br /> 1 box = 6 cupcakes for $15
@@ -152,69 +113,69 @@ export default function CurrentEventForm(props) {
                 </div>
                 <div className='order-options__ctr'>
                     <FormControlLabel
-                        control={ <Checkbox
-                        id='oneBox'
-                        className='ckbox'  
-                        color='primary'
-                        checked={check1}
-                        value={1}
-                        name='check1'
-                        onChange={handleCheckboxClick}
-                        /> }
+                        control={<Checkbox
+                            id='oneBox'
+                            className='ckbox'
+                            color='primary'
+                            checked={check1}
+                            value={1}
+                            name='check1'
+                            onChange={handleCheckboxClick}
+                        />}
                         label="1 box"
-                        
+
                     />
                     <FormControlLabel
-                        control={ <Checkbox 
-                        id='twoBox'
-                        className='ckbox' 
-                        color='primary'
-                        value={2}
-                        name='check2'
-                        checked={check2}
-                        onChange={handleCheckboxClick}
-                        /> }
+                        control={<Checkbox
+                            id='twoBox'
+                            className='ckbox'
+                            color='primary'
+                            value={2}
+                            name='check2'
+                            checked={check2}
+                            onChange={handleCheckboxClick}
+                        />}
                         label="2 boxes"
                     />
                     <FormControlLabel
-                        control={ <Checkbox  
-                        className='ckbox'
-                        id='threeBox'
-                        color='primary'
-                        name='check3'
-                        value={3}
-                        checked={check3}
-                        onChange={handleCheckboxClick}
-                        /> }
+                        control={<Checkbox
+                            className='ckbox'
+                            id='threeBox'
+                            color='primary'
+                            name='check3'
+                            value={3}
+                            checked={check3}
+                            onChange={handleCheckboxClick}
+                        />}
                         label="3 boxes"
                     />
                     <FormControlLabel
-                        control={ <Checkbox 
-                        className='ckbox' 
-                        id='fourBox'
-                        color='primary'
-                        name='check4'
-                        value={4}
-                        checked={check4}
-                        onChange={handleCheckboxClick}
-                        /> }
+                        control={<Checkbox
+                            className='ckbox'
+                            id='fourBox'
+                            color='primary'
+                            name='check4'
+                            value={4}
+                            checked={check4}
+                            onChange={handleCheckboxClick}
+                        />}
                         label="4 boxes"
                     />
-                  </div>
+                </div>
                 <div className='special-request__ctr'>
-                <FormControlLabel
-                        control={ <Checkbox 
-                        id='hasSpecialRequest'
-                        className='ckbox' 
-                        color='primary'
-                        name='hasSpecialRequest'
-                        checked={isSpecReq}
-                        onChange={handleSpecialRequestClick}
-                        /> }
+                    <FormControlLabel
+                        control={<Checkbox
+                            id='hasSpecialRequest'
+                            className='ckbox'
+                            color='primary'
+                            name='hasSpecialRequest'
+                            checked={isSpecReq}
+                            onChange={handleSpecialRequestClick}
+                        />}
                         className='special-request__label'
                         label="*Limited Special Offer: Don't like all the options? Customize up to one box for your order! Type in your selections below."
                     />
-                    <TextField 
+                    <TextField
                         id='specialRequest'
                         disabled={!isSpecReq}
                         multiline
@@ -223,8 +184,8 @@ export default function CurrentEventForm(props) {
                         fullWidth
                         onChange={handleSpecialRequestMessage}
                         value={reqMsg}
-                    /> 
-                 </div>
+                    />
+                </div>
             </form>
         </div>
     );

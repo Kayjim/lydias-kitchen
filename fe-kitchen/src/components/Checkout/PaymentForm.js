@@ -81,7 +81,7 @@ export default function PaymentForm(props) {
                             label='Cash on Delivery'
                         />
                     </RadioGroup>
-                    <h4><i>*By clicking submit on the following page you are agreeing to receiving an automated email with order details and contact information from Lydia's Kitchen.</i></h4>
+                    <h4><i>*By placing an order on the following page you are agreeing to receiving an automated email with order details and contact information from Lydia's Kitchen.</i></h4>
                 </div>
             </form>
         </div>
