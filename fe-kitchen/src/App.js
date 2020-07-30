@@ -15,6 +15,7 @@ import CloseIcon from '@material-ui/icons/Close';
 import Button from '@material-ui/core/Button';
 import RemoveIcon from '@material-ui/icons/Remove';
 import { ToastContainer, toast } from 'react-toastify';
+import Typography from '@material-ui/core/Typography';
 
 import axios from "axios";
 
@@ -168,6 +169,30 @@ const App = (props) => {
     }
   }, [alertType]);
 
+  function Copyright() {
+    return (
+      <Typography variant="body2" color="textSecondary" align="center">
+        {'Copyright © '}
+        <Link color="inherit" href="http://www.lydiaskitchen.net/">
+          Lydia's Kitchen
+        </Link>{' '}
+        {new Date().getFullYear()}
+        {'.'}
+      </Typography>
+    );
+  }
+  function CpCodes() {
+    return (
+      <Typography variant="body2" color="textSecondary" align="center">
+        {'Website created and maintained by Chris Patrick of '}
+        <Link color="inherit" href="http://www.chrispcodes.com">
+          ChrisPCodes
+        </Link>{' '}
+        {'.'}
+      </Typography>
+    );
+  }
+
   return (
     <BrowserRouter>
       <ToastContainer />
@@ -230,6 +255,8 @@ const App = (props) => {
         <Route
           path="/3" component={AdminPage} />
       </Switch>
+      <Copyright />
+      <CpCodes />
     </BrowserRouter>
   );
 }
