@@ -66,7 +66,7 @@ export default function SimpleCard(props) {
           gutterBottom>
           {props.title}
         </Typography>
-          <img style={{width: '100%', maxHeight: 325, height: 200}} src={props.image}></img>
+          <img style={{width: '100%', maxWidth: 250, maxHeight: 325, height: 200}} src={props.image}></img>
         <Typography 
           id='description'
           className={classes.pos} 
