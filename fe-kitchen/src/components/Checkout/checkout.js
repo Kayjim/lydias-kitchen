@@ -21,19 +21,6 @@ import validateForms from '../helpers/FormValidation';
 import turnOffOtherOptions from '../helpers/EventCheckBoxes';
 import clearData from '../helpers/ClearExtraData';
 
-function Copyright() {
-  return (
-    <Typography variant="body2" color="textSecondary" align="center">
-      {'Copyright © '}
-      <Link color="inherit" href="https://material-ui.com/">
-        Lydia's Kitchen
-      </Link>{' '}
-      {new Date().getFullYear()}
-      {'.'}
-    </Typography>
-  );
-}
-
 const useStyles = makeStyles(theme => ({
   layout: {
     width: 'auto',
@@ -331,7 +318,6 @@ const Checkout = (props) => {
               )}
           </React.Fragment>
         </Paper>
-        <Copyright />
       </main>
     </React.Fragment>
   );
