@@ -42,7 +42,7 @@ const useStyles = makeStyles({
   content: {
     display: 'flex',
     flexDirection: 'column',
-    alignItems: 'center'
+    alignItems: 'center',
   }
 });
 
@@ -71,11 +71,11 @@ export default function SimpleCard(props) {
           gutterBottom>
           {props.title}
         </Typography>
-          <img style={{margin: '0 auto', width: '100%', maxWidth:250, maxHeight: 325, height: 200}} src={props.image}></img>
+          <img style={{width: '100%', maxWidth:250, maxHeight: 325, height: 200}} src={props.image}></img>
         <Typography 
           id='description'
           className={classes.pos} 
-          style={{textAlign: 'center'}}
+          style={{textAlign: 'center', width: '100%'}}
           noWrap
           onClick={showMore}
           >
@@ -85,7 +85,7 @@ export default function SimpleCard(props) {
           id='ingredients'
           className={classes.ingredients}
           variant="body2" 
-          style={{textAlign: 'center'}} 
+          style={{textAlign: 'center', width: '100%'}} 
           component="p"
           noWrap
           onClick={showMore}
