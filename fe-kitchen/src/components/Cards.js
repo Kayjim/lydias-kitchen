@@ -38,6 +38,11 @@ const useStyles = makeStyles({
     '&:hover': {
       backgroundColor: '#6A8A82',
     }
+  },
+  content: {
+    display: 'flex',
+    flexDirection: 'column',
+    alignItems: 'center',
   }
 });
 
@@ -59,18 +64,18 @@ export default function SimpleCard(props) {
 
   return (
     <Card className={props.className}>
-      <CardContent>
+      <CardContent className={classes.content}>
         <Typography 
           className={classes.title} 
           style={{textAlign: 'center'}} 
           gutterBottom>
           {props.title}
         </Typography>
-          <img style={{width: '100%', maxWidth: 250, maxHeight: 325, height: 200}} src={props.image}></img>
+          <img style={{width: '100%', maxWidth:250, maxHeight: 325, height: 200}} src={props.image}></img>
         <Typography 
           id='description'
           className={classes.pos} 
-          style={{textAlign: 'center'}}
+          style={{textAlign: 'center', width: '100%'}}
           noWrap
           onClick={showMore}
           >
@@ -80,7 +85,7 @@ export default function SimpleCard(props) {
           id='ingredients'
           className={classes.ingredients}
           variant="body2" 
-          style={{textAlign: 'center'}} 
+          style={{textAlign: 'center', width: '100%'}} 
           component="p"
           noWrap
           onClick={showMore}
