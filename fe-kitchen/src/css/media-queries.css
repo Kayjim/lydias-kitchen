@@ -1,7 +1,8 @@
 @media screen and (max-width:1080px) and (min-width:320px) {
     .cookie-card,
     .cake-card,
-    .product-card{
+    .product-card,
+    .cupcake-card{
         width: 100%;
         margin: 1em;
       }

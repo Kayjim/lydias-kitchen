@@ -173,7 +173,7 @@ const App = (props) => {
     return (
       <Typography variant="body2" color="textSecondary" align="center">
         {'Copyright © '}
-        <Link color="inherit" href="http://www.lydiaskitchen.net/">
+        <Link color="inherit" target='_blank' href="http://www.lydiaskitchen.net/">
           Lydia's Kitchen
         </Link>{' '}
         {new Date().getFullYear()}
@@ -185,7 +185,7 @@ const App = (props) => {
     return (
       <Typography variant="body2" color="textSecondary" align="center">
         {'Website created and maintained by Chris Patrick of '}
-        <Link color="inherit" href="http://www.chrispcodes.com">
+        <Link color="inherit" target='_blank' href="http://www.chrispcodes.com">
           ChrisPCodes
         </Link>{' '}
         {'.'}
