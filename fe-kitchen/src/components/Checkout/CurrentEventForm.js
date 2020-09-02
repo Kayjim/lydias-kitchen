@@ -99,7 +99,7 @@ export default function CurrentEventForm(props) {
                 <div className='current-event__ctr'>
                     <h3 className='event-title'>{event.title}</h3>
                     <p className='event-description'>{event.description}</p>
-                    <img style={{width: '100%', maxHeight: 325, height: 200}} src={event ? event.images ? event.images[0] : null : null}></img>
+                    <img src={event ? event.images ? event.images[0] : null : null}></img>
                     <h4 className='row1'>What's in the box?</h4>
                     <div className='announcement-ctr'>
                         <p className='announcement'><i>*{event.announcement}</i></p>

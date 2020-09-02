@@ -1,23 +1,28 @@
-import React, { useState, useEffect } from 'react';
-import Card from '../components/Cards';
+import React from 'react';
 import CakePage from './Cakes';
 import CookiePage from './Cookies';
 import CupcakePage from './Cupcakes';
+import { makeStyles } from '@material-ui/core/styles';
 
-import axios from 'axios';
+
+const useStyles = makeStyles((theme) => ({
+    sectionHeadersCtr: {
+      display: 'flex',
+      flexDirection: 'column',
+      alignItems: 'center',
+    },
+    subHeader: {
+        fontWeight: 600,
+        marginTop: 0
+    }
+  }));
 
 const HomePage = props => {
-
-    const products = props.products;
+    const classes = useStyles();
     return (
         <div className='gallery-ctr'>
             {!props.search &&
                 <React.Fragment>
-                    <div className='display-ctr'>
-                        <h2 className='section-hdr'>Cakes</h2>
-                        <CakePage products={props.products.filter(p => p.type === 'Cake')} />
-                    </div>
-
                     <div className='display-ctr'>
                         <h2 className='section-hdr'>Cookies</h2>
                         <CookiePage products={props.products.filter(p => p.type === 'Cookie')} />
@@ -25,6 +30,13 @@ const HomePage = props => {
                     <div className='display-ctr'>
                         <h2 className='section-hdr'>Cupcakes</h2>
                         <CupcakePage products={props.products.filter(p => p.type === 'Cupcake')} />
+                    </div>
+                    <div className='display-ctr'>
+                        <div className={classes.sectionHeadersCtr}>
+                            <h2 className='section-hdr'>Cakes</h2>
+                            <h4 className={classes.subHeader}>Most of the cupcakes can also be ordered as an 8 inch round layer cake - $35</h4>
+                        </div>
+                        <CakePage products={props.products.filter(p => p.type === 'Cake')} />
                     </div>
                 </React.Fragment>}
             {props.search && props.search == 'cakes' &&

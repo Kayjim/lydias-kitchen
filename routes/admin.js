@@ -18,7 +18,7 @@ const sendMail = output => {
     sgMail.setApiKey(process.env.SG_API_KEY);
     const msg = {
         //to: 'lydiapskitchen@gmail.com',
-        to: 'xcmcpx@gmail.com',
+        to: 'lydiapskitchen@gmail.com',
         from: 'chrispatrickcodes@gmail.com',
         subject: `Lydia's Kitchen test order email`,
         text: 'WE BALLIN',

@@ -24,12 +24,16 @@ const useStyles = makeStyles({
     marginBottom: 12,
     '&:hover': {
       cursor: 'pointer',
+      color: '#6A8A82',
+      textDecoration: 'underline'
     }
   },
   ingredients: {
     fontSize: 12,
     '&:hover': {
       cursor: 'pointer',
+      color: '#6A8A82',
+      textDecoration: 'underline'
     }
   },
   button: {

@@ -195,7 +195,7 @@ const App = (props) => {
 
   return (
     <BrowserRouter>
-      <ToastContainer />
+      <ToastContainer className='mobileToast' />
       <SearchAppBar
         handleSearch={handleSearch}
         toggleDrawer={toggleDrawer}

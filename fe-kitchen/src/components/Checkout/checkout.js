@@ -1,22 +1,19 @@
 import React, { useState, useEffect } from 'react';
-import { Redirect } from 'react-router-dom';
 import CssBaseline from '@material-ui/core/CssBaseline';
 import Paper from '@material-ui/core/Paper';
 import Stepper from '@material-ui/core/Stepper';
 import Step from '@material-ui/core/Step';
 import StepLabel from '@material-ui/core/StepLabel';
 import Button from '@material-ui/core/Button';
-import Link from '@material-ui/core/Link';
 import Typography from '@material-ui/core/Typography';
 import AddressForm from './AddressForm';
 import OrderTypeForm from './OrderTypeForm';
 import DeliveryDetailsForm from './DeliveryDetailsForm';
 import PaymentForm from './PaymentForm';
 import Review from './Review';
-import { ToastContainer, toast } from 'react-toastify';
+import { toast } from 'react-toastify';
 import axios from 'axios';
-import MuiThemeProvider from '@material-ui/core/styles/MuiThemeProvider';
-import { makeStyles, withStyles, createMuiTheme } from '@material-ui/core/styles';
+import { makeStyles } from '@material-ui/core/styles';
 import validateForms from '../helpers/FormValidation';
 import turnOffOtherOptions from '../helpers/EventCheckBoxes';
 import clearData from '../helpers/ClearExtraData';
@@ -44,6 +41,10 @@ const useStyles = makeStyles(theme => ({
   },
   stepper: {
     padding: theme.spacing(3, 0, 5),
+    [theme.breakpoints.down('sm')]: {
+      display: 'flex',
+      flexWrap: 'wrap',
+    }
   },
   activeStep: {
     color: '#6A8A82',
@@ -77,26 +78,14 @@ const Checkout = (props) => {
       case 'error':
         toast.error(alertMessage,
           {
-            position: "top-center",
-            autoClose: 5000,
-            hideProgressbar: false,
-            closeOnClick: true,
-            pauseOnHover: true,
-            draggable: false,
-            progress: undefined,
+            position: toast.POSITION.TOP_CENTER,
           }
         );
         break;
       case 'success':
         toast.success(alertMessage,
           {
-            position: "top-center",
-            autoClose: 4000,
-            hideProgressbar: false,
-            closeOnClick: true,
-            pauseOnHover: true,
-            draggable: false,
-            progress: undefined,
+            position: toast.POSITION.TOP_CENTER,
           }
         );
         break;
@@ -263,7 +252,7 @@ const Checkout = (props) => {
       <main className={classes.layout}>
         <Paper className={classes.paper}>
           <Typography component="h1" variant="h4" align="center">
-            Checkout
+            5 Steps to Complete Your Order
           </Typography>
           <Stepper activeStep={activeStep} className={classes.stepper}>
             {steps.map(label => (
