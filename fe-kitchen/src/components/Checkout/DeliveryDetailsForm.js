@@ -73,7 +73,7 @@ export default function DeliveryDetailsForm(props) {
         <div className='checkout-review__ctr'>
             <form id='billing-details__form'>
                 <div className='delivery-options__ctr'>
-                    <h4>Delivery Options - Please note that a $1 fee will be added for deliveries</h4>
+                    <h4>Delivery Options - Please note that a $2.50 fee will be added for deliveries</h4>
                     {/* 
                      */}
                     <RadioGroup id='deliveryOption' name='deliveryOptions' value={delivery} onChange={handleDeliveryClick}>
@@ -86,7 +86,7 @@ export default function DeliveryDetailsForm(props) {
                                 value='delivery'
                                 /> }
                             className='delivery-label'
-                            label='Please deliver to my home - someone will be there to receive the cookies Friday between 3:00 and 4:00 PM.'
+                            label='Please deliver to my home (I live less than 10 miles away and understand that $2.50 will be added to my total for delivery) - date to be discussed.'
                         />
                         <FormControlLabel
                                 control={ <Radio  
@@ -97,7 +97,7 @@ export default function DeliveryDetailsForm(props) {
                                 value='pickup'
                                 /> }
                             className='pickup-label'
-                            label='I will pick up my order Friday afternoon between 5:00 - 7:00 PM'
+                            label='I will pick up my order (I live more than 10 miles away) - date to be discussed.'
                         />
                     </RadioGroup>
                 </div>

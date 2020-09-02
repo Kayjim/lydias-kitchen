@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from "react";
 import { BrowserRouter, Route, Switch } from "react-router-dom";
-import { withStyles } from '@material-ui/core/styles';
+import { withStyles, makeStyles } from '@material-ui/core/styles';
 import SearchAppBar from "./components/appBar";
 import HomePage from "./pages/Home";
 import CookiesPage from "./pages/Cookies";
@@ -34,6 +34,17 @@ const StyledDrawer = withStyles({
   }
 })(Drawer);
 
+const useStyles = makeStyles(theme => ({
+  footer: {
+    position: 'absolute',
+    bottom: 0,
+    left: 0,
+    right: 0,
+    paddingBottom: 10,
+    width: '100%',
+  },
+}));
+
 const App = (props) => {
   const [products, setProducts] = useState([]);
   const [allProducts, setAllProducts] = useState([]);
@@ -42,6 +53,8 @@ const App = (props) => {
   const [alertMessage, setAlertMessage] = useState('');
   const [alertType, setAlertType] = useState('');
   const [search, setSearch] = useState('');
+
+  const classes= useStyles();
 
   //Search bar functionality
   const handleSearch = txt => {
@@ -187,7 +200,7 @@ const App = (props) => {
         {'Website created and maintained by Chris Patrick of '}
         <Link color="inherit" target='_blank' href="http://www.chrispcodes.com">
           ChrisPCodes
-        </Link>{' '}
+        </Link>
         {'.'}
       </Typography>
     );
@@ -255,8 +268,10 @@ const App = (props) => {
         <Route
           path="/3" component={AdminPage} />
       </Switch>
-      <Copyright />
-      <CpCodes />
+      <footer className={classes.footer}>
+        <Copyright />
+        <CpCodes />
+      </footer>
     </BrowserRouter>
   );
 }
