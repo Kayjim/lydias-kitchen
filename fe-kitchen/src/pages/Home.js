@@ -4,6 +4,8 @@ import CookiePage from './Cookies';
 import CupcakePage from './Cupcakes';
 import { makeStyles } from '@material-ui/core/styles';
 
+import BannerImage from '../images/2020Logo.png'
+
 
 const useStyles = makeStyles((theme) => ({
     sectionHeadersCtr: {
@@ -14,6 +16,16 @@ const useStyles = makeStyles((theme) => ({
     subHeader: {
         fontWeight: 600,
         marginTop: 0
+    },
+    bannerCtr: {
+        display: 'flex',
+        margin: 'auto',
+        maxWidth: '40%',
+        maxHeight: '400px',
+        padding: '50px'
+    },
+    banner: {
+        borderRadius: ''
     }
   }));
 
@@ -23,6 +35,9 @@ const HomePage = props => {
         <div className='gallery-ctr'>
             {!props.search &&
                 <React.Fragment>
+                    <div className={classes.bannerCtr}>
+                        <img style={{width: '100%'}} src={BannerImage}></img>
+                    </div>
                     <div className='display-ctr'>
                         <h2 className='section-hdr'>Cookies</h2>
                         <CookiePage products={props.products.filter(p => p.type === 'Cookie')} />

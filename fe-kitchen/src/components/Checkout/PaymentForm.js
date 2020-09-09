@@ -11,6 +11,7 @@ import './PaymentForm.css'
 export default function PaymentForm(props) {
 
     const [payment, setPayment] = useState('');
+    const [invoiceID, setInvoiceID] = useState('');
 
 
     useEffect(() => {
@@ -29,7 +30,10 @@ export default function PaymentForm(props) {
         setPayment(e.target.value);
         props.handleChange(e);
     };
-
+    const handleInvoiceChange = e => {
+        setInvoiceID(e.target.value);
+        props.handleChange(e);
+    }
     return (
         <div className='checkout-review__ctr'>
             <form id='billing-details__form'>
@@ -80,6 +84,18 @@ export default function PaymentForm(props) {
                             className='cod-label'
                             label='Cash on Delivery'
                         />
+                        <FormControlLabel
+                            control={ <TextField
+                            id='invoiceID'
+                            className='invoiceInput'
+                            name='invoiceInput'
+                            placeholder='exampleUserName@email.id'
+                            value={invoiceID}
+                            onChange={handleInvoiceChange}>
+                            </TextField>} 
+                            className='invcInputLabel'
+                            label='My ID for the Invoice'>
+                            </FormControlLabel>
                     </RadioGroup>
                     <h4><i>*By placing an order on the following page you are agreeing to receiving an automated email with order details and contact information from Lydia's Kitchen.</i></h4>
                 </div>

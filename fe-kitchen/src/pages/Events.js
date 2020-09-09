@@ -31,8 +31,6 @@ const EventsPage = (props) => {
     const [products, setProducts] = useState([]);
     const [currentEvent, setCurrentEvent] = useState({});
     const [selectedDate, setSelectedDate] = useState();
-    const [alertMessage, setAlertMessage] = useState('');
-    const [alertType, setAlertType] = useState('');
 
     useEffect(() => {
         axios.get("https://lydias-kitchen.herokuapp.com/3/allEvents")
@@ -60,54 +58,23 @@ const EventsPage = (props) => {
                 console.log(err)
             });
     }, []);
-      //after order alertMessage is updated
-  useEffect(() => {
-    switch(alertType){
-      case 'error':
-        toast.error(alertMessage, 
-          {
-            position: "top-center",
-            autoClose: 5000,
-            hideProgressbar: false,
-            closeOnClick: true,
-            pauseOnHover: true,
-            draggable: false,
-            progress: undefined,
-          }
-        );
-        break;
-      case 'success':
-        toast.success(alertMessage, 
-          {
-            position: "top-center",
-            autoClose: 4000,
-            hideProgressbar: false,
-            closeOnClick: true,
-            pauseOnHover: true,
-            draggable: false,
-            progress: undefined,
-          }
-        );
-        break;
-    }
-  }, [alertType]);
 
-useEffect( () => {
-    console.log(currentEvent);
-}, [currentEvent])
+    useEffect(() => {
+        console.log(currentEvent);
+    }, [currentEvent])
 
     const handleTextboxChanges = (e) => {
         let event = currentEvent;
-        switch(e.target.id){
-            case('title'):
+        switch (e.target.id) {
+            case ('title'):
                 event.title = e.target.value;
                 setTitle(e.target.value);
                 break;
-            case('description'):
+            case ('description'):
                 event.description = e.target.value;
                 setDescription(e.target.value);
                 break;
-            case('announcement'):
+            case ('announcement'):
                 event.announcement = e.target.value;
                 setAnnouncement(e.target.value);
                 break;
@@ -129,23 +96,26 @@ useEffect( () => {
             }
         }).then(res => {
             if (!res.status === 200) {
-                setAlertType('error');
-                setAlertMessage(res.status + ' : ' + res.statusText);
+                toast.error(res.status + ' : ' + res.statusText, {
+                    position: toast.POSITION.TOP_CENTER
+                });
                 return;
             }
             return res;
         }).then(data => {
-            if(data.data.uE.isCurrentEvent){
+            if (data.data.uE.isCurrentEvent) {
                 setCurrentEvent(data.data.uE);
             } else {
                 setCurrentEvent({})
             }
-            setAlertType('success');
-            setAlertMessage('Current Event has been changed!');
+            toast.success('Current Event has been changed!', {
+                position: toast.POSITION.TOP_CENTER
+            });
             return data;
         }).catch(err => {
-            setAlertType('error');
-            setAlertMessage(err);
+            toast.error(err, {
+                position: toast.POSITION.TOP_CENTER
+            });
             return;
         });
         window.location.reload(true);
@@ -164,18 +134,21 @@ useEffect( () => {
             }
         }).then(res => {
             if (!res.status === 200) {
-                setAlertType('error');
-                setAlertMessage(res.status + ' : ' + res.statusText);
+                toast.error(res.status + ' : ' + res.statusText, {
+                    position: toast.POSITION.TOP_CENTER
+                });
                 return;
             }
             return res;
         }).then(data => {
-            setAlertType('success');
-            setAlertMessage('Current Event has been saved!');
+            toast.success('Current Event has been saved!', {
+                position: toast.POSITION.TOP_CENTER
+            });
             return data;
         }).catch(err => {
-            setAlertType('error');
-            setAlertMessage(err);
+            toast.error(err.message, {
+                position: toast.POSITION.TOP_CENTER
+            });
             return;
         });
         window.location.reload(true);
@@ -189,14 +162,16 @@ useEffect( () => {
             cdata: { id: event._id }
         }).then(res => {
             if (!res.status === 200) {
-                setAlertType('error');
-                setAlertMessage(res.status + ' : ' + res.statusText);
+                toast.success(res.status + ' : ' + res.statusText, {
+                    position: toast.POSITION.TOP_CENTER
+                });
                 return;
             }
             return res;
         }).catch(err => {
-            setAlertType('error');
-            setAlertMessage(err);
+            toast.error(err.message, {
+                position: toast.POSITION.TOP_CENTER
+            });
             return;
         })
         window.location.reload(true);
@@ -211,7 +186,7 @@ useEffect( () => {
 
     const handleImageChange = (imgs) => {
         let event = currentEvent;
-        if(images !== imgs){
+        if (images !== imgs) {
             setImages(imgs);
         }
         event.images = imgs;
@@ -220,7 +195,7 @@ useEffect( () => {
 
     const handleAddRemoveProduct = (e) => {
         let event = currentEvent ? currentEvent : {};
-        let products = event.products ? event.products: [];
+        let products = event.products ? event.products : [];
         if (e.target.checked) {
             products.push(e.target.value);
         }

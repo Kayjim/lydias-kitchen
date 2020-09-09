@@ -68,30 +68,8 @@ const Checkout = (props) => {
   const [activeStep, setActiveStep] = useState(0);
   const cart = JSON.parse(sessionStorage.getItem('cart'));
   const [data, setData] = useState({});
-  const [alertMessage, setAlertMessage] = useState('');
-  const [alertType, setAlertType] = useState('');
   const [hasAnswered, setHasAnswered] = useState(false);
   const [backFromDelivery, setBackFromDelivery] = useState(false);
-
-  useEffect(() => {
-    switch (alertType) {
-      case 'error':
-        toast.error(alertMessage,
-          {
-            position: toast.POSITION.TOP_CENTER,
-          }
-        );
-        break;
-      case 'success':
-        toast.success(alertMessage,
-          {
-            position: toast.POSITION.TOP_CENTER,
-          }
-        );
-        break;
-    }
-    setAlertType('');
-  }, [alertType]);
 
   const handleCTA = (e) => {
     let currentData = data;
@@ -105,7 +83,6 @@ const Checkout = (props) => {
   }
 
   const handleNext = () => {
-    setAlertType('');
     let validationResp = validateForms(activeStep, data);
     if (validationResp.success === true) {
       switch (activeStep) {
@@ -121,8 +98,9 @@ const Checkout = (props) => {
       }
     }
     else {
-      setAlertMessage(validationResp.msg);
-      setAlertType(validationResp.alertType);
+      toast.error(validationResp.msg, {
+        position: toast.POSITION.TOP_CENTER
+      });
     }
   };
 
@@ -189,33 +167,6 @@ const Checkout = (props) => {
     }
   }
 
-  // const validateForms = (formId) => {
-
-  //   switch(formId){
-  //     case('address-form'):
-  //       validateContactInfo();
-  //   }
-
-  // }
-
-  //   const validateContactInfo = () => {
-  //     let emailReg = /^(([^<>()\[\]\\.,;:\s@"]+(\.[^<>()\[\]\\.,;:\s@"]+)*)|(".+"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$/;
-  //     setAlertType('');
-  //     if (firstName === "" || lastName === "" || email === "" || address1 === "" || city === "" || state === "" || zip === "") {
-  //       setAlertMessage('Fill out all required fields and try again.');
-  //       setAlertType('error');
-  //       return false;
-  //     }
-  //     else if(!emailReg.test(email)) {
-  //       setAlertType('error');
-  //       setAlertMessage('Please provide a valid email format.');
-  //       return false;
-  //     }
-  //      else {
-  //       return true;
-  //     }
-  //   }
-
   const sendOrder = e => {
     axios.post('https://lydias-kitchen.herokuapp.com/3/sendOrder', {
       method: 'post',
@@ -225,18 +176,21 @@ const Checkout = (props) => {
       data: data,
     }).then(res => {
       if (!res.status === 200) {
-        setAlertType('error');
-        setAlertMessage(res.status + ' : ' + res.statusText);
+        toast.error(res.status + ' : ' + res.statusText, {
+          position: toast.POSITION.TOP_CENTER
+      });
         return;
       }
       return res;
     }).then(data => {
-      setAlertType('success');
-      setAlertMessage('Thanks for your order! You will receive a confirmation email shortly.');
+      toast.success('Thanks for your order! You will receive a confirmation email shortly.', {
+        position: toast.POSITION.TOP_CENTER
+    });
       return data;
     }).catch(err => {
-      setAlertType('error');
-      setAlertMessage(err);
+      toast.error(err.message, {
+        position: toast.POSITION.TOP_CENTER
+    });
       return;
     });
 

@@ -18,7 +18,7 @@ const sendMail = output => {
     sgMail.setApiKey(process.env.SG_API_KEY);
     const msg = {
         //to: 'lydiapskitchen@gmail.com',
-        to: 'lydiapskitchen@gmail.com',
+        to: 'xcmcpx@gmail.com',
         from: 'chrispatrickcodes@gmail.com',
         subject: `Lydia's Kitchen test order email`,
         text: 'WE BALLIN',
@@ -117,6 +117,7 @@ const buildOrder = data => {
     order.diffState = data.diffState ? data.diffState : order.state;
     order.diffZip = data.diffZip ? data.diffZip : order.zip;
     order.preferredPayment = data.zelle ? 'Zelle' : data.paypal ? 'Paypal' : data.venmo ? 'Venmo' : 'Cash on Delivery';
+    order.invoiceID = data.invoiceID;
     order.specReq = data.specialRequest ? data.specialRequest : 'N/A';
     if (data.isCurrentEvent) {
         order.numBoxes = data.oneBox ? '1 box' : data.twoBox ? '2 boxes' : data.threeBox ? '3 boxes' : data.fourBox ? '4 boxes' : false;
@@ -166,7 +167,7 @@ router.post('/sendOrder', async (req, res, next) => {
         output += `
         <h4>Payment Details</h4>
         <p>
-            ${order.preferredPayment}
+            ${order.preferredPayment} -- invoice at: ${order.invoiceID}
         </p>
         `
         if (order.isCurrentEvent && order.hasSpecialRequest) {
