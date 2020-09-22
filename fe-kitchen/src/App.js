@@ -50,11 +50,9 @@ const App = (props) => {
   const [allProducts, setAllProducts] = useState([]);
   const [cart, setCart] = useState([]);
   const [showCart, setShowCart] = useState(false);
-  const [alertMessage, setAlertMessage] = useState('');
-  const [alertType, setAlertType] = useState('');
   const [search, setSearch] = useState('');
 
-  const classes= useStyles();
+  const classes = useStyles();
 
   //Search bar functionality
   const handleSearch = txt => {
@@ -120,8 +118,9 @@ const App = (props) => {
   //create order logic
   const validateCart = (cart) => {
     if (cart.length < 1) {
-      setAlertMessage('You do not have any items in your shopping cart. Try adding some, and trying again!');
-      setAlertType('error');
+      toast.error('You do not have any items in your shopping cart. Try adding some, and trying again!', {
+        position: toast.POSITION.TOP_CENTER
+      });
     }
   };
 
@@ -145,42 +144,11 @@ const App = (props) => {
       }
     }
     if (window.location.href.indexOf('noCart') > -1) {
-      setAlertMessage('You do not have any items in your shopping cart. Try adding some, and trying again!');
-      setAlertType('error');
+      toast.error('You do not have any items in your shopping cart. Try adding some, and trying again!', {
+        position: toast.POSITION.TOP_CENTER
+      });
     }
   }, []);
-
-  //after order alertMessage is updated
-  useEffect(() => {
-    switch (alertType) {
-      case 'error':
-        toast.error(alertMessage,
-          {
-            position: "top-center",
-            autoClose: 5000,
-            hideProgressbar: false,
-            closeOnClick: true,
-            pauseOnHover: true,
-            draggable: false,
-            progress: undefined,
-          }
-        );
-        break;
-      case 'success':
-        toast.success(alertMessage,
-          {
-            position: "top-center",
-            autoClose: 4000,
-            hideProgressbar: false,
-            closeOnClick: true,
-            pauseOnHover: true,
-            draggable: false,
-            progress: undefined,
-          }
-        );
-        break;
-    }
-  }, [alertType]);
 
   function Copyright() {
     return (

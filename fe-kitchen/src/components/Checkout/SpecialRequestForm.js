@@ -20,7 +20,7 @@ export default function SpecialRequestForm(props) {
         <div className='checkout-review__ctr'>
             <div className='special-event__container'>
                 <h3>
-                    Lydia's Kitchen holds the right to not fulfill special request orders. However, in the case of special events i.e.(Birthday, Anniversary, Graduation, etc) or other requests outside of the current advertised event, Lydia's Kitchen will accept your request and respond accordingly. Please feel free to browse All Products at <a href='/home' target='_blank'>Lydia's Kitchen</a> and leave a message containing your request and desired products.
+                    Lydia's Kitchen holds the right to not fulfill special request orders. However, in the case of special events i.e.(Birthday, Anniversary, Graduation, etc) or other requests outside of the current advertised event, Lydia's Kitchen will accept your request and respond accordingly. Please feel free to browse all products at <a href='/home' target='_blank'>Lydia's Kitchen</a> and leave a message containing your request and desired products.
                 </h3>
                 <form id='address-form'>
                     <TextField 
