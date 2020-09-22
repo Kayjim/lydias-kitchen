@@ -214,21 +214,57 @@ const EventsPage = (props) => {
         button: {
             marginTop: theme.spacing(3),
             marginLeft: theme.spacing(1),
+        },
+        deleteBtn: {
             backgroundColor: '#A7414A',
             '&:hover': {
                 backgroundColor: '#6A8A82',
             },
         },
+        saveBtn: {
+            backgroundColor: '#6A8A82',
+            '&:hover': {
+                backgroundColor: '#A7414A',
+            },
+        },
+        eventsCtr: {
+            display: 'flex',
+            flexDirection: 'column',
+            alignItems: 'center',
+            padding: '10px'
+        },
+        editEventCtr: {
+            display: 'flex',
+            flexDirection: 'column',
+            border: '1px solid black',
+            padding: '10px',
+            alignItems: 'center'
+        },
+        editEventForm: {
+            display: 'flex',
+            flexDirection: 'column'
+        },
+        input: {
+            alignSelf: 'center',
+            margin: '5px 0'
+        },
+        eventTitle: {
+            maxWidth: '70%',
+            minWidth: '70%'
+        },
+        btnCtr: {
+            marginLeft: 'auto'
+        }
     }));
 
     const classes = useStyles();
 
     return (
-        <div className='events-ctr'>
+        <div className={classes.eventsCtr}>
+            <div className={classes.editEventCtr}>
             <h3>Current Event</h3>
-            <div className='edit-event__ctr'>
-                <form id='edit-event__form'>
-                    <TextField onChange={handleTextboxChanges} value={title} id='title' className='event-form__input' label='Title' required placeholder='Title' variant='outlined' />
+                <form className={classes.editEventForm}>
+                    <TextField className={`${classes.eventTitle} ${classes.input}`} onChange={handleTextboxChanges} value={title} id='title' label='Title' required placeholder='Title' variant='outlined' />
                     <TextField onChange={handleTextboxChanges} value={description} id='description' className='event-form__input' label='Description' required placeholder='Description' variant='outlined' />
                     <MuiPickersUtilsProvider utils={DateFnsUtils}>
                         <KeyboardDatePicker
@@ -262,11 +298,11 @@ const EventsPage = (props) => {
                     <EventImages images={images} handleImageChange={handleImageChange} />
                     <Products products={products} event={currentEvent} handleAddRemoveProduct={handleAddRemoveProduct} />
                     <TextField onChange={handleTextboxChanges} value={announcement} id='announcement' className='event-form__input' label='Announcement' required placeholder='Announcement' variant='outlined' />
-                    <div className='btns'>
-                        <Button id='delete' onClick={handleDeleteClick} label="Delete" className={classes.button}>
+                    <div className={classes.btnCtr}>
+                        <Button id='delete' onClick={handleDeleteClick} label="Delete" className={`${classes.button} ${classes.deleteBtn}`}>
                             Delete
                     </Button>
-                        <Button id='save' onClick={handleSaveClick} label="Save" className={classes.button}>
+                        <Button id='save' onClick={handleSaveClick} label="Save" className={`${classes.button} ${classes.saveBtn}`}>
                             Save
                     </Button>
                     </div>
