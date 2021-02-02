@@ -34,6 +34,7 @@ const EventsPage = (props) => {
 
     useEffect(() => {
         axios.get("https://lydias-kitchen.herokuapp.com/3/allEvents")
+        //axios.get("https://localhost:4000/3/allEvents")
             .then(res => {
                 let allEvents = res.data.events;
                 setEvents(allEvents);
@@ -57,11 +58,11 @@ const EventsPage = (props) => {
             }).catch(err => {
                 console.log(err)
             });
-    }, []);
+    }, [currentEvent]);
 
-    useEffect(() => {
-        console.log(currentEvent);
-    }, [currentEvent])
+    // useEffect(() => {
+    //     console.log(currentEvent);
+    // }, [currentEvent])
 
     const handleTextboxChanges = (e) => {
         let event = currentEvent;
@@ -85,7 +86,8 @@ const EventsPage = (props) => {
     const handleCheckboxClick = (e) => {
         let id = e.target.id;
         let isCurrentEvent = e.target.checked;
-        axios.post('https://lydias-kitchen.herokuapp.com/3/updateCurrentEvent', {
+        //axios.post('https://lydias-kitchen.herokuapp.com/3/updateCurrentEvent', {
+        axios.post('http://localhost:4000/3/updateCurrentEvent', {  
             method: 'post',
             headers: {
                 'Content-Type': 'application/json',
@@ -100,6 +102,10 @@ const EventsPage = (props) => {
                     position: toast.POSITION.TOP_CENTER
                 });
                 return;
+            } else {
+                toast.success('The current event has been updated successfully!', {
+                    position: toast.POSITION.TOP_CENTER
+                })
             }
             return res;
         }).then(data => {
@@ -108,9 +114,6 @@ const EventsPage = (props) => {
             } else {
                 setCurrentEvent({})
             }
-            toast.success('Current Event has been changed!', {
-                position: toast.POSITION.TOP_CENTER
-            });
             return data;
         }).catch(err => {
             toast.error(err, {
@@ -118,7 +121,6 @@ const EventsPage = (props) => {
             });
             return;
         });
-        window.location.reload(true);
     };
 
     const handleSaveClick = () => {
@@ -153,8 +155,6 @@ const EventsPage = (props) => {
         });
     };
 
-    const forceUpdate = useForceUpdate();
-
     const handleDeleteClick = (e) => {
         let event = currentEvent;
         axios.post('https://lydias-kitchen.herokuapp.com/3/deleteCurrentEvent', {
@@ -173,7 +173,7 @@ const EventsPage = (props) => {
             });
             return;
         })
-        window.location.reload(true);
+        window.location.reload();
     };
 
     const handleDateChange = (date) => {
