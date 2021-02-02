@@ -19,18 +19,62 @@ import axios from 'axios';
 
 import '../css/EventsCss.css'
 
-const useForceUpdate = () => useState()[1];
-
+const useStyles = makeStyles(theme => ({
+    button: {
+        marginTop: theme.spacing(3),
+        marginLeft: theme.spacing(1),
+    },
+    deleteBtn: {
+        backgroundColor: '#A7414A',
+        '&:hover': {
+            backgroundColor: '#6A8A82',
+        },
+    },
+    saveBtn: {
+        backgroundColor: '#6A8A82',
+        '&:hover': {
+            backgroundColor: '#A7414A',
+        },
+    },
+    eventsCtr: {
+        display: 'flex',
+        flexDirection: 'column',
+        alignItems: 'center',
+        padding: '10px'
+    },
+    editEventCtr: {
+        display: 'flex',
+        flexDirection: 'column',
+        border: '1px solid black',
+        padding: '10px',
+        alignItems: 'center'
+    },
+    editEventForm: {
+        display: 'flex',
+        flexDirection: 'column'
+    },
+    input: {
+        alignSelf: 'center',
+        margin: '5px 0'
+    },
+    eventTitle: {
+        maxWidth: '70%',
+        minWidth: '70%'
+    },
+    btnCtr: {
+        marginLeft: 'auto'
+    }
+}));
 const EventsPage = (props) => {
 
     const [events, setEvents] = useState([]);
-    const [title, setTitle] = useState([]);
-    const [description, setDescription] = useState([]);
-    const [announcement, setAnnouncement] = useState([]);
+    const [title, setTitle] = useState('');
+    const [description, setDescription] = useState('');
+    const [announcement, setAnnouncement] = useState('');
     const [images, setImages] = useState([]);
     const [products, setProducts] = useState([]);
     const [currentEvent, setCurrentEvent] = useState({});
-    const [selectedDate, setSelectedDate] = useState();
+    const [selectedDate, setSelectedDate] = useState(new Date());
 
     useEffect(() => {
         axios.get("https://lydias-kitchen.herokuapp.com/3/allEvents")
@@ -43,10 +87,16 @@ const EventsPage = (props) => {
                     setTitle(currEvent.title);
                     setDescription(currEvent.description);
                     setAnnouncement(currEvent.announcement);
-                    setCurrentEvent(currEvent);
                     const date = new Date(currEvent.date);
                     setSelectedDate(date);
                     setImages(currEvent.images);
+                } else {
+                    setTitle('');
+                    setDescription('');
+                    setAnnouncement('');
+                    const date = new Date();
+                    setSelectedDate(date);
+                    setImages([]);
                 }
             })
             .catch(err => {
@@ -124,7 +174,6 @@ const EventsPage = (props) => {
     };
 
     const handleSaveClick = () => {
-        debugger;
         let event = currentEvent;
         axios.post('https://lydias-kitchen.herokuapp.com/3/saveEvent', {
             method: 'post',
@@ -209,53 +258,6 @@ const EventsPage = (props) => {
         console.log(currentEvent);
     };
 
-    const useStyles = makeStyles(theme => ({
-        button: {
-            marginTop: theme.spacing(3),
-            marginLeft: theme.spacing(1),
-        },
-        deleteBtn: {
-            backgroundColor: '#A7414A',
-            '&:hover': {
-                backgroundColor: '#6A8A82',
-            },
-        },
-        saveBtn: {
-            backgroundColor: '#6A8A82',
-            '&:hover': {
-                backgroundColor: '#A7414A',
-            },
-        },
-        eventsCtr: {
-            display: 'flex',
-            flexDirection: 'column',
-            alignItems: 'center',
-            padding: '10px'
-        },
-        editEventCtr: {
-            display: 'flex',
-            flexDirection: 'column',
-            border: '1px solid black',
-            padding: '10px',
-            alignItems: 'center'
-        },
-        editEventForm: {
-            display: 'flex',
-            flexDirection: 'column'
-        },
-        input: {
-            alignSelf: 'center',
-            margin: '5px 0'
-        },
-        eventTitle: {
-            maxWidth: '70%',
-            minWidth: '70%'
-        },
-        btnCtr: {
-            marginLeft: 'auto'
-        }
-    }));
-
     const classes = useStyles();
 
     return (
@@ -318,9 +320,9 @@ const EventsPage = (props) => {
                                     className='ckbox'
                                     color='primary'
                                     value={1}
-                                    name={`${e.id}`}
-                                    key={`${e.id}`}
-                                    checked={e._id === currentEvent._id ? true : false}
+                                    name={`${e._id}`}
+                                    key={`${e._id}`}
+                                    checked={e.isCurrentEvent}
                                     onChange={handleCheckboxClick}
                                 />}
                                 label={e.title}
