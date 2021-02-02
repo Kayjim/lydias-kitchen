@@ -122,7 +122,7 @@ const EventsPage = (props) => {
     };
 
     const handleSaveClick = () => {
-
+        debugger;
         let event = currentEvent;
         axios.post('https://lydias-kitchen.herokuapp.com/3/saveEvent', {
             method: 'post',
@@ -151,7 +151,6 @@ const EventsPage = (props) => {
             });
             return;
         });
-        window.location.reload(true);
     };
 
     const forceUpdate = useForceUpdate();
