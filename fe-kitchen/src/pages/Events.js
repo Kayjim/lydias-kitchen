@@ -77,39 +77,44 @@ const EventsPage = (props) => {
     const [selectedDate, setSelectedDate] = useState(new Date());
 
     useEffect(() => {
-        axios.get("https://lydias-kitchen.herokuapp.com/3/allEvents")
-        //axios.get("https://localhost:4000/3/allEvents")
-            .then(res => {
-                let allEvents = res.data.events;
-                setEvents(allEvents);
-                let currEvent = allEvents.find(e => { return e.isCurrentEvent === true });
-                if (currEvent !== undefined) {
-                    setTitle(currEvent.title);
-                    setDescription(currEvent.description);
-                    setAnnouncement(currEvent.announcement);
-                    const date = new Date(currEvent.date);
-                    setSelectedDate(date);
-                    setImages(currEvent.images);
-                    setCurrentEvent(currEvent);
-                } else {
-                    setTitle('');
-                    setDescription('');
-                    setAnnouncement('');
-                    const date = new Date();
-                    setSelectedDate(date);
-                    setImages([]);
-                }
-            })
-            .catch(err => {
-                console.log(err);
-            });
-        axios.get('https://lydias-kitchen.herokuapp.com/all-products')
-            .then(res => {
-                setProducts(res.data.products);
-            }).catch(err => {
-                console.log(err)
-            });
-    }, [currentEvent]);
+        // let noNeed = sessionStorage.getItem('noNeed');
+
+        // if (noNeed === null) {
+            // sessionStorage.removeItem('noNeed');
+            //axios.get("https://lydias-kitchen.herokuapp.com/3/allEvents")
+                axios.get("http://localhost:4000/3/allEvents")
+                .then(res => {
+                    let allEvents = res.data.events;
+                    setEvents(allEvents);
+                    let currEvent = allEvents.find(e => { return e.isCurrentEvent === true });
+                    if (currEvent !== undefined) {
+                        setTitle(currEvent.title);
+                        setDescription(currEvent.description);
+                        setAnnouncement(currEvent.announcement);
+                        const date = new Date(currEvent.date);
+                        setSelectedDate(date);
+                        setImages(currEvent.images);
+                        setCurrentEvent(currEvent);
+                    } else {
+                        setTitle('');
+                        setDescription('');
+                        setAnnouncement('');
+                        const date = new Date();
+                        setSelectedDate(date);
+                        setImages([]);
+                    }
+                })
+                .catch(err => {
+                    console.log(err);
+                });
+            axios.get('http://localhost:4000/all-products')
+                .then(res => {
+                    setProducts(res.data.products);
+                }).catch(err => {
+                    console.log(err)
+                });
+        // }
+    }, []);
 
     // useEffect(() => {
     //     console.log(currentEvent);
@@ -137,8 +142,23 @@ const EventsPage = (props) => {
     const handleCheckboxClick = (e) => {
         let id = e.target.id;
         let isCurrentEvent = e.target.checked;
+
+        events.forEach(ev => {
+            if(ev._id === id){
+                ev.isCurrentEvent = isCurrentEvent;
+                setTitle(ev.title);
+                setDescription(ev.description);
+                setAnnouncement(ev.announcement);
+                const date = new Date(ev.date);
+                setSelectedDate(date);
+                setImages(ev.images);
+            } else {
+                ev.isCurrentEvent = false;
+            }
+        });
+
         //axios.post('https://lydias-kitchen.herokuapp.com/3/updateCurrentEvent', {
-        axios.post('http://localhost:4000/3/updateCurrentEvent', {  
+        axios.post('http://localhost:4000/3/updateCurrentEvent', {
             method: 'post',
             headers: {
                 'Content-Type': 'application/json',
@@ -255,6 +275,7 @@ const EventsPage = (props) => {
             }
         }
         event.products = products;
+        // sessionStorage.setItem('noNeed', true)
         setCurrentEvent(event);
         console.log(currentEvent);
     };
@@ -264,7 +285,7 @@ const EventsPage = (props) => {
     return (
         <div className={classes.eventsCtr}>
             <div className={classes.editEventCtr}>
-            <h3>Current Event</h3>
+                <h3>Current Event</h3>
                 <form className={classes.editEventForm}>
                     <TextField className={`${classes.eventTitle} ${classes.input}`} onChange={handleTextboxChanges} value={title} id='title' label='Title' required placeholder='Title' variant='outlined' />
                     <TextField onChange={handleTextboxChanges} value={description} id='description' className='event-form__input' label='Description' required placeholder='Description' variant='outlined' />

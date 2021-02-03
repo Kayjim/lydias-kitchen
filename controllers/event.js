@@ -68,12 +68,13 @@ module.exports = {
     },
     getAllEvents: async (args, req) => {
         try {
-            const events = await Event.find();
+            let events = await Event.find().populate('products');
             return events.map(e => {
                 return transformEvent(e);
             });
         }
         catch (err) {
+            console.log(err);
             throw err;
         }
     },
