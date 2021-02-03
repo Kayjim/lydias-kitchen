@@ -90,6 +90,7 @@ const EventsPage = (props) => {
                     const date = new Date(currEvent.date);
                     setSelectedDate(date);
                     setImages(currEvent.images);
+                    setCurrentEvent(currEvent);
                 } else {
                     setTitle('');
                     setDescription('');
