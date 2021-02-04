@@ -45,7 +45,8 @@ const useStyles = makeStyles(theme => ({
     editEventCtr: {
         display: 'flex',
         flexDirection: 'column',
-        border: '1px solid black',
+        border: '8px solid #A7414A',
+        borderRadius: '7px',
         padding: '10px',
         alignItems: 'center'
     },
@@ -63,6 +64,11 @@ const useStyles = makeStyles(theme => ({
     },
     btnCtr: {
         marginLeft: 'auto'
+    },
+    help: {
+        fontSize: '12px',
+        fontStyle: 'italic',
+        margin: '0'
     }
 }));
 const EventsPage = (props) => {
@@ -80,39 +86,39 @@ const EventsPage = (props) => {
         // let noNeed = sessionStorage.getItem('noNeed');
 
         // if (noNeed === null) {
-            // sessionStorage.removeItem('noNeed');
-            //axios.get("https://lydias-kitchen.herokuapp.com/3/allEvents")
-                axios.get("http://localhost:4000/3/allEvents")
-                .then(res => {
-                    let allEvents = res.data.events;
-                    setEvents(allEvents);
-                    let currEvent = allEvents.find(e => { return e.isCurrentEvent === true });
-                    if (currEvent !== undefined) {
-                        setTitle(currEvent.title);
-                        setDescription(currEvent.description);
-                        setAnnouncement(currEvent.announcement);
-                        const date = new Date(currEvent.date);
-                        setSelectedDate(date);
-                        setImages(currEvent.images);
-                        setCurrentEvent(currEvent);
-                    } else {
-                        setTitle('');
-                        setDescription('');
-                        setAnnouncement('');
-                        const date = new Date();
-                        setSelectedDate(date);
-                        setImages([]);
-                    }
-                })
-                .catch(err => {
-                    console.log(err);
-                });
-            axios.get('http://localhost:4000/all-products')
-                .then(res => {
-                    setProducts(res.data.products);
-                }).catch(err => {
-                    console.log(err)
-                });
+        // sessionStorage.removeItem('noNeed');
+        //axios.get("https://lydias-kitchen.herokuapp.com/3/allEvents")
+        axios.get("http://localhost:4000/3/allEvents")
+            .then(res => {
+                let allEvents = res.data.events;
+                setEvents(allEvents);
+                let currEvent = allEvents.find(e => { return e.isCurrentEvent === true });
+                if (currEvent !== undefined) {
+                    setTitle(currEvent.title);
+                    setDescription(currEvent.description);
+                    setAnnouncement(currEvent.announcement);
+                    const date = new Date(currEvent.date);
+                    setSelectedDate(date);
+                    setImages(currEvent.images);
+                    setCurrentEvent(currEvent);
+                } else {
+                    setTitle('');
+                    setDescription('');
+                    setAnnouncement('');
+                    const date = new Date();
+                    setSelectedDate(date);
+                    setImages([]);
+                }
+            })
+            .catch(err => {
+                console.log(err);
+            });
+        axios.get('http://localhost:4000/all-products')
+            .then(res => {
+                setProducts(res.data.products);
+            }).catch(err => {
+                console.log(err)
+            });
         // }
     }, []);
 
@@ -144,7 +150,7 @@ const EventsPage = (props) => {
         let isCurrentEvent = e.target.checked;
 
         events.forEach(ev => {
-            if(ev._id === id){
+            if (ev._id === id) {
                 ev.isCurrentEvent = isCurrentEvent;
                 setTitle(ev.title);
                 setDescription(ev.description);
@@ -183,6 +189,12 @@ const EventsPage = (props) => {
             if (data.data.uE.isCurrentEvent) {
                 setCurrentEvent(data.data.uE);
             } else {
+                setTitle('');
+                setDescription('');
+                setAnnouncement('');
+                const date = new Date();
+                setSelectedDate(date);
+                setImages([]);
                 setCurrentEvent({})
             }
             return data;
@@ -269,7 +281,7 @@ const EventsPage = (props) => {
             products.push(e.target.value);
         }
         else {
-            const idx = event.products.findIndex(p => p === e.target.value);
+            const idx = event.products.findIndex(p => p._id === e.target.value);
             if (idx !== -1) {
                 products.splice(idx, 1);
             }
@@ -332,6 +344,9 @@ const EventsPage = (props) => {
                 </form>
             </div>
             <h3>All Events</h3>
+            <p className={`${classes.help}`}>*In order to change which event is labeled as "current event" in the system, just check the box next to that event below</p>
+            <p className={`${classes.help}`}>In order to add a new event in the system, just deselect any current event</p>
+            
             <div className='events-list'>
                 <ul>
                     {events && events.map(e => {
