@@ -13,15 +13,17 @@ const Products = (props) => {
             props.products.forEach(p => {
                 if (props.event) {
                     if (props.event.products) {
-                        if (props.event.products.includes(p._id)) {
-                            newList.push('p-' + p._id);
-                        }
+                        props.event.products.forEach(eP => {
+                            if(eP._id === p._id){
+                                newList.push('p-' + p._id);
+                            }
+                        });
                     }
                 }
             });
             setChecked(newList);
         }
-    }, [props.products]);
+    }, [props.event, props.products]);
 
 
     const handleCheckChange = (e) => {
@@ -40,7 +42,7 @@ const Products = (props) => {
             {props.products.map(p => {
                 return (
                     <FormControlLabel
-                        key={p._id}
+                        key={'p-' + p._id}
                         control={<Checkbox
                             id={'p-' + p._id}
                             className='ckbox'

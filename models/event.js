@@ -15,7 +15,8 @@ const eventSchema = new Schema({
         }
     ],
     announcement: String,
-    isCurrentEvent: Boolean
+    isCurrentEvent: Boolean,
+    boxChoices: [String],
 });
 
 module.exports = mongoose.model('Event', eventSchema);

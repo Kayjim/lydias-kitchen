@@ -26,11 +26,10 @@ const validateContactInfo = (data) => {
     let emailReg = /^(([^<>()\[\]\\.,;:\s@"]+(\.[^<>()\[\]\\.,;:\s@"]+)*)|(".+"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$/;
     let errorMsg = '';
     let resp = {};
-    if (Object.keys(data).length === 0 || data.fName === "" || data.lName === "" || data.email === "" || data.address1 === "" || data.city === "" || data.state === "" || data.zip === "") {
+    if (Object.keys(data).length === 0 || !data.fname || !data.lname || !data.email || !data.address1 || !data.city || !data.state || !data.zip) {
         errorMsg = 'Fill out all required fields and try again.';
         resp = {
             msg: errorMsg,
-            alertType: 'error',
             success: false
         }
     }
@@ -38,14 +37,12 @@ const validateContactInfo = (data) => {
         errorMsg = 'Please provide a valid email format.';
         resp = {
             msg: errorMsg,
-            alertType: 'error',
             success: false
         }
     }
     else {
         resp = {
             msg: 'Success',
-            alertType: 'success',
             success: true
         }
     }
@@ -57,7 +54,6 @@ const validateOrderType = (data) => {
         if (!data.hasOwnProperty('oneBox') && !data.hasOwnProperty('twoBox') && !data.hasOwnProperty('threeBox') && !data.hasOwnProperty('fourBox')) {
             resp = {
                 msg: 'Please choose how many boxes you would like to order',
-                alertType: 'error',
                 success: false
             }
         } else
@@ -65,21 +61,18 @@ const validateOrderType = (data) => {
                 if (!data.hasOwnProperty('specialRequest') || data.specialRequest === "") {
                     resp = {
                         msg: 'Please enter a special request message.',
-                        alertType: 'error',
                         success: false
                     }
                 }
                 else {
                     resp = {
                         msg: 'Success',
-                        alertType: 'success',
                         success: true
                     }
                 }
             } else {
                 resp = {
                     msg: 'Success',
-                    alertType: 'success',
                     success: true
                 }
             }
@@ -87,14 +80,12 @@ const validateOrderType = (data) => {
         if (!data.hasOwnProperty('specialRequest') || data['specialRequest'] === '') {
             resp = {
                 msg: 'Please enter a special request message.',
-                alertType: 'error',
                 success: false
             }
         }
         else {
             resp = {
                 msg: 'Success',
-                alertType: 'success',
                 success: true
             }
         }
@@ -106,7 +97,6 @@ const validateDeliveryDetails = (data) => {
     if (!data.hasOwnProperty('delivery') && !data.hasOwnProperty('pickup')) {
         resp = {
             msg: 'Please choose an option.',
-            alertType: 'error',
             success: false
         }
     }
@@ -114,13 +104,11 @@ const validateDeliveryDetails = (data) => {
         if (!data.hasOwnProperty('diffAddress1') || data.diffAddress1 === "" || !data.hasOwnProperty('diffCity') || data.diffCity === "" || !data.hasOwnProperty('diffState') || data.diffState === "" || !data.hasOwnProperty('diffZip') || data.diffZip === "") {
             resp = {
                 msg: 'Please enter address details.',
-                alertType: 'error',
                 success: false
             }
         } else {
             resp = {
                 msg: 'Success',
-                alertType: 'success',
                 success: true
             }
         }
@@ -128,7 +116,6 @@ const validateDeliveryDetails = (data) => {
     else {
         resp = {
             msg: 'Success',
-            alertType: 'success',
             success: true
         }
     }
@@ -139,14 +126,12 @@ const validatePaymentDetails = (data) => {
     if (!data.hasOwnProperty('zelle') && !data.hasOwnProperty('venmo') && !data.hasOwnProperty('cod') && !data.hasOwnProperty('paypal')) {
         resp = {
             msg: 'Please choose a payment option.',
-            alertType: 'error',
             success: false
         }
     }
     else {
         resp = {
             msg: 'Success!',
-            alertType: 'success',
             success: true
         }
     }

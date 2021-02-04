@@ -19,20 +19,68 @@ import axios from 'axios';
 
 import '../css/EventsCss.css'
 
-const useForceUpdate = () => useState()[1];
-
+const useStyles = makeStyles(theme => ({
+    button: {
+        marginTop: theme.spacing(3),
+        marginLeft: theme.spacing(1),
+    },
+    deleteBtn: {
+        backgroundColor: '#A7414A',
+        '&:hover': {
+            backgroundColor: '#6A8A82',
+        },
+    },
+    saveBtn: {
+        backgroundColor: '#6A8A82',
+        '&:hover': {
+            backgroundColor: '#A7414A',
+        },
+    },
+    eventsCtr: {
+        display: 'flex',
+        flexDirection: 'column',
+        alignItems: 'center',
+        padding: '10px'
+    },
+    editEventCtr: {
+        display: 'flex',
+        flexDirection: 'column',
+        border: '8px solid #A7414A',
+        borderRadius: '7px',
+        padding: '10px',
+        alignItems: 'center'
+    },
+    editEventForm: {
+        display: 'flex',
+        flexDirection: 'column'
+    },
+    input: {
+        alignSelf: 'center',
+        margin: '5px 0'
+    },
+    eventTitle: {
+        maxWidth: '70%',
+        minWidth: '70%'
+    },
+    btnCtr: {
+        marginLeft: 'auto'
+    },
+    help: {
+        fontSize: '12px',
+        fontStyle: 'italic',
+        margin: '0'
+    }
+}));
 const EventsPage = (props) => {
 
     const [events, setEvents] = useState([]);
-    const [title, setTitle] = useState([]);
-    const [description, setDescription] = useState([]);
-    const [announcement, setAnnouncement] = useState([]);
+    const [title, setTitle] = useState('');
+    const [description, setDescription] = useState('');
+    const [announcement, setAnnouncement] = useState('');
     const [images, setImages] = useState([]);
     const [products, setProducts] = useState([]);
     const [currentEvent, setCurrentEvent] = useState({});
-    const [selectedDate, setSelectedDate] = useState();
-    const [alertMessage, setAlertMessage] = useState('');
-    const [alertType, setAlertType] = useState('');
+    const [selectedDate, setSelectedDate] = useState(new Date());
 
     useEffect(() => {
         axios.get("https://lydias-kitchen.herokuapp.com/3/allEvents")
@@ -44,10 +92,17 @@ const EventsPage = (props) => {
                     setTitle(currEvent.title);
                     setDescription(currEvent.description);
                     setAnnouncement(currEvent.announcement);
-                    setCurrentEvent(currEvent);
                     const date = new Date(currEvent.date);
                     setSelectedDate(date);
                     setImages(currEvent.images);
+                    setCurrentEvent(currEvent);
+                } else {
+                    setTitle('');
+                    setDescription('');
+                    setAnnouncement('');
+                    const date = new Date();
+                    setSelectedDate(date);
+                    setImages([]);
                 }
             })
             .catch(err => {
@@ -59,55 +114,25 @@ const EventsPage = (props) => {
             }).catch(err => {
                 console.log(err)
             });
+        // }
     }, []);
-      //after order alertMessage is updated
-  useEffect(() => {
-    switch(alertType){
-      case 'error':
-        toast.error(alertMessage, 
-          {
-            position: "top-center",
-            autoClose: 5000,
-            hideProgressbar: false,
-            closeOnClick: true,
-            pauseOnHover: true,
-            draggable: false,
-            progress: undefined,
-          }
-        );
-        break;
-      case 'success':
-        toast.success(alertMessage, 
-          {
-            position: "top-center",
-            autoClose: 4000,
-            hideProgressbar: false,
-            closeOnClick: true,
-            pauseOnHover: true,
-            draggable: false,
-            progress: undefined,
-          }
-        );
-        break;
-    }
-  }, [alertType]);
 
-useEffect( () => {
-    console.log(currentEvent);
-}, [currentEvent])
+    // useEffect(() => {
+    //     console.log(currentEvent);
+    // }, [currentEvent])
 
     const handleTextboxChanges = (e) => {
         let event = currentEvent;
-        switch(e.target.id){
-            case('title'):
+        switch (e.target.id) {
+            case ('title'):
                 event.title = e.target.value;
                 setTitle(e.target.value);
                 break;
-            case('description'):
+            case ('description'):
                 event.description = e.target.value;
                 setDescription(e.target.value);
                 break;
-            case('announcement'):
+            case ('announcement'):
                 event.announcement = e.target.value;
                 setAnnouncement(e.target.value);
                 break;
@@ -118,6 +143,21 @@ useEffect( () => {
     const handleCheckboxClick = (e) => {
         let id = e.target.id;
         let isCurrentEvent = e.target.checked;
+
+        events.forEach(ev => {
+            if (ev._id === id) {
+                ev.isCurrentEvent = isCurrentEvent;
+                setTitle(ev.title);
+                setDescription(ev.description);
+                setAnnouncement(ev.announcement);
+                const date = new Date(ev.date);
+                setSelectedDate(date);
+                setImages(ev.images);
+            } else {
+                ev.isCurrentEvent = false;
+            }
+        });
+
         axios.post('https://lydias-kitchen.herokuapp.com/3/updateCurrentEvent', {
             method: 'post',
             headers: {
@@ -129,30 +169,38 @@ useEffect( () => {
             }
         }).then(res => {
             if (!res.status === 200) {
-                setAlertType('error');
-                setAlertMessage(res.status + ' : ' + res.statusText);
+                toast.error(res.status + ' : ' + res.statusText, {
+                    position: toast.POSITION.TOP_CENTER
+                });
                 return;
+            } else {
+                toast.success('The current event has been updated successfully!', {
+                    position: toast.POSITION.TOP_CENTER
+                })
             }
             return res;
         }).then(data => {
-            if(data.data.uE.isCurrentEvent){
+            if (data.data.uE.isCurrentEvent) {
                 setCurrentEvent(data.data.uE);
             } else {
+                setTitle('');
+                setDescription('');
+                setAnnouncement('');
+                const date = new Date();
+                setSelectedDate(date);
+                setImages([]);
                 setCurrentEvent({})
             }
-            setAlertType('success');
-            setAlertMessage('Current Event has been changed!');
             return data;
         }).catch(err => {
-            setAlertType('error');
-            setAlertMessage(err);
+            toast.error(err, {
+                position: toast.POSITION.TOP_CENTER
+            });
             return;
         });
-        window.location.reload(true);
     };
 
     const handleSaveClick = () => {
-
         let event = currentEvent;
         axios.post('https://lydias-kitchen.herokuapp.com/3/saveEvent', {
             method: 'post',
@@ -164,24 +212,24 @@ useEffect( () => {
             }
         }).then(res => {
             if (!res.status === 200) {
-                setAlertType('error');
-                setAlertMessage(res.status + ' : ' + res.statusText);
+                toast.error(res.status + ' : ' + res.statusText, {
+                    position: toast.POSITION.TOP_CENTER
+                });
                 return;
             }
             return res;
         }).then(data => {
-            setAlertType('success');
-            setAlertMessage('Current Event has been saved!');
+            toast.success('Current Event has been saved!', {
+                position: toast.POSITION.TOP_CENTER
+            });
             return data;
         }).catch(err => {
-            setAlertType('error');
-            setAlertMessage(err);
+            toast.error(err.message, {
+                position: toast.POSITION.TOP_CENTER
+            });
             return;
         });
-        window.location.reload(true);
     };
-
-    const forceUpdate = useForceUpdate();
 
     const handleDeleteClick = (e) => {
         let event = currentEvent;
@@ -189,17 +237,19 @@ useEffect( () => {
             cdata: { id: event._id }
         }).then(res => {
             if (!res.status === 200) {
-                setAlertType('error');
-                setAlertMessage(res.status + ' : ' + res.statusText);
+                toast.success(res.status + ' : ' + res.statusText, {
+                    position: toast.POSITION.TOP_CENTER
+                });
                 return;
             }
             return res;
         }).catch(err => {
-            setAlertType('error');
-            setAlertMessage(err);
+            toast.error(err.message, {
+                position: toast.POSITION.TOP_CENTER
+            });
             return;
         })
-        window.location.reload(true);
+        window.location.reload();
     };
 
     const handleDateChange = (date) => {
@@ -211,7 +261,7 @@ useEffect( () => {
 
     const handleImageChange = (imgs) => {
         let event = currentEvent;
-        if(images !== imgs){
+        if (images !== imgs) {
             setImages(imgs);
         }
         event.images = imgs;
@@ -220,40 +270,30 @@ useEffect( () => {
 
     const handleAddRemoveProduct = (e) => {
         let event = currentEvent ? currentEvent : {};
-        let products = event.products ? event.products: [];
+        let products = event.products ? event.products : [];
         if (e.target.checked) {
             products.push(e.target.value);
         }
         else {
-            const idx = event.products.findIndex(p => p === e.target.value);
+            const idx = event.products.findIndex(p => p._id === e.target.value);
             if (idx !== -1) {
                 products.splice(idx, 1);
             }
         }
         event.products = products;
+        // sessionStorage.setItem('noNeed', true)
         setCurrentEvent(event);
         console.log(currentEvent);
     };
 
-    const useStyles = makeStyles(theme => ({
-        button: {
-            marginTop: theme.spacing(3),
-            marginLeft: theme.spacing(1),
-            backgroundColor: '#A7414A',
-            '&:hover': {
-                backgroundColor: '#6A8A82',
-            },
-        },
-    }));
-
     const classes = useStyles();
 
     return (
-        <div className='events-ctr'>
-            <h3>Current Event</h3>
-            <div className='edit-event__ctr'>
-                <form id='edit-event__form'>
-                    <TextField onChange={handleTextboxChanges} value={title} id='title' className='event-form__input' label='Title' required placeholder='Title' variant='outlined' />
+        <div className={classes.eventsCtr}>
+            <div className={classes.editEventCtr}>
+                <h3>Current Event</h3>
+                <form className={classes.editEventForm}>
+                    <TextField className={`${classes.eventTitle} ${classes.input}`} onChange={handleTextboxChanges} value={title} id='title' label='Title' required placeholder='Title' variant='outlined' />
                     <TextField onChange={handleTextboxChanges} value={description} id='description' className='event-form__input' label='Description' required placeholder='Description' variant='outlined' />
                     <MuiPickersUtilsProvider utils={DateFnsUtils}>
                         <KeyboardDatePicker
@@ -287,17 +327,20 @@ useEffect( () => {
                     <EventImages images={images} handleImageChange={handleImageChange} />
                     <Products products={products} event={currentEvent} handleAddRemoveProduct={handleAddRemoveProduct} />
                     <TextField onChange={handleTextboxChanges} value={announcement} id='announcement' className='event-form__input' label='Announcement' required placeholder='Announcement' variant='outlined' />
-                    <div className='btns'>
-                        <Button id='delete' onClick={handleDeleteClick} label="Delete" className={classes.button}>
+                    <div className={classes.btnCtr}>
+                        <Button id='delete' onClick={handleDeleteClick} label="Delete" className={`${classes.button} ${classes.deleteBtn}`}>
                             Delete
                     </Button>
-                        <Button id='save' onClick={handleSaveClick} label="Save" className={classes.button}>
+                        <Button id='save' onClick={handleSaveClick} label="Save" className={`${classes.button} ${classes.saveBtn}`}>
                             Save
                     </Button>
                     </div>
                 </form>
             </div>
             <h3>All Events</h3>
+            <p className={`${classes.help}`}>*In order to change which event is labeled as "current event" in the system, just check the box next to that event below</p>
+            <p className={`${classes.help}`}>In order to add a new event in the system, just deselect any current event</p>
+            
             <div className='events-list'>
                 <ul>
                     {events && events.map(e => {
@@ -308,9 +351,9 @@ useEffect( () => {
                                     className='ckbox'
                                     color='primary'
                                     value={1}
-                                    name={`${e.id}`}
-                                    key={`${e.id}`}
-                                    checked={e._id === currentEvent._id ? true : false}
+                                    name={`${e._id}`}
+                                    key={`${e._id}`}
+                                    checked={e.isCurrentEvent}
                                     onChange={handleCheckboxClick}
                                 />}
                                 label={e.title}
