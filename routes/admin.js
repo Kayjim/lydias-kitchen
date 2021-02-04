@@ -2,6 +2,7 @@ var express = require('express');
 var router = express.Router();
 const sgMail = require('@sendgrid/mail');
 const cors = require('cors');
+const { OAuth2Client } = require('google-auth-library');
 
 const eventController = require('../controllers/event');
 
@@ -28,8 +29,39 @@ const sendMail = output => {
 };
 //#endregion
 
+//#region authentication routes
+const client = new OAuth2Client(process.env.GOOGLE_CLIENT_ID)
+router.post('/login', async (req, res, next) => {
+    try {
+        const ticket = await client.verifyIdToken({
+            idToken: req.body.headers.Authorization.split(' ')[1],
+            audience: process.env.GOOGLE_CLIENT_ID
+        });
+        const payload = ticket.getPayload();
 
-//#region Saving Methods
+        console.log(`User ${payload.name} Verified`);
+
+        const { email } = payload;
+
+        if(email === 'lydiapskitchen@gmail.com' || email === 'chrispatrickcodes@gmail.com'){
+            res.send({
+                msg: 'User Authenticated',
+                isLoggedIn: true
+            })
+        } else {
+            res.send({
+                msg: 'Your google profile is not authorized to view this information. Please contact LydiasKitchen for more information.',
+                isLoggedIn: false
+            });
+        }
+    }
+    catch(err) {
+        console.log(err);
+    }
+});
+//#endregion
+
+//#region Saving routes
 router.post('/import', async (req, res) => {
     const products = req.body;
 

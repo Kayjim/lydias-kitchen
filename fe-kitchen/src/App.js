@@ -7,6 +7,7 @@ import CookiesPage from "./pages/Cookies";
 import CakesPage from "./pages/Cakes"
 import AdminPage from "./pages/Admin";
 import EventsPage from "./pages/Events";
+import LoginPage from './pages/Login';
 import MaintenancePage from "./pages/Maintenance";
 import CheckOut from "./components/Checkout/checkout";
 import Drawer from '@material-ui/core/Drawer';
@@ -51,10 +52,11 @@ const App = (props) => {
   const [cart, setCart] = useState([]);
   const [showCart, setShowCart] = useState(false);
   const [search, setSearch] = useState('');
+  const [isLoggedIn, setIsLoggedIn] = useState(false);
 
   const classes = useStyles();
 
-  //Search bar functionality
+  //#region Search bar functionality
   const handleSearch = txt => {
     let newProductState = [];
     switch (txt) {
@@ -96,33 +98,31 @@ const App = (props) => {
         break;
     }
   };
+  //#endregion
 
-  //Add to shopping cart
-  const addToCart = (p) => {
-    let currentCart = [...cart];
-    currentCart.push(p);
-    sessionStorage.setItem('cart', JSON.stringify(currentCart));
-    setCart(currentCart);
+  //#region Login Functions
+  const loginSuccess = res => {
+    axios.post('http://localhost:4000/3/login', {
+      headers: {
+        Authorization: `Bearer ${res.tokenId}`
+      }
+    })
+    .then(res => {
+      if(res.data.isLoggedIn){
+        setIsLoggedIn(true);
+      } else {
+        setIsLoggedIn(false);
+        toast.error(`${res.data.msg}`, {
+          position: toast.POSITION.TOP_CENTER
+        });
+      }
+    });
   };
 
-  //remove from shopping cart
-  const removeFromCart = (p) => {
-    let currentCart = [...cart];
-    const idx = currentCart.findIndex(prod => prod.id === p.id);
-    if (idx !== -1) {
-      currentCart.splice(idx, 1);
-      setCart(currentCart);
-      sessionStorage.setItem('cart', JSON.stringify(currentCart));
-    }
-  }
-  //create order logic
-  const validateCart = (cart) => {
-    if (cart.length < 1) {
-      toast.error('You do not have any items in your shopping cart. Try adding some, and trying again!', {
-        position: toast.POSITION.TOP_CENTER
-      });
-    }
+  const loginFailure = res => {
+    console.log('[Login Failure] res: ', + res);
   };
+  //#endregion
 
   const toggleDrawer = (open) => event => {
     if (event.type === 'keydown' && (event.key === 'Tab' || event.key === 'Shift')) {
@@ -137,18 +137,7 @@ const App = (props) => {
       setProducts(res.data.products);
       setAllProducts(res.data.products);
     }).catch(e => { console.log(e) });
-    if (typeof (sessionStorage) !== 'undefined' && sessionStorage !== null) {
-      let cart = sessionStorage.getItem('cart');
-      if (typeof (cart) !== 'undefined' && cart !== null && cart.length >= 1) {
-        setCart(JSON.parse(cart));
-      }
-    }
-    if (window.location.href.indexOf('noCart') > -1) {
-      toast.error('You do not have any items in your shopping cart. Try adding some, and trying again!', {
-        position: toast.POSITION.TOP_CENTER
-      });
-    }
-  }, []);
+  }, [isLoggedIn]);
 
   function Copyright() {
     return (
@@ -182,26 +171,6 @@ const App = (props) => {
         toggleDrawer={toggleDrawer}
         cart={cart}
       ></SearchAppBar>
-      {showCart === true ?
-        (<StyledDrawer anchor="top" open={showCart} onClose={toggleDrawer(false)}>
-          <CloseIcon id='close' onClick={() => setShowCart(false)} />
-          {cart.map(p => {
-            return (
-              <div id='cart-item-container' key={p.title}>
-                <ul className='cart-list' key={p.title}>
-                  <li key={p.title}>
-                    <img className="checkout-img" src={p.images[0]}></img>
-                    <p>{p.title}</p>
-                    <Button variant='outlined' color='secondary' onClick={() => removeFromCart(p)}><RemoveIcon /></Button>
-                  </li>
-                </ul>
-              </div>
-            );
-          })}
-          <Link className="checkout-btn" href='/order' onClick={() => validateCart(cart)}>Proceed to Checkout</Link>
-        </StyledDrawer>) :
-        null
-      }
       <Switch>
         <Route
           path="/"
@@ -216,7 +185,7 @@ const App = (props) => {
         <Route
           path="/3/events"
           exact
-          render={props => <EventsPage {...props} />}
+          render={props => isLoggedIn ? <EventsPage {...props} /> : <LoginPage loginSuccess={loginSuccess} loginFailure={loginFailure} />}
         />
         {/* <Route 
           path='/noCart'
@@ -234,7 +203,10 @@ const App = (props) => {
         {/* <Route
           path="/feedback" component={CookiesPage} /> */}
         <Route
-          path="/3" component={AdminPage} />
+          path="/3" 
+          exact
+          render = {props => isLoggedIn ? <AdminPage /> : <LoginPage loginSuccess={loginSuccess} loginFailure={loginFailure} />}
+          />
       </Switch>
       <footer className={classes.footer}>
         <Copyright />
