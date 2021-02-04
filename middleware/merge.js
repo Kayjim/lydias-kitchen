@@ -94,7 +94,7 @@ const transformEvent = e => {
     return {
         ...e._doc,
         _id: e._id,
-        products:  e.products,
+        products: e.products,
         images: e.images
     }
 }
