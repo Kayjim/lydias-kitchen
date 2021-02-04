@@ -83,12 +83,7 @@ const EventsPage = (props) => {
     const [selectedDate, setSelectedDate] = useState(new Date());
 
     useEffect(() => {
-        // let noNeed = sessionStorage.getItem('noNeed');
-
-        // if (noNeed === null) {
-        // sessionStorage.removeItem('noNeed');
-        //axios.get("https://lydias-kitchen.herokuapp.com/3/allEvents")
-        axios.get("http://localhost:4000/3/allEvents")
+        axios.get("https://lydias-kitchen.herokuapp.com/3/allEvents")
             .then(res => {
                 let allEvents = res.data.events;
                 setEvents(allEvents);
@@ -113,7 +108,7 @@ const EventsPage = (props) => {
             .catch(err => {
                 console.log(err);
             });
-        axios.get('http://localhost:4000/all-products')
+        axios.get('https://lydias-kitchen.herokuapp.com/all-products')
             .then(res => {
                 setProducts(res.data.products);
             }).catch(err => {
@@ -163,8 +158,7 @@ const EventsPage = (props) => {
             }
         });
 
-        //axios.post('https://lydias-kitchen.herokuapp.com/3/updateCurrentEvent', {
-        axios.post('http://localhost:4000/3/updateCurrentEvent', {
+        axios.post('https://lydias-kitchen.herokuapp.com/3/updateCurrentEvent', {
             method: 'post',
             headers: {
                 'Content-Type': 'application/json',
