@@ -340,7 +340,7 @@ const EventsPage = (props) => {
             <h3>All Events</h3>
             <p className={`${classes.help}`}>*In order to change which event is labeled as "current event" in the system, just check the box next to that event below</p>
             <p className={`${classes.help}`}>In order to add a new event in the system, just deselect any current event</p>
-            
+
             <div className='events-list'>
                 <ul>
                     {events && events.map(e => {

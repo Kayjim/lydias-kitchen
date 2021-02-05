@@ -78,7 +78,11 @@ const useStyles = makeStyles(theme => ({
     '&:hover': {
       color: '#6A8A82',
     },
-  }
+  },
+  logoutBtnCtr: {
+    padding: '10px',
+    position: "relative",
+  },
 }));
 
 
@@ -129,12 +133,6 @@ export default function SearchAppBar(props) {
               onChange={handleSearch}
             />
           </div>
-          <div style={{ flexGrow: 2 }}></div>
-          {props.cart.length > 0 ? (<div
-            onClick={props.toggleDrawer(true)}
-          >
-            <ShoppingCart height={40} width={40} />
-          </div>) : <div style={{ width: 40 }}></div>}
         </Toolbar>
       </AppBar>
       <Menu
