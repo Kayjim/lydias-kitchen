@@ -18,11 +18,8 @@ import 'react-toastify/dist/ReactToastify.css';
 
 const useStyles = makeStyles(theme => ({
   footer: {
-    position: 'absolute',
-    bottom: 0,
-    left: 0,
-    right: 0,
-    paddingBottom: 10,
+    display:'flex',
+    flexDirection: 'column',
     width: '100%',
   },
   loginCtr: {
