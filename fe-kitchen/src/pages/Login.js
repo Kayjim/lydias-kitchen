@@ -7,7 +7,7 @@ const CLIENTID = '944333602720-rsd1u9grcpqa7l6rt4qa65sn13a42oka.apps.googleuserc
 const LoginPage = (props) => {
 
     return (
-        <div className='display-ctr'>
+        <div className='loginCtr'>
             <GoogleLogin 
                 clientId = {CLIENTID}
                 buttonText = 'Login'

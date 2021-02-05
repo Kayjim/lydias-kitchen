@@ -3,37 +3,18 @@ import { BrowserRouter, Route, Switch } from "react-router-dom";
 import { withStyles, makeStyles } from '@material-ui/core/styles';
 import SearchAppBar from "./components/appBar";
 import HomePage from "./pages/Home";
-import CookiesPage from "./pages/Cookies";
-import CakesPage from "./pages/Cakes"
 import AdminPage from "./pages/Admin";
 import EventsPage from "./pages/Events";
 import LoginPage from './pages/Login';
-import MaintenancePage from "./pages/Maintenance";
 import CheckOut from "./components/Checkout/checkout";
-import Drawer from '@material-ui/core/Drawer';
 import Link from '@material-ui/core/Link';
-import CloseIcon from '@material-ui/icons/Close';
-import Button from '@material-ui/core/Button';
-import RemoveIcon from '@material-ui/icons/Remove';
 import { ToastContainer, toast } from 'react-toastify';
 import Typography from '@material-ui/core/Typography';
-
 import axios from "axios";
 
 import "./App.css";
 import "./css/media-queries.css";
 import 'react-toastify/dist/ReactToastify.css';
-
-
-const StyledDrawer = withStyles({
-  paper: {
-    display: 'flex',
-    alignItems: 'center',
-    flexFlow: 'row wrap',
-    justifyContent: 'space-between',
-    padding: '20px'
-  }
-})(Drawer);
 
 const useStyles = makeStyles(theme => ({
   footer: {
@@ -44,6 +25,9 @@ const useStyles = makeStyles(theme => ({
     paddingBottom: 10,
     width: '100%',
   },
+  loginCtr: {
+    margin: 'auto',
+  }
 }));
 
 const App = (props) => {
@@ -100,7 +84,7 @@ const App = (props) => {
   };
   //#endregion
 
-  //#region Login Functions
+  //#region auth Functions
   const loginSuccess = res => {
     axios.post('http://localhost:4000/3/login', {
       headers: {
@@ -120,16 +104,11 @@ const App = (props) => {
   };
 
   const loginFailure = res => {
-    console.log('[Login Failure] res: ', + res);
+    toast.error(`[Login Failure]: ${res.error}`, {
+      position: toast.POSITION.TOP_CENTER
+    });
   };
   //#endregion
-
-  const toggleDrawer = (open) => event => {
-    if (event.type === 'keydown' && (event.key === 'Tab' || event.key === 'Shift')) {
-      return;
-    }
-    setShowCart(open);
-  };
 
   //render
   useEffect(() => {
@@ -137,6 +116,7 @@ const App = (props) => {
       setProducts(res.data.products);
       setAllProducts(res.data.products);
     }).catch(e => { console.log(e) });
+    
   }, [isLoggedIn]);
 
   function Copyright() {
@@ -168,7 +148,7 @@ const App = (props) => {
       <ToastContainer className='mobileToast' />
       <SearchAppBar
         handleSearch={handleSearch}
-        toggleDrawer={toggleDrawer}
+        isLoggedIn={isLoggedIn}
         cart={cart}
       ></SearchAppBar>
       <Switch>
@@ -185,7 +165,7 @@ const App = (props) => {
         <Route
           path="/3/events"
           exact
-          render={props => isLoggedIn ? <EventsPage {...props} /> : <LoginPage loginSuccess={loginSuccess} loginFailure={loginFailure} />}
+          render={props => isLoggedIn ? <EventsPage {...props} /> : <LoginPage className={classes.loginCtr} loginSuccess={loginSuccess} loginFailure={loginFailure} />}
         />
         {/* <Route 
           path='/noCart'
@@ -205,7 +185,7 @@ const App = (props) => {
         <Route
           path="/3" 
           exact
-          render = {props => isLoggedIn ? <AdminPage /> : <LoginPage loginSuccess={loginSuccess} loginFailure={loginFailure} />}
+          render = {props => isLoggedIn ? <AdminPage /> : <LoginPage className={classes.loginCtr} loginSuccess={loginSuccess} loginFailure={loginFailure} />}
           />
       </Switch>
       <footer className={classes.footer}>

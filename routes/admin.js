@@ -39,16 +39,18 @@ router.post('/login', async (req, res, next) => {
         });
         const payload = ticket.getPayload();
 
-        console.log(`User ${payload.name} Verified`);
+        console.log(`User ${payload.name} Verified with google`);
 
         const { email } = payload;
 
         if(email === 'lydiapskitchen@gmail.com' || email === 'chrispatrickcodes@gmail.com'){
+            console.log(`User ${payload.name} logged in to admin pages with ${email}`);
             res.send({
                 msg: 'User Authenticated',
                 isLoggedIn: true
             })
         } else {
+            console.log(`User ${payload.name} denied access to admin pages with ${email}`);
             res.send({
                 msg: 'Your google profile is not authorized to view this information. Please contact LydiasKitchen for more information.',
                 isLoggedIn: false
