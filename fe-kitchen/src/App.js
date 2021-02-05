@@ -83,7 +83,7 @@ const App = (props) => {
 
   //#region auth Functions
   const loginSuccess = res => {
-    axios.post('http://localhost:4000/3/login', {
+    axios.post('https://lydias-kitchen.herokuapp.com/3/login', {
       headers: {
         Authorization: `Bearer ${res.tokenId}`
       }
