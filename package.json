@@ -9,7 +9,7 @@
   "scripts": {
     "start": "node server.js",
     "startDev": "nodemon server.js",
-    "heroku-postbuild": "cd fe-kitchen && npm install && npm run build",
+    "heroku-postbuild": "cd fe-kitchen && npm install && npm run build --nomaps",
     "build": "GENERATE_SOURCEMAP=false react-scripts build"
   },
   "dependencies": {
