@@ -11,7 +11,6 @@ module.exports = {
             type: args.type,
             price: args.price,
             ingredients: args.ingredients,
-            images: args.imgs,
             level: args.level
         });
 
@@ -45,8 +44,10 @@ module.exports = {
             if(!foundProduct){
                 throw new Error('No product found by that name!');
             }
-            let currentImages = foundProduct.images;
-            currentImages.concat(args.newImages);
+            let currentImages = Array.from(foundProduct.images);
+            args.newImages.forEach(i => {
+                currentImages.push(i);
+            });
             foundProduct.images = currentImages;
             const result = await foundProduct.save();
             if(!result) {

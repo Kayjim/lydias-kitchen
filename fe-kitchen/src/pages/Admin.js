@@ -73,12 +73,12 @@ const AdminPage = () => {
     const classes = useStyles();
 
     //#region product view state
-    const [productView, setProductView] = useState(false);
+    const [productView, setProductView] = useState(true);
     const [products, setProducts] = useState([{ imgs: null, title: null, description: null, ingredients: null, images: [] }]);
     //#endregion
 
     //#region image view state
-    const [imageView, setImageView] = useState(true);
+    const [imageView, setImageView] = useState(false);
     const [product, setProduct] = useState({});
     const [entireList, setEntireList] = useState([{}]);
     //#endregion
@@ -96,9 +96,6 @@ const AdminPage = () => {
     const handleChange = (i, e) => {
         const values = [...products];
         switch (e.target.id) {
-            case ('imgs-' + i):
-                values[i].imgs = e.target.value;
-                break;
             case ('title-' + i):
                 values[i].title = e.target.value;
                 break;
@@ -110,9 +107,6 @@ const AdminPage = () => {
                 break;
             case ('type-' + i):
                 values[i].type = e.target.value;
-                break;
-            case ('images-' + i):
-                values[i].images = e.target.files[0];
                 break;
         }
         setProducts(values);
@@ -134,6 +128,21 @@ const AdminPage = () => {
         setProduct(e.target.value);
     };
 
+    const handleNavClick = e => {
+        e.preventDefault();
+
+        switch (e.target.parentElement.id) {
+            case ('productImport'):
+                setProductView(true);
+                setImageView(false);
+                break;
+            case ('imageUpload'):
+                setProductView(false);
+                setImageView(true);
+                break;
+        }
+    }
+
     const handleImport = () => {
         // axios.post('https://lydias-kitchen.herokuapp.com/3/import', products)
         axios.post('http://localhost:4000/3/import', {
@@ -150,13 +159,16 @@ const AdminPage = () => {
 
     return (
         <div className={classes.adminCtr}>
+            <div className={classes.adminNav}>
+                <Button id='productImport' className={classes.navBtn} variant='outlined' color='primary' onClick={handleNavClick}>Product Import</Button>
+                <Button id='imageUpload' className={classes.navBtn} variant='outlined' color='primary' onClick={(e) => handleNavClick(e)}>Image Upload</Button>
+            </div>
             { productView &&
                 <React.Fragment>
                     <div className={classes.legend}>
                         <h3>Rules to Follow for Importing Products:</h3>
                         <p>*<i>This page is primarily for importing a list of new products, and it is not for editing existing products.</i></p>
                         <ul className={classes.legendList}>
-                            <li>When adding images you need to enter them using a comma seperated list. For example - urlforimage1.imgur.com,urlforimage2.imgur.com,urlforimage3.imgur.com</li>
                             <li>When adding ingredients you need to enter them using a comma seperated list. For example - flour,butter,icing,sprinkles</li>
                             <li>Examples for the "type" field - Cake or Cookie or Cupcake</li>
                         </ul>
@@ -167,7 +179,6 @@ const AdminPage = () => {
                             return (
                                 <div className={classes.productCtr} key={`${field}-${idx}`}>
                                     <TextField className={`${classes.input} ${classes.title}`} variant='outlined' label='Product Name' id={'title-' + idx} onChange={(e) => handleChange(idx, e)} />
-                                    <TextField className={classes.input} variant='outlined' label='Images' id={'imgs-' + idx} onChange={(e) => handleChange(idx, e)} />
                                     <TextField className={classes.input} variant='outlined' label='Description' id={'desc-' + idx} onChange={(e) => handleChange(idx, e)} />
                                     <TextField className={classes.input} variant='outlined' label='Ingredients' id={'ingrd-' + idx} onChange={(e) => handleChange(idx, e)} />
                                     <TextField className={classes.input} variant='outlined' label='Type' id={'type-' + idx} onChange={(e) => handleChange(idx, e)} />
@@ -210,7 +221,7 @@ const AdminPage = () => {
                             className={classes.input}
                             id='productImages'
                             name='productImages'
-                            inputProps={{multiple: true }}
+                            inputProps={{ multiple: true }}
                             type="file"
                         />
                         <Button type='submit' id='btnUpload' className={classes.uploadBtn} variant='contained' color='primary'>Submit</Button>

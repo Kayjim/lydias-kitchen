@@ -142,7 +142,7 @@ router.post('/uploadImages', async (req, res, next) => {
                 msg: err
             });
         }
-        res.redirect(200,'http://localhost:3000/3');
+        res.status(200).redirect(301, 'http://localhost:3000/3')
     });
 
     // await product.save().then(result => {

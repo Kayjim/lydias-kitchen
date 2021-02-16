@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from "react";
-import { BrowserRouter, Route, Switch } from "react-router-dom";
+import { BrowserRouter, Route, Redirect, Switch } from "react-router-dom";
 import { withStyles, makeStyles } from '@material-ui/core/styles';
 import SearchAppBar from "./components/appBar";
 import HomePage from "./pages/Home";
@@ -18,7 +18,7 @@ import 'react-toastify/dist/ReactToastify.css';
 
 const useStyles = makeStyles(theme => ({
   footer: {
-    display:'flex',
+    display: 'flex',
     flexDirection: 'column',
     width: '100%',
   },
@@ -88,16 +88,16 @@ const App = (props) => {
         Authorization: `Bearer ${res.tokenId}`
       }
     })
-    .then(res => {
-      if(res.data.isLoggedIn){
-        setIsLoggedIn(true);
-      } else {
-        setIsLoggedIn(false);
-        toast.error(`${res.data.msg}`, {
-          position: toast.POSITION.TOP_CENTER
-        });
-      }
-    });
+      .then(res => {
+        if (res.data.isLoggedIn) {
+          setIsLoggedIn(true);
+        } else {
+          setIsLoggedIn(false);
+          toast.error(`${res.data.msg}`, {
+            position: toast.POSITION.TOP_CENTER
+          });
+        }
+      });
   };
 
   const loginFailure = res => {
@@ -113,7 +113,7 @@ const App = (props) => {
       setProducts(res.data.products);
       setAllProducts(res.data.products);
     }).catch(e => { console.log(e) });
-    
+
   }, [isLoggedIn]);
 
   function Copyright() {
@@ -180,10 +180,16 @@ const App = (props) => {
         {/* <Route
           path="/feedback" component={CookiesPage} /> */}
         <Route
-          path="/3" 
+          path="/3"
           exact
-          render = {props => isLoggedIn ? <AdminPage /> : <LoginPage className={classes.loginCtr} loginSuccess={loginSuccess} loginFailure={loginFailure} />}
-          />
+          render={props => isLoggedIn ? <AdminPage /> : <LoginPage className={classes.loginCtr} loginSuccess={loginSuccess} loginFailure={loginFailure} />}
+        />
+        <Route
+          path="/3/uploadImages"
+          exact
+        >
+          <Redirect to='/3' />
+          </Route>
       </Switch>
       <footer className={classes.footer}>
         <Copyright />
