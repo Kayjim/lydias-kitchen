@@ -38,5 +38,24 @@ module.exports = {
         catch(err){
             throw err;
         }
+    },
+    updateImagesForProduct: async (args, req) => {
+        try{
+            const foundProduct = await Product.findOne({title: args.title});
+            if(!foundProduct){
+                throw new Error('No product found by that name!');
+            }
+            let currentImages = foundProduct.images;
+            currentImages.concat(args.newImages);
+            foundProduct.images = currentImages;
+            const result = await foundProduct.save();
+            if(!result) {
+                return false;
+            }
+            return true;
+        }
+        catch(err) {
+            throw(err);
+        }
     }
 }

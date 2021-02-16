@@ -168,32 +168,37 @@ const Checkout = (props) => {
   }
 
   const sendOrder = e => {
-    axios.post('https://lydias-kitchen.herokuapp.com/3/sendOrder', {
-      method: 'post',
-      headers: {
-        'Content-Type': 'application/json',
-      },
-      data: data,
-    }).then(res => {
-      if (!res.status === 200) {
-        toast.error(res.status + ' : ' + res.statusText, {
-          position: toast.POSITION.TOP_CENTER
-      });
-        return;
-      }
-      return res;
-    }).then(data => {
-      toast.success('Thanks for your order! You will receive a confirmation email shortly.', {
-        position: toast.POSITION.TOP_CENTER
-    });
-      return data;
-    }).catch(err => {
-      toast.error(err.message, {
-        position: toast.POSITION.TOP_CENTER
-    });
-      return;
-    });
+    //axios.post('https://lydias-kitchen.herokuapp.com/3/sendOrder', {
+    try {
+      axios.post('http://localhost:4000/3/sendOrder', {
 
+        method: 'post',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        data: data,
+      }).then(res => {
+        if (!res.status === 200) {
+          toast.error(res.status + ' : ' + res.statusText, {
+            position: toast.POSITION.TOP_CENTER
+          });
+          return;
+        }
+        return res;
+      }).then(data => {
+        toast.success('Thanks for your order! You will receive a confirmation email shortly.', {
+          position: toast.POSITION.TOP_CENTER
+        });
+        return data;
+      }).catch(err => {
+        toast.error(err.message, {
+          position: toast.POSITION.TOP_CENTER
+        });
+        return;
+      });
+    } catch (err) {
+      console.log(err)
+    }
   };
   /*must check for null & length > 0 cause if we create a cart in session 
   and then remove all items from cart, the session variable is still existing

@@ -3,7 +3,9 @@ const mongoose = require('mongoose');
 const Schema = mongoose.Schema;
 
 const imgSchema = new Schema({
-    url: String,
+    name: String,
+    description: String,
+    imagePath: String,
     deleted: {
         default: false,
         type: Boolean

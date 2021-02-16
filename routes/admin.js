@@ -3,8 +3,12 @@ var router = express.Router();
 const sgMail = require('@sendgrid/mail');
 const cors = require('cors');
 const { OAuth2Client } = require('google-auth-library');
+const multer = require('multer');
+const mongoose = require('mongoose');
+const path = require('path');
 
 const eventController = require('../controllers/event');
+const productsController = require('../controllers/product');
 
 
 const corsOptions = require('../middleware/cors-config');
@@ -27,6 +31,19 @@ const sendMail = output => {
     }
     sgMail.send(msg);
 };
+
+const sendMailCustomer = (output, details) => {
+    sgMail.setApiKey(process.env.SG_API_KEY);
+    const msg = {
+        //to: 'lydiapskitchen@gmail.com',
+        to: `${details.email}`,
+        from: 'lydiapskitchen@gmail.com',
+        subject: `Your Lydia's Kitchen Order Has Been Placed`,
+        text: "Thanks for shopping with Lydia's Kitchen!",
+        html: output
+    }
+    sgMail.send(msg);
+}
 //#endregion
 
 //#region authentication routes
@@ -43,7 +60,7 @@ router.post('/login', async (req, res, next) => {
 
         const { email } = payload;
 
-        if(email === 'lydiapskitchen@gmail.com' || email === 'chrispatrickcodes@gmail.com'){
+        if (email === 'lydiapskitchen@gmail.com' || email === 'chrispatrickcodes@gmail.com') {
             console.log(`User ${payload.name} logged in to admin pages with ${email}`);
             res.send({
                 msg: 'User Authenticated',
@@ -57,15 +74,91 @@ router.post('/login', async (req, res, next) => {
             });
         }
     }
-    catch(err) {
+    catch (err) {
         console.log(err);
     }
 });
 //#endregion
 
 //#region Saving routes
+const DIR = './public/';
+
+const imageFilter = function (req, file, cb) {
+    // Accept images only
+    if (!file.originalname.match(/\.(jpg|JPG|jpeg|JPEG|png|PNG|gif|GIF)$/)) {
+        req.fileValidationError = 'Only image files are allowed!';
+        return cb(new Error('Only image files are allowed!'), false);
+    }
+    cb(null, true);
+};
+
+router.post('/uploadImages', async (req, res, next) => {
+
+    let filenames = [];
+    const storage = multer.diskStorage({
+        destination: './public/uploads/',
+        filename: (req, file, cb) => {
+            cb(null, req.body.product.replace(/\s/g, '') +'-'+ file.originalname.replace(/\s/g, ''));
+        }
+    });
+    let upload = multer({
+        storage: storage,
+        fileFilter: imageFilter
+    }).array('productImages', 10);
+
+
+    upload(req, res, function (err) {
+        // req.file contains information of uploaded file
+        // req.body contains information of text fields, if there were any
+        for(let i =0; i<req.files.length; i++){
+            filenames.push(req.files[i].path);
+        }
+
+        productsController.updateImagesForProduct({
+            title: req.body.product,
+            newImages: filenames
+            });
+        if (req.fileValidationError) {
+            return res.send({
+                status: 400,
+                msg: 'File did not pass filetype validation. Please select an image file type.'
+            });
+        }
+        else if (!req.file && !req.files) {
+            return res.send({
+                status: 400,
+                msg: 'Please select an image to upload'
+            });
+        }
+        else if (err instanceof multer.MulterError) {
+            return res.send({
+                status: 400,
+                msg: err
+            });
+        }
+        else if (err) {
+            return res.send({
+                status: 400,
+                msg: err
+            });
+        }
+        res.redirect(200,'http://localhost:3000/3');
+    });
+
+    // await product.save().then(result => {
+    //     console.log(result.images);
+    //     res.status(201).json({
+    //         msg: "Images uploaded!",
+    //         productCreated: {
+    //             _id: result._id,
+    //             images: result.images
+    //         }
+    //     });
+    // });
+});
+
 router.post('/import', async (req, res) => {
-    const products = req.body;
+    const products = req.body.data.products;
 
     products.forEach(p => {
         saveProduct(p);
@@ -95,7 +188,7 @@ router.post('/updateCurrentEvent', async (req, res) => {
 });
 
 router.post('/saveEvent', async (req, res) => {
-    try{
+    try {
         const event = req.body.cdata.event;
 
         const updatedEvent = await saveEvent(event);
@@ -103,7 +196,7 @@ router.post('/saveEvent', async (req, res) => {
             msg: 'Save Event success',
             uE: updatedEvent
         })
-    } catch (err){
+    } catch (err) {
         res.send({
             msg: 'Save Event failed.'
         });
@@ -118,10 +211,10 @@ router.post('/deleteCurrentEvent', async (req, res, next) => {
         const id = req.body.cdata.id;
 
         const deletedEvent = await deleteEvent(id);
-            res.status(200).send({
-                msg: 'Deleted Event'
-            });
-    } catch(err){
+        res.status(200).send({
+            msg: 'Deleted Event'
+        });
+    } catch (err) {
         res.send({
             msg: 'Delete Event failed.'
         });
@@ -166,6 +259,7 @@ const buildOrder = data => {
 
 router.post('/sendOrder', async (req, res, next) => {
     try {
+        //#region Build Order for Internal Use
         const order = buildOrder(req.body.data);
         let output = `
         <h3>You have a new order from Lydia's Kitchen!</h3>
@@ -209,21 +303,27 @@ router.post('/sendOrder', async (req, res, next) => {
                    <p>${order.specReq}</p>`
         }
         sendMail(output);
+        //#endregion
+        let custDetails = {};
+        output = `Dear ${order.firstName} ${order.lastName},<br>Thank you for supporting Lydia's Kitchen with your order. Attached is  summary of your choices. You can expect an invoice closer to pickup day unless you chose the "cash on pickup" option. As a small business owner I know that I cannot succeed without your support - enjoy your treats!<br> - Lydia`;
+        custDetails.email = order.email;
+
+        sendMailCustomer(output, custDetails)
+        res.send('Mail sent');
     }
     catch (err) {
         console.log(err);
     }
-    res.send('Mail sent');
 });
 
 router.get('/allEvents', async (req, res, next) => {
-    try{
+    try {
         const events = await eventController.getAllEvents();
         res.send({
             msg: 'Success!',
             events: events
         })
-    } catch(err) {
+    } catch (err) {
         console.log(err);
     }
 });

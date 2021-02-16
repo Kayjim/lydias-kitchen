@@ -2,7 +2,7 @@ const productController = require('../controllers/product');
 
 module.exports = saveProduct = (p) => {
     const ingredients = p.ingredients.split(', ');
-    const imgs = p.imgs.split(', ');
+    const imgs = p.images.split(', ');
     const title = p.title;
     const description = p.description;
     const type = p.type;
