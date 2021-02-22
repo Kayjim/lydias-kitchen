@@ -8,9 +8,10 @@ import Input from '@material-ui/core/Input';
 import { withStyles, makeStyles } from '@material-ui/core/styles';
 import InputLabel from '@material-ui/core/InputLabel';
 import MenuItem from '@material-ui/core/MenuItem';
-import FormHelperText from '@material-ui/core/FormHelperText';
 import FormControl from '@material-ui/core/FormControl';
 import Select from '@material-ui/core/Select';
+import EditProduct from '../components/Admin/Products/EditProduct';
+import ImportProduct from '../components/Admin/Products/ImportProduct';
 
 import axios from 'axios';
 
@@ -21,39 +22,8 @@ const useStyles = makeStyles(theme => ({
         flexDirection: 'column',
         padding: '10px'
     },
-    uploadProductForm: {
-        display: 'flex',
-        flexDirection: 'column',
-        minWidth: '100%',
-    },
-    productCtr: {
-        display: 'flex',
-        minWidth: '100%',
-        flexDirection: 'column',
-        border: '1px solid black',
-        padding: '10px',
-        margin: '5px 0'
-    },
-    addBtn: {
-        marginLeft: 'auto',
-        width: '300px',
-        maxWidth: '300px',
-    },
-    rmvBtn: {
-        maxWidth: '300px',
-        width: '300px',
-        marginLeft: 'auto'
-    },
-    importBtn: {
-        maxWidth: '30%',
-        margin: 'auto'
-    },
     input: {
         margin: '5px 0',
-    },
-    title: {
-        alignSelf: 'center',
-        width: '50%'
     },
     legend: {
         display: 'flex',
@@ -65,6 +35,10 @@ const useStyles = makeStyles(theme => ({
         maxWidth: '70%',
         marginBottom: '5px',
         padding: '5px'
+    },
+    productNav: {
+        display: 'flex',
+        flexDirection: 'row'
     }
 }));
 
@@ -72,19 +46,24 @@ const AdminPage = () => {
 
     const classes = useStyles();
 
+    //#region universial state
+    const [viewKey, setViewKey] = useState('products');
+    const [service, setService] = useState('product-edit');
+    //#endregion
+
     //#region product view state
-    const [productView, setProductView] = useState(true);
     const [products, setProducts] = useState([{ imgs: null, title: null, description: null, ingredients: null, images: [] }]);
+    const [productToEdit, setProductToEdit] = useState({});
+    const [productToEditTitle, setProductToEditTitle] = useState('');
+    const [ingredients, setIngredients] = useState('');
     //#endregion
 
     //#region image view state
-    const [imageView, setImageView] = useState(false);
     const [product, setProduct] = useState({});
     const [entireList, setEntireList] = useState([{}]);
     //#endregion
 
     //#region render
-    //render
     useEffect(() => {
         axios.get("http://localhost:4000/all-products").then(res => {
             console.log(res.data.products);
@@ -93,8 +72,22 @@ const AdminPage = () => {
     }, []);
     //#endregion
 
+    //#region change listeners
+
+    useEffect(() => {
+        axios.get(`http://localhost:4000/3/products/${productToEditTitle}`)
+            .then(res => {
+                setIngredients(res.data.cdata.product.ingredients.toString());
+                setProductToEdit(res.data.cdata.product);
+            }).catch(err => {
+                console.log(err);
+            })
+    }, [productToEditTitle])
+
+    //#endregion
+
     const handleChange = (i, e) => {
-        const values = [...products];
+        const values = [...product];
         switch (e.target.id) {
             case ('title-' + i):
                 values[i].title = e.target.value;
@@ -110,8 +103,27 @@ const AdminPage = () => {
                 break;
         }
         setProducts(values);
+    }
+
+
+    const handleRelations = (e) => {
+        setProduct(e.target.value);
     };
 
+    const handleNavClick = e => {
+        e.preventDefault();
+
+        switch (e.target.parentElement.id) {
+            case ('productImport'):
+                setViewKey('products')
+                break;
+            case ('imageUpload'):
+                setViewKey('images')
+                break;
+        }
+    }
+
+    //#region product methods
     const addNew = () => {
         const values = [...products];
         values.push({ imgs: null, title: null, description: null, ingredients: null });
@@ -123,25 +135,6 @@ const AdminPage = () => {
         values.splice(i, 1);
         setProducts(values);
     };
-
-    const handleRelations = (e) => {
-        setProduct(e.target.value);
-    };
-
-    const handleNavClick = e => {
-        e.preventDefault();
-
-        switch (e.target.parentElement.id) {
-            case ('productImport'):
-                setProductView(true);
-                setImageView(false);
-                break;
-            case ('imageUpload'):
-                setProductView(false);
-                setImageView(true);
-                break;
-        }
-    }
 
     const handleImport = () => {
         // axios.post('https://lydias-kitchen.herokuapp.com/3/import', products)
@@ -156,14 +149,56 @@ const AdminPage = () => {
             });
     }
 
+    const handleEditChange = e => {
+        const value = { ...productToEdit };
+        switch (e.target.id) {
+            case ('editTitle'):
+                value.title = e.target.value;
+                break;
+            case ('editDesc'):
+                value.description = e.target.value;
+                break;
+            case ('editIngrd'):
+                value.ingredients = e.target.value;
+                setIngredients(e.target.value);
+                break;
+            case ('editType'):
+                value.type = e.target.value;
+                break;
+            default:
+                break;
+        }
+
+        setProductToEdit(value);
+    }
+
+    const handleSelectProductEdit = (e) => {
+        setProductToEditTitle(e.target.value);
+    }
+
+    const handleSaveEditClick = (e) => {
+        e.preventDefault();
+        let product = { ...productToEdit };
+        product.ingredients = productToEdit.ingredients.split(',');
+        axios.put(`http://localhost:4000/3/products/${productToEdit._id}`, {
+            updatedProduct: product
+        })
+            .then(res => {
+                console.log(res.msg);
+            })
+            .catch(err => {
+                console.log(err);
+            })
+    }
+    //#endregion
 
     return (
         <div className={classes.adminCtr}>
             <div className={classes.adminNav}>
-                <Button id='productImport' className={classes.navBtn} variant='outlined' color='primary' onClick={handleNavClick}>Product Import</Button>
+                <Button id='productImport' className={classes.navBtn} variant='outlined' color='primary' onClick={handleNavClick}>Products</Button>
                 <Button id='imageUpload' className={classes.navBtn} variant='outlined' color='primary' onClick={(e) => handleNavClick(e)}>Image Upload</Button>
             </div>
-            { productView &&
+            { viewKey == 'products' &&
                 <React.Fragment>
                     <div className={classes.legend}>
                         <h3>Rules to Follow for Importing Products:</h3>
@@ -173,24 +208,21 @@ const AdminPage = () => {
                             <li>Examples for the "type" field - Cake or Cookie or Cupcake</li>
                         </ul>
                     </div>
-                    <Button className={classes.addBtn} variant='outlined' color='primary' onClick={addNew}><AddIcon />Add Product<AddIcon /></Button>
-                    <form className={classes.uploadProductForm}>
-                        {products.map((field, idx) => {
-                            return (
-                                <div className={classes.productCtr} key={`${field}-${idx}`}>
-                                    <TextField className={`${classes.input} ${classes.title}`} variant='outlined' label='Product Name' id={'title-' + idx} onChange={(e) => handleChange(idx, e)} />
-                                    <TextField className={classes.input} variant='outlined' label='Description' id={'desc-' + idx} onChange={(e) => handleChange(idx, e)} />
-                                    <TextField className={classes.input} variant='outlined' label='Ingredients' id={'ingrd-' + idx} onChange={(e) => handleChange(idx, e)} />
-                                    <TextField className={classes.input} variant='outlined' label='Type' id={'type-' + idx} onChange={(e) => handleChange(idx, e)} />
-                                    <Button className={classes.rmvBtn} variant='outlined' color='secondary' onClick={() => remove(idx)}><RemoveIcon />Remove Product<RemoveIcon /></Button>
-
-                                </div>)
-                        })}
-                    </form>
-                    <Button id='btnImport' className={classes.importBtn} variant='contained' color='primary' onClick={handleImport}>Import</Button>
-                </React.Fragment>
+                    <div className={classes.productNav}>
+                        <Button className={classes.addBtn} variant='outlined' color='primary' onClick={() => setService('product-edit')}>Edit Product</Button>
+                        <Button className={classes.addBtn} variant='outlined' color='primary' onClick={() => setService('import')}>Import Products</Button>
+                    </div>
+                    {service == 'import' &&
+                        <ImportProduct products={products} handleChange={handleChange} addNew={addNew} remove={remove} handleImport={handleImport} />
+                    }
+                    {
+                        service == 'product-edit' &&
+                        <EditProduct entireList={entireList} product={product} productToEdit={productToEdit} ingredients={ingredients} handleSelectProductEdit={handleSelectProductEdit} handleEditChange={handleEditChange} handleSaveEditClick={handleSaveEditClick} />
+                    }
+                </React.Fragment >
             }
-            {imageView &&
+            {
+                viewKey == 'images' &&
                 <React.Fragment>
                     <div className={classes.legend}>
                         <h3>Rules to Follow for Importing Images:</h3>
@@ -228,7 +260,7 @@ const AdminPage = () => {
                     </form>
                 </React.Fragment>
             }
-        </div>
+        </div >
     );
 };
 export default AdminPage;

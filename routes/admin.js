@@ -4,8 +4,6 @@ const sgMail = require('@sendgrid/mail');
 const cors = require('cors');
 const { OAuth2Client } = require('google-auth-library');
 const multer = require('multer');
-const mongoose = require('mongoose');
-const path = require('path');
 
 const eventController = require('../controllers/event');
 const productsController = require('../controllers/product');
@@ -81,7 +79,6 @@ router.post('/login', async (req, res, next) => {
 //#endregion
 
 //#region Saving routes
-const DIR = './public/';
 
 const imageFilter = function (req, file, cb) {
     // Accept images only
@@ -103,7 +100,7 @@ router.post('/uploadImages', async (req, res, next) => {
     });
     let upload = multer({
         storage: storage,
-        fileFilter: imageFilter
+        fileFilter: imageFilter,
     }).array('productImages', 10);
 
 
@@ -257,6 +254,43 @@ const buildOrder = data => {
 };
 //#endregion
 
+
+//#region product routes
+router.get('/products/:title', async (req, res, next) => {
+    let product = await productsController.getProduct({
+        title: req.params.title,
+        });
+    if(!product) {
+        res.send({
+            msg: "Error, no product found!",
+            status: '404'
+        });
+    }
+    res.send({
+        status: 200,
+        cdata: {
+            product: product
+        }
+    })
+});
+
+router.put('/products/:id', async (req, res, next) => {
+    let updateComplete = await productsController.updateProduct({
+        id: req.params.id,
+        updatedProduct: req.body.updatedProduct
+    });
+    if(!updateComplete) {
+        res.send({
+            msg: "Error, update failed.",
+            status: 400
+        });
+    }
+    res.send({
+        status: 200,
+        msg: "Update complete"
+    });
+})
+//#endregion
 router.post('/sendOrder', async (req, res, next) => {
     try {
         //#region Build Order for Internal Use

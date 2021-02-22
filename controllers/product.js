@@ -58,5 +58,45 @@ module.exports = {
         catch(err) {
             throw(err);
         }
+    },
+    getProduct: async (args, req) => {
+        try{
+            const foundProduct = await Product.findOne({title: args.title});
+            if(!foundProduct){
+                throw new Error('No product found by that name!');
+            }
+            const result = transformProduct(foundProduct);
+            return result;
+        }
+        catch(err) {
+            throw(err);
+        }
+    },
+    updateProduct: async (args, req) => {
+        try{
+        const foundProduct = await Product.findOne({_id: args.id});
+        const updatedProduct = args.updatedProduct;
+        if(!foundProduct){
+            throw new Error('No product found by that name!');
+        }
+
+        foundProduct.title = updatedProduct.title;
+        foundProduct.description = updatedProduct.description;
+        foundProduct.ingredients = updatedProduct.ingredients;
+        foundProduct.type = updatedProduct.type;
+
+        const saved = await foundProduct.save();
+
+        if(!saved){
+            throw new Error('Product could not save');
+        }
+        const result = transformProduct(saved);
+        return result;
+
+    } catch(e){
+        throw(e)
+    }
+
+
     }
 }

@@ -11,8 +11,8 @@ import {
     MuiPickersUtilsProvider,
     KeyboardDatePicker,
 } from '@material-ui/pickers';
-import EventImages from '../components/Events/EventImages';
-import Products from '../components/Events/Products';
+import EventImages from '../components/Admin/Events/EventImages';
+import Products from '../components/Admin/Events/Products';
 import { makeStyles } from '@material-ui/core/styles';
 
 import axios from 'axios';

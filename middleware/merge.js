@@ -86,7 +86,8 @@ const transformProduct = prd => {
     return {
         ...prd._doc,
         _id: prd._id,
-        images: prd.images
+        images: prd.images,
+        ingredients: prd.ingredients
     }
 };
 
