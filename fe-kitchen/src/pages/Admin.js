@@ -55,7 +55,8 @@ const AdminPage = () => {
     const [products, setProducts] = useState([{ imgs: null, title: null, description: null, ingredients: null, images: [] }]);
     const [productToEdit, setProductToEdit] = useState({});
     const [productToEditTitle, setProductToEditTitle] = useState('');
-    const [ingredients, setIngredients] = useState('');
+    const [ingredients, setIngredients] = useState([]);
+    const [allIngredients, setAllIngredients] = useState([]);
     //#endregion
 
     //#region image view state
@@ -65,10 +66,12 @@ const AdminPage = () => {
 
     //#region render
     useEffect(() => {
+        //get all
         axios.get("http://localhost:4000/all-products").then(res => {
             console.log(res.data.products);
             setEntireList(res.data.products);
         }).catch(e => { console.log(e) });
+
     }, []);
     //#endregion
 
@@ -77,12 +80,23 @@ const AdminPage = () => {
     useEffect(() => {
         axios.get(`http://localhost:4000/3/products/${productToEditTitle}`)
             .then(res => {
-                setIngredients(res.data.cdata.product.ingredients.toString());
+                setIngredients(res.data.cdata.product.ingredients);
                 setProductToEdit(res.data.cdata.product);
             }).catch(err => {
                 console.log(err);
             })
-    }, [productToEditTitle])
+    }, [productToEditTitle]);
+
+    useEffect(() => {
+        if(viewKey == 'products') {
+            axios.get('http://localhost:4000/3/ingredients')
+            .then(res => {
+                setAllIngredients(res.data.cdata.ingredients);
+            }).catch(err => {
+                console.log(err);
+            });
+        }
+    }, [viewKey]);
 
     //#endregion
 
@@ -176,15 +190,14 @@ const AdminPage = () => {
         setProductToEditTitle(e.target.value);
     }
 
-    const handleSaveEditClick = (e) => {
+    const handleSaveEditClick = (e, ingredients) => {
         e.preventDefault();
-        let product = { ...productToEdit };
-        product.ingredients = productToEdit.ingredients.split(',');
+        let product = { ...productToEdit, ingredients: ingredients };
         axios.put(`http://localhost:4000/3/products/${productToEdit._id}`, {
             updatedProduct: product
         })
             .then(res => {
-                console.log(res.msg);
+                console.log(res.data.msg);
             })
             .catch(err => {
                 console.log(err);
@@ -196,7 +209,7 @@ const AdminPage = () => {
         <div className={classes.adminCtr}>
             <div className={classes.adminNav}>
                 <Button id='productImport' className={classes.navBtn} variant='outlined' color='primary' onClick={handleNavClick}>Products</Button>
-                <Button id='imageUpload' className={classes.navBtn} variant='outlined' color='primary' onClick={(e) => handleNavClick(e)}>Image Upload</Button>
+                <Button id='imageUpload' className={classes.navBtn} variant='outlined' color='primary' onClick={handleNavClick}>Image Upload</Button>
             </div>
             { viewKey == 'products' &&
                 <React.Fragment>
@@ -213,11 +226,11 @@ const AdminPage = () => {
                         <Button className={classes.addBtn} variant='outlined' color='primary' onClick={() => setService('import')}>Import Products</Button>
                     </div>
                     {service == 'import' &&
-                        <ImportProduct products={products} handleChange={handleChange} addNew={addNew} remove={remove} handleImport={handleImport} />
+                        <ImportProduct products={products} allIngredients={allIngredients} handleChange={handleChange} addNew={addNew} remove={remove} handleImport={handleImport} />
                     }
                     {
                         service == 'product-edit' &&
-                        <EditProduct entireList={entireList} product={product} productToEdit={productToEdit} ingredients={ingredients} handleSelectProductEdit={handleSelectProductEdit} handleEditChange={handleEditChange} handleSaveEditClick={handleSaveEditClick} />
+                        <EditProduct entireList={entireList} allIngredients={allIngredients} product={product} productToEdit={productToEdit} ingredients={ingredients} handleSelectProductEdit={handleSelectProductEdit} handleEditChange={handleEditChange} handleSaveEditClick={handleSaveEditClick} />
                     }
                 </React.Fragment >
             }

@@ -7,6 +7,7 @@ const multer = require('multer');
 
 const eventController = require('../controllers/event');
 const productsController = require('../controllers/product');
+const ingredientController = require('../controllers/ingredients');
 
 
 const corsOptions = require('../middleware/cors-config');
@@ -16,6 +17,25 @@ const deleteEvent = require('../middleware/delete-event');
 const updateCurrentEvent = require('../middleware/update-current-event');
 
 router.use(cors(corsOptions));
+
+//#region ingredients routes
+router.get('/ingredients', async (req, res, next) => {
+    try {
+        //need to return an array of ingredients objects in data.cdata
+        const ingredients = await ingredientController.getAllIngredients();
+        res.send({
+            msg: 'Success!',
+            status: 200,
+            cdata: {
+                ingredients: ingredients
+            }
+        })
+    } catch(err){
+        console.log(err);
+    }
+})
+//#endregion
+
 //#region SendGrid Stuff
 const sendMail = output => {
     sgMail.setApiKey(process.env.SG_API_KEY);

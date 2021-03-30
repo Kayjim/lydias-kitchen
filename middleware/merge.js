@@ -99,7 +99,16 @@ const transformEvent = e => {
         images: e.images
     }
 }
+
+const transformIngredient = i => {
+    return {
+        ...i._doc,
+        _id: i._id,
+        includedIn: i.includedIn
+    }
+}
 //#endregion
 
 exports.transformProduct = transformProduct;
 exports.transformEvent = transformEvent;
+exports.transformIngredient = transformIngredient;
