@@ -100,26 +100,6 @@ const AdminPage = () => {
 
     //#endregion
 
-    const handleChange = (i, e) => {
-        const values = [...product];
-        switch (e.target.id) {
-            case ('title-' + i):
-                values[i].title = e.target.value;
-                break;
-            case ('desc-' + i):
-                values[i].description = e.target.value;
-                break;
-            case ('ingrd-' + i):
-                values[i].ingredients = e.target.value;
-                break;
-            case ('type-' + i):
-                values[i].type = e.target.value;
-                break;
-        }
-        setProducts(values);
-    }
-
-
     const handleRelations = (e) => {
         setProduct(e.target.value);
     };
@@ -202,6 +182,25 @@ const AdminPage = () => {
             .catch(err => {
                 console.log(err);
             })
+    }
+
+    const handleChange = (i, e) => {
+        const values = [...products];
+        switch (e.target.id) {
+            case ('title-' + i):
+                values[i].title = e.target.value;
+                break;
+            case ('desc-' + i):
+                values[i].description = e.target.value;
+                break;
+            case ('ingrd-' + i):
+                values[i].ingredients = e.target.value;
+                break;
+            case ('type-' + i):
+                values[i].type = e.target.value;
+                break;
+        }
+        setProducts(values);
     }
     //#endregion
 
