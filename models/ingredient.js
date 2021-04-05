@@ -7,7 +7,8 @@ const ingredientSchema = new Schema({
     includedIn: [
         {
             type: Schema.Types.ObjectId,
-            ref: 'Product'
+            ref: 'Product',
+            default: []
         }
     ],
 });

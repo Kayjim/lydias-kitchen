@@ -1,17 +1,14 @@
 import React, { useState, useEffect } from 'react';
 import Button from '@material-ui/core/Button';
 import TextField from '@material-ui/core/TextField';
-import { withStyles, makeStyles } from '@material-ui/core/styles';
-import InputLabel from '@material-ui/core/InputLabel';
-import MenuItem from '@material-ui/core/MenuItem';
-import FormControl from '@material-ui/core/FormControl';
-import Select from '@material-ui/core/Select';
-import Checkbox from '@material-ui/core/Checkbox';
-import FormControlLabel from '@material-ui/core/FormControlLabel';
+import { makeStyles } from '@material-ui/core/styles';
+import AddIcon from '@material-ui/icons/Add';
+import RemoveIcon from '@material-ui/icons/Remove';
 
+import axios from 'axios';
 
 const useStyles = makeStyles(theme => ({
-    productCtr: {
+    ingredientCtr: {
         display: 'flex',
         minWidth: '100%',
         flexDirection: 'column',
@@ -22,7 +19,7 @@ const useStyles = makeStyles(theme => ({
     input: {
         margin: '5px 0',
     },
-    title: {
+    name: {
         alignSelf: 'center',
         width: '50%'
     },
@@ -40,31 +37,42 @@ const useStyles = makeStyles(theme => ({
 }));
 
 
-const EditProduct = (props) => {
+const ImportIngredient = (props) => {
 
     const classes = useStyles();
+    const [ingredients, setIngredients] = useState([{ name: '', includedIn: [] }]);
 
-    const [checked, setChecked] = useState([]);
+    const handleEditChange = (e, i) => {
+        const ingrds = [...ingredients];
 
-    useEffect(() => {
-        let newList = [];
-        if (props.productToEdit && props.allIngredients) {
-            if (props.productToEdit.ingredients) {
-                props.productToEdit.ingredients.forEach(i => {
-                    props.allIngredients.forEach(aI => {
-                        if (aI._id === i._id) {
-                            newList.push(i._id);
-                        }
-                    });
-                });
-            }
-            setChecked(newList);
-        }
-    }, [props.productToEdit]);
+        ingrds[i].name = e.target.value;
 
-    const handleCheckboxClick = e => {
-        const newList = checked?.includes(e.target.id) ? checked?.filter(p => p !== e.target.id) : [...(checked ?? []), e.target.id]
-        setChecked(newList);
+        setIngredients(ingrds);
+    }
+
+    const addNew = () => {
+        const values = [...ingredients];
+        values.push({ name: '', includedIn: [] });
+        setIngredients(values);
+    };
+
+    const remove = (i) => {
+        const values = [...ingredients];
+        values.splice(i, 1);
+        setIngredients(values);
+    };
+
+    const handleImportClick = () => {
+        const ingrds = [ ...ingredients ];
+        axios.post(`http://localhost:4000/3/ingredients`, {
+            ingredients: ingrds
+        })
+            .then(res => {
+                console.log(res.data.msg);
+            })
+            .catch(err => {
+                console.log(err);
+            })
     }
 
     return (
@@ -72,54 +80,21 @@ const EditProduct = (props) => {
             <div className={classes.legend}>
                 <h3>Edit a Product</h3>
             </div>
-            <form>
-                <FormControl variant="outlined" className={classes.formControl}>
-                    <InputLabel id="iptLabel--product">Select Product</InputLabel>
-                    <Select
-                        labelId="select--product_label"
-                        id="product"
-                        name='product'
-                        value={props.product}
-                        onChange={props.handleSelectProductEdit}
-                        label="Product"
-                    >
-                        {props.entireList.map(p => {
-                            return (<MenuItem id={`${p._id}`} key={`${p._id}`} value={`${p.title}`}>{p.title}</MenuItem>)
-                        })
-                        }
-                    </Select>
-                </FormControl>
-                <div className={classes.productCtr}>
-                    <TextField className={`${classes.input} ${classes.title}`} value={props.productToEdit.title} variant='outlined' label='Product Name' id='editTitle' onChange={(e) => props.handleEditChange(e)} />
-                    <TextField className={classes.input} variant='outlined' value={props.productToEdit.description || ''} label='Description' id='editDesc' onChange={(e) => props.handleEditChange(e)} />
-                    <div className='ingredients-list'>
-                        <ul>
-                            {props.allIngredients.map((i) => {
-                                return (<li key={i._id}>
-                                    <FormControlLabel
-                                        label={i.name}
-                                        control={<Checkbox
-                                            id={i._id}
-                                            className='ckbox'
-                                            color='primary'
-                                            name={i._id}
-                                            key={i._id}
-                                            value={i.name}
-                                            onChange={handleCheckboxClick}
-                                            checked={checked.includes(i._id)}
-                                        />}
-                                        label={i.name}
-                                    />
-                                </li>);
-                            })}
-                        </ul>
-                    </div>
-                    <TextField className={classes.input} variant='outlined' value={props.productToEdit.type} label='Type' id='editType' onChange={(e) => props.handleEditChange(e)} />
-                </div>
-                <Button type='save' id='btnSaveEdit' className={classes.saveEditBtn} variant='contained' color='primary' onClick={(e) => props.handleSaveEditClick(e, checked)}>Save</Button>
-            </form>
+            <Button className={classes.addBtn} variant='outlined' color='primary' onClick={addNew}><AddIcon />Add Ingredient<AddIcon /></Button>
+            {ingredients.map((field, idx) => {
+                return (
+                    <div className={classes.ingredientCtr} >
+                        <form>
+                            <div className={classes.productCtr}>
+                                <TextField className={`${classes.input} ${classes.name}`} value={ingredients[idx].name} variant='outlined' label='Ingredient Name' key={`name-${idx}`} id={`name-${idx}`} onChange={(e) => { handleEditChange(e, idx) }} />
+                            </div>
+                        </form>
+                        <Button className={classes.rmvBtn} variant='outlined' color='secondary' onClick={() => remove(idx)}><RemoveIcon />Remove Ingredient<RemoveIcon /></Button>
+                    </div>);
+            })}
+            <Button id='btnImport' className={classes.importBtn} variant='contained' color='primary' onClick={handleImportClick}>Import</Button>
         </React.Fragment>
     );
 }
 
-export default EditProduct;
+export default ImportIngredient;

@@ -34,6 +34,22 @@ router.get('/ingredients', async (req, res, next) => {
         console.log(err);
     }
 });
+router.post('/ingredients', async (req, res) => {
+    try {
+        const ingredients = req.body.ingredients;
+        console.log(ingredients);
+        ingredients.forEach(i => {
+            ingredientController.saveIngredient(i);
+        });
+
+        res.send({
+            msg: 'Ingredients created!'
+        });
+
+    } catch (err) {
+        console.log(err);
+    }
+});
 
 router.put('/ingredients/:id', async (req, res, next) => {
     let updateComplete = await ingredientController.updateIngredient({

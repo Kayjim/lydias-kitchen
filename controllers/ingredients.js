@@ -1,6 +1,6 @@
 const Ingredient = require('../models/ingredient');
 
-const { transformIngredient } = require('../middleware/merge')
+const { transformIngredient } = require('../middleware/merge');
 
 module.exports = {
     getAllIngredients: async (args, req) => {
@@ -10,11 +10,30 @@ module.exports = {
                 return transformIngredient(i);
             });
         }
-        catch(err){
+        catch (err) {
             throw err;
         }
     },
-    updateIngredient: async(args, req) => {
+    saveIngredient: async (args, req) => {
+
+        const ingredient = new Ingredient({
+            name: args.name,
+        });
+
+        let createdIngredient;
+
+        try {
+            const result = await ingredient.save();
+
+            createdIngredient = transformIngredient(result);
+
+            return createdIngredient;
+        } catch (err) {
+            console.log(err);
+            throw (err);
+        }
+    },
+    updateIngredient: async (args, req) => {
         try {
             const foundIngredient = await Ingredient.findOne({ _id: args.id });
             const updatedIngredient = args.updatedIngredient;
