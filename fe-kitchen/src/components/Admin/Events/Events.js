@@ -10,13 +10,13 @@ import {
     MuiPickersUtilsProvider,
     KeyboardDatePicker,
 } from '@material-ui/pickers';
-import EventImages from '../components/Admin/Events/EventImages';
-import Products from '../components/Admin/Events/Products';
+import EventImages from './EventImages';
+import Products from './Products';
 import { makeStyles } from '@material-ui/core/styles';
 
 import axios from 'axios';
 
-import '../css/EventsCss.css'
+import '../../../css/EventsCss.css'
 
 const useStyles = makeStyles(theme => ({
     button: {
@@ -241,6 +241,7 @@ const EventsPage = (props) => {
                 });
                 return;
             }
+            console.log(res);
             return res;
         }).catch(err => {
             toast.error(err.message, {

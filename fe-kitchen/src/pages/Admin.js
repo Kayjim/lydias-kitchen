@@ -5,7 +5,7 @@ import AddIcon from '@material-ui/icons/Add';
 import RemoveIcon from '@material-ui/icons/Remove';
 import TextField from '@material-ui/core/TextField';
 import Input from '@material-ui/core/Input';
-import { withStyles, makeStyles } from '@material-ui/core/styles';
+import { makeStyles } from '@material-ui/core/styles';
 import InputLabel from '@material-ui/core/InputLabel';
 import MenuItem from '@material-ui/core/MenuItem';
 import FormControl from '@material-ui/core/FormControl';
@@ -14,6 +14,8 @@ import EditProduct from '../components/Admin/Products/EditProduct';
 import ImportProduct from '../components/Admin/Products/ImportProduct';
 import EditIngredient from '../components/Admin/Ingredients/EditIngredient';
 import ImportIngredient from '../components/Admin/Ingredients/ImportIngredient';
+
+import Events from '../components/Admin/Events/Events';
 
 import axios from 'axios';
 
@@ -119,6 +121,9 @@ const AdminPage = () => {
             case ('ingredientImport'):
                 setViewKey('ingredients')
                 break;
+            case ('Events'):
+                setViewKey('events')
+                break;
         }
     }
 
@@ -212,10 +217,14 @@ const AdminPage = () => {
     return (
         <div className={classes.adminCtr}>
             <div className={classes.adminNav}>
+                <Button id='Events' className={classes.navBtn} variant='outlined' color='primary' onClick={handleNavClick}>Events</Button>
                 <Button id='productImport' className={classes.navBtn} variant='outlined' color='primary' onClick={handleNavClick}>Products</Button>
                 <Button id='imageUpload' className={classes.navBtn} variant='outlined' color='primary' onClick={handleNavClick}>Image Upload</Button>
                 <Button id='ingredientImport' className={classes.navBtn} variant='outlined' color='primary' onClick={handleNavClick}>Ingredients</Button>
             </div>
+            { viewKey == 'events' &&
+                <Events />
+            }
             { viewKey == 'products' &&
                 <React.Fragment>
                     <div className={classes.legend}>

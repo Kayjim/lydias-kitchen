@@ -4,7 +4,6 @@ import { withStyles, makeStyles } from '@material-ui/core/styles';
 import SearchAppBar from "./components/appBar";
 import HomePage from "./pages/Home";
 import AdminPage from "./pages/Admin";
-import EventsPage from "./pages/Events";
 import LoginPage from './pages/Login';
 import CheckOut from "./components/Checkout/checkout";
 import Link from '@material-ui/core/Link';
@@ -158,11 +157,6 @@ const App = (props) => {
           path="/home"
           exact
           render={props => <HomePage {...props} search={search} products={products} />}
-        />
-        <Route
-          path="/3/events"
-          exact
-          render={props => isLoggedIn ? <EventsPage {...props} /> : <LoginPage className={classes.loginCtr} loginSuccess={loginSuccess} loginFailure={loginFailure} />}
         />
         {/* <Route 
           path='/noCart'

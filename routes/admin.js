@@ -37,7 +37,6 @@ router.get('/ingredients', async (req, res, next) => {
 router.post('/ingredients', async (req, res) => {
     try {
         const ingredients = req.body.ingredients;
-        console.log(ingredients);
         ingredients.forEach(i => {
             ingredientController.saveIngredient(i);
         });
