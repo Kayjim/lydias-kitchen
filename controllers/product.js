@@ -4,7 +4,7 @@ const { transformProduct } = require('../middleware/merge')
 
 module.exports = {
     createProduct: async (args, req) => {
-        
+
         const product = new Product({
             title: args.title,
             description: args.description,
@@ -16,15 +16,15 @@ module.exports = {
 
         let createdProduct;
 
-        try{
+        try {
             const result = await product.save();
 
             createdProduct = transformProduct(result);
 
             return createdProduct;
-        } catch(err){
+        } catch (err) {
             console.log(err);
-            throw(err);
+            throw (err);
         }
     },
     getAllProducts: async (args, req) => {
@@ -34,14 +34,14 @@ module.exports = {
                 return transformProduct(p);
             });
         }
-        catch(err){
+        catch (err) {
             throw err;
         }
     },
     updateImagesForProduct: async (args, req) => {
-        try{
-            const foundProduct = await Product.findOne({title: args.title});
-            if(!foundProduct){
+        try {
+            const foundProduct = await Product.findOne({ title: args.title });
+            if (!foundProduct) {
                 throw new Error('No product found by that name!');
             }
             let currentImages = Array.from(foundProduct.images);
@@ -50,53 +50,51 @@ module.exports = {
             });
             foundProduct.images = currentImages;
             const result = await foundProduct.save();
-            if(!result) {
+            if (!result) {
                 return false;
             }
             return true;
         }
-        catch(err) {
-            throw(err);
+        catch (err) {
+            throw (err);
         }
     },
     getProduct: async (args, req) => {
-        try{
-            const foundProduct = await Product.findOne({_id: args.id}).populate('ingredients');
-            if(!foundProduct){
+        try {
+            const foundProduct = await Product.findOne({ _id: args.id }).populate('ingredients');
+            if (!foundProduct) {
                 throw new Error('No product found by that name!');
             }
             const result = transformProduct(foundProduct);
             return result;
         }
-        catch(err) {
-            throw(err);
+        catch (err) {
+            throw (err);
         }
     },
     updateProduct: async (args, req) => {
-        try{
-        const foundProduct = await Product.findOne({_id: args.id});
-        const updatedProduct = args.updatedProduct;
-        if(!foundProduct){
-            throw new Error('No product found by that name!');
+        try {
+            const foundProduct = await Product.findOne({ _id: args.id });
+            const updatedProduct = args.updatedProduct;
+            if (!foundProduct) {
+                throw new Error('No product found by that name!');
+            }
+
+            foundProduct.title = updatedProduct.title;
+            foundProduct.description = updatedProduct.description;
+            foundProduct.ingredients = updatedProduct.ingredients;
+            foundProduct.type = updatedProduct.type;
+
+            const saved = await foundProduct.save();
+
+            if (!saved) {
+                throw new Error('Product could not save');
+            }
+            const result = transformProduct(saved);
+            return result;
+
+        } catch (e) {
+            throw (e)
         }
-
-        foundProduct.title = updatedProduct.title;
-        foundProduct.description = updatedProduct.description;
-        foundProduct.ingredients = updatedProduct.ingredients;
-        foundProduct.type = updatedProduct.type;
-
-        const saved = await foundProduct.save();
-
-        if(!saved){
-            throw new Error('Product could not save');
-        }
-        const result = transformProduct(saved);
-        return result;
-
-    } catch(e){
-        throw(e)
-    }
-
-
     }
 }

@@ -12,6 +12,8 @@ import FormControl from '@material-ui/core/FormControl';
 import Select from '@material-ui/core/Select';
 import EditProduct from '../components/Admin/Products/EditProduct';
 import ImportProduct from '../components/Admin/Products/ImportProduct';
+import EditIngredient from '../components/Admin/Ingredients/EditIngredient';
+import ImportIngredient from '../components/Admin/Ingredients/ImportIngredient';
 
 import axios from 'axios';
 
@@ -88,13 +90,13 @@ const AdminPage = () => {
     }, [productToEditId]);
 
     useEffect(() => {
-        if(viewKey == 'products') {
+        if (viewKey == 'products') {
             axios.get('http://localhost:4000/3/ingredients')
-            .then(res => {
-                setAllIngredients(res.data.cdata.ingredients);
-            }).catch(err => {
-                console.log(err);
-            });
+                .then(res => {
+                    setAllIngredients(res.data.cdata.ingredients);
+                }).catch(err => {
+                    console.log(err);
+                });
         }
     }, [viewKey]);
 
@@ -113,6 +115,9 @@ const AdminPage = () => {
                 break;
             case ('imageUpload'):
                 setViewKey('images')
+                break;
+            case ('ingredientImport'):
+                setViewKey('ingredients')
                 break;
         }
     }
@@ -209,6 +214,7 @@ const AdminPage = () => {
             <div className={classes.adminNav}>
                 <Button id='productImport' className={classes.navBtn} variant='outlined' color='primary' onClick={handleNavClick}>Products</Button>
                 <Button id='imageUpload' className={classes.navBtn} variant='outlined' color='primary' onClick={handleNavClick}>Image Upload</Button>
+                <Button id='ingredientImport' className={classes.navBtn} variant='outlined' color='primary' onClick={handleNavClick}>Ingredients</Button>
             </div>
             { viewKey == 'products' &&
                 <React.Fragment>
@@ -222,9 +228,9 @@ const AdminPage = () => {
                     </div>
                     <div className={classes.productNav}>
                         <Button className={classes.addBtn} variant='outlined' color='primary' onClick={() => setService('product-edit')}>Edit Product</Button>
-                        <Button className={classes.addBtn} variant='outlined' color='primary' onClick={() => setService('import')}>Import Products</Button>
+                        <Button className={classes.addBtn} variant='outlined' color='primary' onClick={() => setService('product-import')}>Import Products</Button>
                     </div>
-                    {service == 'import' &&
+                    {service == 'product-import' &&
                         <ImportProduct products={products} allIngredients={allIngredients} handleChange={handleChange} addNew={addNew} remove={remove} handleImport={handleImport} />
                     }
                     {
@@ -270,6 +276,28 @@ const AdminPage = () => {
                         />
                         <Button type='submit' id='btnUpload' className={classes.uploadBtn} variant='contained' color='primary'>Submit</Button>
                     </form>
+                </React.Fragment>
+            }
+            { viewKey == 'ingredients' &&
+                <React.Fragment>
+                    <div className={classes.legend}>
+                        <h3>Rules to Follow for Adding Ingredients:</h3>
+                        {/* <p>*<i>This page is primarily for importing a list of new products, and it is not for editing existing products.</i></p> */}
+                        <ul className={classes.legendList}>
+                            <li>Test</li>
+                        </ul>
+                    </div>
+                    <div className={classes.productNav}>
+                        <Button className={classes.addBtn} variant='outlined' color='primary' onClick={() => setService('ingredient-edit')}>Edit Ingredient</Button>
+                        <Button className={classes.addBtn} variant='outlined' color='primary' onClick={() => setService('ingredient-import')}>Import Ingredients</Button>
+                    </div>
+                    {service == 'ingredient-import' &&
+                        <ImportIngredient allIngredients={allIngredients} handleChange={handleChange} addNew={addNew} remove={remove} handleImport={handleImport} />
+                    }
+                    {
+                        service == 'ingredient-edit' &&
+                        <EditIngredient allIngredients={allIngredients} />
+                    }
                 </React.Fragment>
             }
         </div >

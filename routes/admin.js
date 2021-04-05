@@ -30,10 +30,28 @@ router.get('/ingredients', async (req, res, next) => {
                 ingredients: ingredients
             }
         })
-    } catch(err){
+    } catch (err) {
         console.log(err);
     }
-})
+});
+
+router.put('/ingredients/:id', async (req, res, next) => {
+    let updateComplete = await ingredientController.updateIngredient({
+        id: req.params.id,
+        updatedIngredient: req.body.ingredient
+    });
+    if (!updateComplete) {
+        res.send({
+            msg: "Error, update failed.",
+            status: 400
+        });
+    }
+    res.send({
+        status: 200,
+        msg: "Update complete"
+    });
+});
+
 //#endregion
 
 //#region SendGrid Stuff
@@ -115,7 +133,7 @@ router.post('/uploadImages', async (req, res, next) => {
     const storage = multer.diskStorage({
         destination: './public/uploads/',
         filename: (req, file, cb) => {
-            cb(null, req.body.product.replace(/\s/g, '') +'-'+ file.originalname.replace(/\s/g, ''));
+            cb(null, req.body.product.replace(/\s/g, '') + '-' + file.originalname.replace(/\s/g, ''));
         }
     });
     let upload = multer({
@@ -127,14 +145,14 @@ router.post('/uploadImages', async (req, res, next) => {
     upload(req, res, function (err) {
         // req.file contains information of uploaded file
         // req.body contains information of text fields, if there were any
-        for(let i =0; i<req.files.length; i++){
+        for (let i = 0; i < req.files.length; i++) {
             filenames.push(req.files[i].path);
         }
 
         productsController.updateImagesForProduct({
             title: req.body.product,
             newImages: filenames
-            });
+        });
         if (req.fileValidationError) {
             return res.send({
                 status: 400,
@@ -279,8 +297,8 @@ const buildOrder = data => {
 router.get('/products/:id', async (req, res, next) => {
     let product = await productsController.getProduct({
         id: req.params.id,
-        });
-    if(!product) {
+    });
+    if (!product) {
         res.send({
             msg: "Error, no product found!",
             status: '404'
@@ -299,7 +317,7 @@ router.put('/products/:id', async (req, res, next) => {
         id: req.params.id,
         updatedProduct: req.body.updatedProduct
     });
-    if(!updateComplete) {
+    if (!updateComplete) {
         res.send({
             msg: "Error, update failed.",
             status: 400
