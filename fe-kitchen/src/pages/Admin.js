@@ -54,7 +54,7 @@ const AdminPage = () => {
     //#region product view state
     const [products, setProducts] = useState([{ imgs: null, title: null, description: null, ingredients: null, images: [] }]);
     const [productToEdit, setProductToEdit] = useState({});
-    const [productToEditTitle, setProductToEditTitle] = useState('');
+    const [productToEditId, setProductToEditId] = useState('');
     const [ingredients, setIngredients] = useState([]);
     const [allIngredients, setAllIngredients] = useState([]);
     //#endregion
@@ -78,14 +78,14 @@ const AdminPage = () => {
     //#region change listeners
 
     useEffect(() => {
-        axios.get(`http://localhost:4000/3/products/${productToEditTitle}`)
+        axios.get(`http://localhost:4000/3/products/${productToEditId}`)
             .then(res => {
                 setIngredients(res.data.cdata.product.ingredients);
                 setProductToEdit(res.data.cdata.product);
             }).catch(err => {
                 console.log(err);
             })
-    }, [productToEditTitle]);
+    }, [productToEditId]);
 
     useEffect(() => {
         if(viewKey == 'products') {
@@ -166,8 +166,8 @@ const AdminPage = () => {
         setProductToEdit(value);
     }
 
-    const handleSelectProductEdit = (e) => {
-        setProductToEditTitle(e.target.value);
+    const handleSelectProductEdit = (e, child) => {
+        setProductToEditId(child.props.id);
     }
 
     const handleSaveEditClick = (e, ingredients) => {

@@ -276,9 +276,9 @@ const buildOrder = data => {
 
 
 //#region product routes
-router.get('/products/:title', async (req, res, next) => {
+router.get('/products/:id', async (req, res, next) => {
     let product = await productsController.getProduct({
-        title: req.params.title,
+        id: req.params.id,
         });
     if(!product) {
         res.send({

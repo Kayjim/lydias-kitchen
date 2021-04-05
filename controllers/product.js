@@ -61,7 +61,7 @@ module.exports = {
     },
     getProduct: async (args, req) => {
         try{
-            const foundProduct = await Product.findOne({title: args.title}).populate('ingredients');
+            const foundProduct = await Product.findOne({_id: args.id}).populate('ingredients');
             if(!foundProduct){
                 throw new Error('No product found by that name!');
             }

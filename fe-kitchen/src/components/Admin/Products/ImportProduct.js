@@ -53,9 +53,12 @@ const ImportProduct = (props) => {
 
     const handleCheckboxClick = (e, i) => {
         const newList = checked?.includes(e.target.id) ? checked?.filter(p => p !== e.target.id) : [...(checked ?? []), e.target.id];
+        props.products[i].ingredients = newList.map(i => {
+            return i.substring(0, i.length - 2);
+        });
+        console.log(props.products[i].ingredients);
         setChecked(newList);
     }
-
     return (
         <React.Fragment>
             <Button className={classes.addBtn} variant='outlined' color='primary' onClick={props.addNew}><AddIcon />Add Product<AddIcon /></Button>

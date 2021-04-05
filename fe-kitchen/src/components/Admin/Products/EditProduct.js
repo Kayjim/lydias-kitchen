@@ -84,7 +84,7 @@ const EditProduct = (props) => {
                         label="Product"
                     >
                         {props.entireList.map(p => {
-                            return (<MenuItem key={`${p._id}`} value={`${p.title}`}>{p.title}</MenuItem>)
+                            return (<MenuItem id={`${p._id}`} key={`${p._id}`} value={`${p.title}`}>{p.title}</MenuItem>)
                         })
                         }
                     </Select>
