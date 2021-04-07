@@ -69,9 +69,6 @@ const EditProduct = (props) => {
 
     return (
         <React.Fragment>
-            <div className={classes.legend}>
-                <h3>Edit a Product</h3>
-            </div>
             <form>
                 <FormControl variant="outlined" className={classes.formControl}>
                     <InputLabel id="iptLabel--product">Select Product</InputLabel>

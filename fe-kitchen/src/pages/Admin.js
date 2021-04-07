@@ -228,12 +228,7 @@ const AdminPage = () => {
             { viewKey == 'products' &&
                 <React.Fragment>
                     <div className={classes.legend}>
-                        <h3>Rules to Follow for Importing Products:</h3>
-                        <p>*<i>This page is primarily for importing a list of new products, and it is not for editing existing products.</i></p>
-                        <ul className={classes.legendList}>
-                            <li>When adding ingredients you need to enter them using a comma seperated list. For example - flour,butter,icing,sprinkles</li>
-                            <li>Examples for the "type" field - Cake or Cookie or Cupcake</li>
-                        </ul>
+                        <h3>Edit a Product</h3>
                     </div>
                     <div className={classes.productNav}>
                         <Button className={classes.addBtn} variant='outlined' color='primary' onClick={() => setService('product-edit')}>Edit Product</Button>
@@ -245,70 +240,63 @@ const AdminPage = () => {
                     {
                         service == 'product-edit' &&
                         <EditProduct entireList={entireList} allIngredients={allIngredients} product={product} productToEdit={productToEdit} ingredients={ingredients} handleSelectProductEdit={handleSelectProductEdit} handleEditChange={handleEditChange} handleSaveEditClick={handleSaveEditClick} />
-                    }
+            }
                 </React.Fragment >
             }
-            {
-                viewKey == 'images' &&
-                <React.Fragment>
-                    <div className={classes.legend}>
-                        <h3>Rules to Follow for Importing Images:</h3>
-                        {/* <p>*<i>This page is primarily for importing a list of new products, and it is not for editing existing products.</i></p> */}
-                        <ul className={classes.legendList}>
-                            <li>Test</li>
-                        </ul>
-                    </div>
-                    <form action='http://localhost:4000/3/uploadImages' method='POST' encType="multipart/form-data">
-                        <FormControl variant="outlined" className={classes.formControl}>
-                            <InputLabel id="iptLabel--product">Select Product</InputLabel>
-                            <Select
-                                labelId="select--product_label"
-                                id="product"
-                                name='product'
-                                value={product}
-                                onChange={handleRelations}
-                                label="Product"
-                            >
-                                {entireList.map(p => {
-                                    return (<MenuItem key={`${p._id}`} value={`${p.title}`}>{p.title}</MenuItem>)
-                                })
-                                }
-                            </Select>
-                        </FormControl>
-                        <Input
-                            accept="image/*"
-                            className={classes.input}
-                            id='productImages'
-                            name='productImages'
-                            inputProps={{ multiple: true }}
-                            type="file"
-                        />
-                        <Button type='submit' id='btnUpload' className={classes.uploadBtn} variant='contained' color='primary'>Submit</Button>
-                    </form>
-                </React.Fragment>
-            }
-            { viewKey == 'ingredients' &&
-                <React.Fragment>
-                    <div className={classes.legend}>
-                        <h3>Rules to Follow for Adding Ingredients:</h3>
-                        {/* <p>*<i>This page is primarily for importing a list of new products, and it is not for editing existing products.</i></p> */}
-                        <ul className={classes.legendList}>
-                            <li>Test</li>
-                        </ul>
-                    </div>
-                    <div className={classes.productNav}>
-                        <Button className={classes.addBtn} variant='outlined' color='primary' onClick={() => setService('ingredient-edit')}>Edit Ingredient</Button>
-                        <Button className={classes.addBtn} variant='outlined' color='primary' onClick={() => setService('ingredient-import')}>Import Ingredients</Button>
-                    </div>
-                    {service == 'ingredient-import' &&
-                        <ImportIngredient allIngredients={allIngredients} handleChange={handleChange} addNew={addNew} remove={remove} handleImport={handleImport} />
-                    }
-                    {
-                        service == 'ingredient-edit' &&
-                        <EditIngredient allIngredients={allIngredients} />
-                    }
-                </React.Fragment>
-            }
+{
+    viewKey == 'images' &&
+        <React.Fragment>
+            <div className={classes.legend}>
+                <h3>Import Images</h3>
+            </div>
+            <form action='http://localhost:4000/3/uploadImages' method='POST' encType="multipart/form-data">
+                <FormControl variant="outlined" className={classes.formControl}>
+                    <InputLabel id="iptLabel--product">Select Product</InputLabel>
+                    <Select
+                        labelId="select--product_label"
+                        id="product"
+                        name='product'
+                        value={product}
+                        onChange={handleRelations}
+                        label="Product"
+                    >
+                        {entireList.map(p => {
+                            return (<MenuItem key={`${p._id}`} value={`${p.title}`}>{p.title}</MenuItem>)
+                        })
+                        }
+                    </Select>
+                </FormControl>
+                <Input
+                    accept="image/*"
+                    className={classes.input}
+                    id='productImages'
+                    name='productImages'
+                    inputProps={{ multiple: true }}
+                    type="file"
+                />
+                <Button type='submit' id='btnUpload' className={classes.uploadBtn} variant='contained' color='primary'>Submit</Button>
+            </form>
+        </React.Fragment>
+}
+{
+    viewKey == 'ingredients' &&
+    <React.Fragment>
+        <div className={classes.legend}>
+            <h3>Add Ingredients</h3>
+        </div>
+        <div className={classes.productNav}>
+            <Button className={classes.addBtn} variant='outlined' color='primary' onClick={() => setService('ingredient-edit')}>Edit Ingredient</Button>
+            <Button className={classes.addBtn} variant='outlined' color='primary' onClick={() => setService('ingredient-import')}>Import Ingredients</Button>
+        </div>
+        {service == 'ingredient-import' &&
+            <ImportIngredient allIngredients={allIngredients} handleChange={handleChange} addNew={addNew} remove={remove} handleImport={handleImport} />
+        }
+        {
+            service == 'ingredient-edit' &&
+            <EditIngredient allIngredients={allIngredients} />
+        }
+    </React.Fragment>
+}
         </div >
     );
 };
