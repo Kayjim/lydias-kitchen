@@ -232,24 +232,32 @@ const EventsPage = (props) => {
 
     const handleDeleteClick = (e) => {
         let event = currentEvent;
-        axios.post('https://lydias-kitchen.herokuapp.com/3/deleteCurrentEvent', {
-            cdata: { id: event._id }
+        // axios.post('https://lydias-kitchen.herokuapp.com/3/deleteCurrentEvent', {
+        axios.post('http://localhost:4000/3/deleteCurrentEvent', {    
+                cdata: { id: event._id }
         }).then(res => {
             if (!res.status === 200) {
-                toast.success(res.status + ' : ' + res.statusText, {
+                toast.error(res.status + ' : ' + res.statusText, {
+                    position: toast.POSITION.TOP_CENTER
+                })
+                return;
+            }
+            else {
+                
+                toast.success(`${res.data.msg} - Please wait while the page and database refresh.`, {
                     position: toast.POSITION.TOP_CENTER
                 });
                 return;
             }
-            console.log(res);
-            return res;
+        })
+        .then(() => {
+            setTimeout(() => {window.location.reload(); }, 3000);
         }).catch(err => {
             toast.error(err.message, {
                 position: toast.POSITION.TOP_CENTER
             });
             return;
         })
-        window.location.reload();
     };
 
     const handleDateChange = (date) => {

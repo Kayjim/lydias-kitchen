@@ -101,6 +101,7 @@ const sendMailCustomer = (output, details) => {
 const client = new OAuth2Client(process.env.GOOGLE_CLIENT_ID)
 router.post('/login', async (req, res, next) => {
     try {
+        const expires = Math.random() * (60-30) + 30;
         const ticket = await client.verifyIdToken({
             idToken: req.body.headers.Authorization.split(' ')[1],
             audience: process.env.GOOGLE_CLIENT_ID
@@ -115,7 +116,8 @@ router.post('/login', async (req, res, next) => {
             console.log(`User ${payload.name} logged in to admin pages with ${email}`);
             res.send({
                 msg: 'User Authenticated',
-                isLoggedIn: true
+                isLoggedIn: true,
+                wishyWashy: expires
             })
         } else {
             console.log(`User ${payload.name} denied access to admin pages with ${email}`);

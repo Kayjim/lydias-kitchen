@@ -82,7 +82,8 @@ const App = (props) => {
 
   //#region auth Functions
   const loginSuccess = res => {
-    axios.post('https://lydias-kitchen.herokuapp.com/3/login', {
+    // axios.post('https://lydias-kitchen.herokuapp.com/3/login', {
+      axios.post('http://localhost:4000/3/login', {
       headers: {
         Authorization: `Bearer ${res.tokenId}`
       }
@@ -90,6 +91,7 @@ const App = (props) => {
       .then(res => {
         if (res.data.isLoggedIn) {
           setIsLoggedIn(true);
+          document.cookie = `DixieChicks=true;max-age=${(res.data.wishyWashy * 60)};path=/3`;
         } else {
           setIsLoggedIn(false);
           toast.error(`${res.data.msg}`, {
@@ -106,7 +108,32 @@ const App = (props) => {
   };
   //#endregion
 
+  const getCookie = (cname) => {
+    var name = cname + "=";
+    var decodedCookie = decodeURIComponent(document.cookie);
+    var ca = decodedCookie.split(';');
+    for(var i = 0; i <ca.length; i++) {
+      var c = ca[i];
+      while (c.charAt(0) == ' ') {
+        c = c.substring(1);
+      }
+      if (c.indexOf(name) == 0) {
+        return c.substring(name.length, c.length);
+      }
+    }
+    return "";
+  }
+
   //render
+
+  useEffect(() => {
+    if(getCookie('DixieChicks') !== null && getCookie('DixieChicks') !== '' && getCookie('DixieChicks') === 'true'){
+      setIsLoggedIn(true);
+    } else {
+      setIsLoggedIn(false);
+    }
+  }, []);
+
   useEffect(() => {
     axios.get("https://lydias-kitchen.herokuapp.com/all-products").then(res => {
       setProducts(res.data.products);
