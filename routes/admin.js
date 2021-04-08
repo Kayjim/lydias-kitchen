@@ -8,6 +8,7 @@ const multer = require('multer');
 const eventController = require('../controllers/event');
 const productsController = require('../controllers/product');
 const ingredientController = require('../controllers/ingredients');
+const sessionController = require('../controllers/sessions');
 
 
 const corsOptions = require('../middleware/cors-config');
@@ -113,12 +114,23 @@ router.post('/login', async (req, res, next) => {
         const { email } = payload;
 
         if (email === 'lydiapskitchen@gmail.com' || email === 'chrispatrickcodes@gmail.com') {
-            console.log(`User ${payload.name} logged in to admin pages with ${email}`);
+            console.log(`User ${payload.name} logged in to admin pages with ${email}\n ~~~Creating User Session~~~`);
+            
+            const createdSessionDetails = await sessionController.createSession({ user: email, expires: expires });
+            let isSupperDifferentThanDinner = '';
+            if(createdSessionDetails){
+                console.log(`User ${payload.name} successfully created session at ${createdSessionDetails.createdSession.createdAt} and will logout at ${createdSessionDetails.createdSession.deleteAt}`);
+                isSupperDifferentThanDinner = createdSessionDetails.isSupperDifferentThanDinner;
+            } else {
+                console.log('Error creating user session.');
+                isSupperDifferentThanDinner = 'Error'
+            }
             res.send({
                 msg: 'User Authenticated',
                 isLoggedIn: true,
-                wishyWashy: expires
-            })
+                wishyWashy: expires,
+                isSupperDifferentThanDinner: isSupperDifferentThanDinner
+            });
         } else {
             console.log(`User ${payload.name} denied access to admin pages with ${email}`);
             res.send({
