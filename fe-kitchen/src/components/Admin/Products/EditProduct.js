@@ -76,7 +76,7 @@ const EditProduct = (props) => {
                         labelId="select--product_label"
                         id="product"
                         name='product'
-                        value={props.product}
+                        value={props.productToEdit.title}
                         onChange={props.handleSelectProductEdit}
                         label="Product"
                     >
@@ -87,7 +87,7 @@ const EditProduct = (props) => {
                     </Select>
                 </FormControl>
                 <div className={classes.productCtr}>
-                    <TextField className={`${classes.input} ${classes.title}`} value={props.productToEdit.title} variant='outlined' label='Product Name' id='editTitle' onChange={(e) => props.handleEditChange(e)} />
+                    <TextField className={`${classes.input} ${classes.title}`} value={props.productToEdit.title || ''} variant='outlined' label='Product Name' id='editTitle' onChange={(e) => props.handleEditChange(e)} />
                     <TextField className={classes.input} variant='outlined' value={props.productToEdit.description || ''} label='Description' id='editDesc' onChange={(e) => props.handleEditChange(e)} />
                     <div className='ingredients-list'>
                         <ul>
@@ -111,7 +111,7 @@ const EditProduct = (props) => {
                             })}
                         </ul>
                     </div>
-                    <TextField className={classes.input} variant='outlined' value={props.productToEdit.type} label='Type' id='editType' onChange={(e) => props.handleEditChange(e)} />
+                    <TextField className={classes.input} variant='outlined' value={props.productToEdit.type || ''} label='Type' id='editType' onChange={(e) => props.handleEditChange(e)} />
                 </div>
                 <Button type='save' id='btnSaveEdit' className={classes.saveEditBtn} variant='contained' color='primary' onClick={(e) => props.handleSaveEditClick(e, checked)}>Save</Button>
             </form>

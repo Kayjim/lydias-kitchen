@@ -92,7 +92,7 @@ const EditIngredient = (props) => {
                     </Select>
                 </FormControl>
                 <div className={classes.ingredientCtr}>
-                    <TextField className={`${classes.input} ${classes.title}`} value={ingredient.name} variant='outlined' label='Ingredient Name' id='editName' onChange={handleEditChange} />
+                    <TextField className={`${classes.input} ${classes.title}`} value={ingredient.name || ''} variant='outlined' label='Ingredient Name' id='editName' onChange={handleEditChange} />
                     <div className='ingredients-list'>
                         <ul>
                             {ingredient.includedIn && ingredient.includedIn.map(p => {

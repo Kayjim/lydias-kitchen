@@ -77,9 +77,6 @@ const ImportIngredient = (props) => {
 
     return (
         <React.Fragment>
-            <div className={classes.legend}>
-                <h3>Edit a Product</h3>
-            </div>
             <Button className={classes.addBtn} variant='outlined' color='primary' onClick={addNew}><AddIcon />Add Ingredient<AddIcon /></Button>
             {ingredients.map((field, idx) => {
                 return (
