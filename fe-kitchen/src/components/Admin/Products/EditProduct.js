@@ -8,6 +8,9 @@ import FormControl from '@material-ui/core/FormControl';
 import Select from '@material-ui/core/Select';
 import Checkbox from '@material-ui/core/Checkbox';
 import FormControlLabel from '@material-ui/core/FormControlLabel';
+import { toast } from 'react-toastify';
+
+import axios from 'axios';
 
 
 const useStyles = makeStyles(theme => ({
@@ -36,7 +39,23 @@ const useStyles = makeStyles(theme => ({
         maxWidth: '70%',
         marginBottom: '5px',
         padding: '5px'
-    }
+    },
+    button: {
+        marginTop: theme.spacing(3),
+        marginLeft: theme.spacing(1),
+    },
+    saveEditBtn: {
+        backgroundColor: '#6A8A82',
+        '&:hover': {
+            backgroundColor: '#A7414A',
+        },
+    },
+    deleteBtn: {
+        backgroundColor: '#A7414A',
+        '&:hover': {
+            backgroundColor: '#6A8A82',
+        },
+    },
 }));
 
 
@@ -66,6 +85,34 @@ const EditProduct = (props) => {
         const newList = checked?.includes(e.target.id) ? checked?.filter(p => p !== e.target.id) : [...(checked ?? []), e.target.id]
         setChecked(newList);
     }
+
+    const handleDeleteClick = e => {
+        axios.post(`http://localhost:4000/3/deleteProduct`, {
+            cdata: { id: props.productToEdit._id }
+        }).then(res => {
+            if (!res.status === 200) {
+                toast.error(res.status + ' : ' + res.statusText, {
+                    position: toast.POSITION.TOP_CENTER
+                })
+                return;
+            }
+            else {
+
+                toast.success(`${res.data.msg} - Please wait while the page and database refresh.`, {
+                    position: toast.POSITION.TOP_CENTER
+                });
+                return;
+            }
+        })
+            .then(() => {
+                setTimeout(() => { window.location.reload(); }, 3000);
+            }).catch(err => {
+                toast.error(err.message, {
+                    position: toast.POSITION.TOP_CENTER
+                });
+                return;
+            })
+    };
 
     return (
         <React.Fragment>
@@ -113,7 +160,10 @@ const EditProduct = (props) => {
                     </div>
                     <TextField className={classes.input} variant='outlined' value={props.productToEdit.type || ''} label='Type' id='editType' onChange={(e) => props.handleEditChange(e)} />
                 </div>
-                <Button type='save' id='btnSaveEdit' className={classes.saveEditBtn} variant='contained' color='primary' onClick={(e) => props.handleSaveEditClick(e, checked)}>Save</Button>
+                <Button type='save' id='btnSaveEdit' className={`${classes.saveEditBtn} ${classes.button}`} variant='contained' color='primary' onClick={(e) => props.handleSaveEditClick(e, checked)}>Save</Button>
+                <Button id='delete' onClick={handleDeleteClick} label="Delete" className={`${classes.button} ${classes.deleteBtn}`}>
+                    Delete
+                </Button>
             </form>
         </React.Fragment>
     );

@@ -6,6 +6,7 @@ import InputLabel from '@material-ui/core/InputLabel';
 import MenuItem from '@material-ui/core/MenuItem';
 import FormControl from '@material-ui/core/FormControl';
 import Select from '@material-ui/core/Select';
+import { toast } from 'react-toastify';
 
 import axios from 'axios';
 
@@ -36,7 +37,23 @@ const useStyles = makeStyles(theme => ({
         maxWidth: '70%',
         marginBottom: '5px',
         padding: '5px'
-    }
+    },
+    button: {
+        marginTop: theme.spacing(3),
+        marginLeft: theme.spacing(1),
+    },
+    saveEditBtn: {
+        backgroundColor: '#6A8A82',
+        '&:hover': {
+            backgroundColor: '#A7414A',
+        },
+    },
+    deleteBtn: {
+        backgroundColor: '#A7414A',
+        '&:hover': {
+            backgroundColor: '#6A8A82',
+        },
+    },
 }));
 
 
@@ -57,6 +74,34 @@ const EditIngredient = (props) => {
 
         setIngredient(ingrd);
     }
+
+    const handleDeleteClick = e => {
+        axios.post(`http://localhost:4000/3/deleteIngredient`, {
+            cdata: { id: ingredient._id }
+        }).then(res => {
+            if (!res.status === 200) {
+                toast.error(res.status + ' : ' + res.statusText, {
+                    position: toast.POSITION.TOP_CENTER
+                })
+                return;
+            }
+            else {
+
+                toast.success(`${res.data.msg} - Please wait while the page and database refresh.`, {
+                    position: toast.POSITION.TOP_CENTER
+                });
+                return;
+            }
+        })
+            .then(() => {
+                setTimeout(() => { window.location.reload(); }, 3000);
+            }).catch(err => {
+                toast.error(err.message, {
+                    position: toast.POSITION.TOP_CENTER
+                });
+                return;
+            })
+    };
 
     const handleSaveEditClick = e => {
         let ingrdient = { ...ingredient };
@@ -95,13 +140,16 @@ const EditIngredient = (props) => {
                     <TextField className={`${classes.input} ${classes.title}`} value={ingredient.name || ''} variant='outlined' label='Ingredient Name' id='editName' onChange={handleEditChange} />
                     <div className='ingredients-list'>
                         <ul>
-                            {ingredient.includedIn && ingredient.includedIn.map(p => {
-                                return <li>{p.title}</li>
+                            {ingredient.includedIn && ingredient.includedIn.map(i => {
+                                return <li>{i.title}</li>
                             })}
                         </ul>
                     </div>
                 </div>
-                <Button type='save' id='btnSaveEdit' className={classes.saveEditBtn} variant='contained' color='primary' onClick={handleSaveEditClick}>Save</Button>
+                <Button type='save' id='btnSaveEdit' className={`${classes.saveEditBtn} ${classes.button}`} variant='contained' color='primary' onClick={handleSaveEditClick}>Save</Button>
+                <Button id='delete' onClick={handleDeleteClick} label="Delete" className={`${classes.button} ${classes.deleteBtn}`}>
+                    Delete
+                </Button>
             </form>
         </React.Fragment>
     );

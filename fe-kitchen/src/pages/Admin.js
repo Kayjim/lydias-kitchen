@@ -46,6 +46,7 @@ const useStyles = makeStyles(theme => ({
     }
 }));
 
+
 const AdminPage = () => {
 
     const classes = useStyles();
@@ -66,7 +67,14 @@ const AdminPage = () => {
     //#region image view state
     const [product, setProduct] = useState({});
     const [entireList, setEntireList] = useState([{}]);
+    const [images, setImages] = useState([]);
     //#endregion
+
+    const importAll = r => {
+        return r.keys().map((r, idx) => {
+
+        });
+    }
 
     //#region render
     useEffect(() => {
@@ -75,7 +83,17 @@ const AdminPage = () => {
             console.log(res.data.products);
             setEntireList(res.data.products);
         }).catch(e => { console.log(e) });
-
+        let imgs = [];
+        axios.get('http://localhost:4000/3/allImages')
+        .then(res => {
+            if(res.data.imageFiles){
+                imgs = res.data.imageFiles;
+            }
+            setImages(imgs);
+        })
+        .catch(err => {
+            console.log(err);
+        });
     }, []);
     //#endregion
 
@@ -240,63 +258,71 @@ const AdminPage = () => {
                     {
                         service == 'product-edit' &&
                         <EditProduct entireList={entireList} allIngredients={allIngredients} product={product} productToEdit={productToEdit} ingredients={ingredients} handleSelectProductEdit={handleSelectProductEdit} handleEditChange={handleEditChange} handleSaveEditClick={handleSaveEditClick} />
-            }
+                    }
                 </React.Fragment >
             }
-{
-    viewKey == 'images' &&
-        <React.Fragment>
-            <div className={classes.legend}>
-                <h3>Import Images</h3>
-            </div>
-            <form action='http://localhost:4000/3/uploadImages' method='POST' encType="multipart/form-data">
-                <FormControl variant="outlined" className={classes.formControl}>
-                    <InputLabel id="iptLabel--product">Select Product</InputLabel>
-                    <Select
-                        labelId="select--product_label"
-                        id="product"
-                        name='product'
-                        value={product}
-                        onChange={handleRelations}
-                        label="Product"
-                    >
-                        {entireList.map(p => {
-                            return (<MenuItem key={`${p._id}`} value={`${p.title}`}>{p.title}</MenuItem>)
-                        })
+            {
+                viewKey == 'images' &&
+                <React.Fragment>
+                    <div className={classes.legend}>
+                        <h3>Import Images</h3>
+                    </div>
+                    <form action='http://localhost:4000/3/uploadImages' method='POST' encType="multipart/form-data">
+                        <FormControl variant="outlined" className={classes.formControl}>
+                            <InputLabel id="iptLabel--product">Select Product</InputLabel>
+                            <Select
+                                labelId="select--product_label"
+                                id="product"
+                                name='product'
+                                value={product}
+                                onChange={handleRelations}
+                                label="Product"
+                            >
+                                {entireList.map(p => {
+                                    return (<MenuItem key={`${p._id}`} value={`${p.title}`}>{p.title}</MenuItem>)
+                                })
+                                }
+                            </Select>
+                        </FormControl>
+                        <Input
+                            accept="image/*"
+                            className={classes.input}
+                            id='productImages'
+                            name='productImages'
+                            inputProps={{ multiple: true }}
+                            type="file"
+                        />
+                        <Button type='submit' id='btnUpload' className={classes.uploadBtn} variant='contained' color='primary'>Submit</Button>
+                    </form>
+
+                    <div className={'imagesCtr'}>
+                        {
+                            images.map(
+                                (img, idx) => <img key={idx} alt="product" style={{ width: '100%', maxWidth: 250, maxHeight: 325, height: 200 }} src={img}></img>
+                            )
                         }
-                    </Select>
-                </FormControl>
-                <Input
-                    accept="image/*"
-                    className={classes.input}
-                    id='productImages'
-                    name='productImages'
-                    inputProps={{ multiple: true }}
-                    type="file"
-                />
-                <Button type='submit' id='btnUpload' className={classes.uploadBtn} variant='contained' color='primary'>Submit</Button>
-            </form>
-        </React.Fragment>
-}
-{
-    viewKey == 'ingredients' &&
-    <React.Fragment>
-        <div className={classes.legend}>
-            <h3>Add Ingredients</h3>
-        </div>
-        <div className={classes.productNav}>
-            <Button className={classes.addBtn} variant='outlined' color='primary' onClick={() => setService('ingredient-edit')}>Edit Ingredient</Button>
-            <Button className={classes.addBtn} variant='outlined' color='primary' onClick={() => setService('ingredient-import')}>Import Ingredients</Button>
-        </div>
-        {service == 'ingredient-import' &&
-            <ImportIngredient allIngredients={allIngredients} handleChange={handleChange} addNew={addNew} remove={remove} handleImport={handleImport} />
-        }
-        {
-            service == 'ingredient-edit' &&
-            <EditIngredient allIngredients={allIngredients} />
-        }
-    </React.Fragment>
-}
+                    </div>
+                </React.Fragment>
+            }
+            {
+                viewKey == 'ingredients' &&
+                <React.Fragment>
+                    <div className={classes.legend}>
+                        <h3>Add Ingredients</h3>
+                    </div>
+                    <div className={classes.productNav}>
+                        <Button className={classes.addBtn} variant='outlined' color='primary' onClick={() => setService('ingredient-edit')}>Edit Ingredient</Button>
+                        <Button className={classes.addBtn} variant='outlined' color='primary' onClick={() => setService('ingredient-import')}>Import Ingredients</Button>
+                    </div>
+                    {service == 'ingredient-import' &&
+                        <ImportIngredient allIngredients={allIngredients} handleChange={handleChange} addNew={addNew} remove={remove} handleImport={handleImport} />
+                    }
+                    {
+                        service == 'ingredient-edit' &&
+                        <EditIngredient allIngredients={allIngredients} />
+                    }
+                </React.Fragment>
+            }
         </div >
     );
 };
