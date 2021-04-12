@@ -132,14 +132,9 @@ module.exports = {
         }
     },
     deleteEvent: async (args, req) => {
-        await Event.deleteOne({_id: args}, (err) => {
-            if(err) {
-                console.log(err);
-                return false;
-            }
-            return true;
-
+        await Event.deleteOne({_id: args})
+        .catch(err => {
+            console.log(err);
         });
-
     }
 }

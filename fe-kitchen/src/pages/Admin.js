@@ -79,28 +79,17 @@ const AdminPage = () => {
     //#region render
     useEffect(() => {
         //get all
-        axios.get("http://localhost:4000/all-products").then(res => {
+        axios.get("https://lydias-kitchen.herokuapp.com/all-products").then(res => {
             console.log(res.data.products);
             setEntireList(res.data.products);
         }).catch(e => { console.log(e) });
-        let imgs = [];
-        axios.get('http://localhost:4000/3/allImages')
-        .then(res => {
-            if(res.data.imageFiles){
-                imgs = res.data.imageFiles;
-            }
-            setImages(imgs);
-        })
-        .catch(err => {
-            console.log(err);
-        });
     }, []);
     //#endregion
 
     //#region change listeners
 
     useEffect(() => {
-        axios.get(`http://localhost:4000/3/products/${productToEditId}`)
+        axios.get(`https://lydias-kitchen.herokuapp.com/3/products/${productToEditId}`)
             .then(res => {
                 setIngredients(res.data.cdata.product.ingredients);
                 setProductToEdit(res.data.cdata.product);
@@ -111,7 +100,7 @@ const AdminPage = () => {
 
     useEffect(() => {
         if (viewKey == 'products') {
-            axios.get('http://localhost:4000/3/ingredients')
+            axios.get('https://lydias-kitchen.herokuapp.com/3/ingredients')
                 .then(res => {
                     setAllIngredients(res.data.cdata.ingredients);
                 }).catch(err => {
@@ -160,7 +149,7 @@ const AdminPage = () => {
 
     const handleImport = () => {
         // axios.post('https://lydias-kitchen.herokuapp.com/3/import', products)
-        axios.post('http://localhost:4000/3/import', {
+        axios.post('https://lydias-kitchen.herokuapp.com/3/import', {
             data: {
                 products: products
             }
@@ -201,7 +190,7 @@ const AdminPage = () => {
     const handleSaveEditClick = (e, ingredients) => {
         e.preventDefault();
         let product = { ...productToEdit, ingredients: ingredients };
-        axios.put(`http://localhost:4000/3/products/${productToEdit._id}`, {
+        axios.put(`https://lydias-kitchen.herokuapp.com/3/products/${productToEdit._id}`, {
             updatedProduct: product
         })
             .then(res => {
@@ -246,7 +235,23 @@ const AdminPage = () => {
             { viewKey == 'products' &&
                 <React.Fragment>
                     <div className={classes.legend}>
-                        <h3>Edit a Product</h3>
+                        <h3>Add/Edit a Product</h3>
+                        <ol>
+                            <h4>The product names you are importing or editing must follow this STRICT formatting:</h4>
+                            <li>
+                                Chocolate Crazy Cake
+                            </li>
+                            <li>
+                                ChocolateCrazyCake
+                            </li>
+                            <li>
+                                Chocolate-Crazy-Cake
+                            </li>
+                            <li>
+                                Chocolate_Crazy_Cake
+                            </li>
+                            <p>Any /'s or other crazy characters my cause the system to error out.</p>
+                        </ol>
                     </div>
                     <div className={classes.productNav}>
                         <Button className={classes.addBtn} variant='outlined' color='primary' onClick={() => setService('product-edit')}>Edit Product</Button>
@@ -266,8 +271,27 @@ const AdminPage = () => {
                 <React.Fragment>
                     <div className={classes.legend}>
                         <h3>Import Images</h3>
+                        <ol>
+                            <h4>The image names you are importing must follow this STRICT formatting:</h4>
+                            <li>
+                                ValentineLoveCookie-A
+                            </li>
+                            <li>
+                                ValentineLoveCookie-B
+                            </li>
+                            <li>
+                                SprinkleCrinkleCupcake-A
+                            </li>
+                            <li>
+                                SprinkleCrinkleCupcake-B
+                            </li>
+                            <li>
+                                SprinkleCrinkleCupcake-C
+                            </li>
+                            <p>Images that end with -A will be the primary display image. Images that don't end with -A will just be stored on  the server for future use.</p>
+                        </ol>
                     </div>
-                    <form action='http://localhost:4000/3/uploadImages' method='POST' encType="multipart/form-data">
+                    <form action='https://lydias-kitchen.herokuapp.com/3/uploadImages' method='POST' encType="multipart/form-data">
                         <FormControl variant="outlined" className={classes.formControl}>
                             <InputLabel id="iptLabel--product">Select Product</InputLabel>
                             <Select
@@ -308,7 +332,7 @@ const AdminPage = () => {
                 viewKey == 'ingredients' &&
                 <React.Fragment>
                     <div className={classes.legend}>
-                        <h3>Add Ingredients</h3>
+                        <h3>Add/Edit Ingredients</h3>
                     </div>
                     <div className={classes.productNav}>
                         <Button className={classes.addBtn} variant='outlined' color='primary' onClick={() => setService('ingredient-edit')}>Edit Ingredient</Button>

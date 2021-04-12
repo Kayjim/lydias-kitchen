@@ -4,6 +4,8 @@ const sgMail = require('@sendgrid/mail');
 const cors = require('cors');
 const { OAuth2Client } = require('google-auth-library');
 const multer = require('multer');
+const fs = require('fs');
+const path = require('path');
 
 const eventController = require('../controllers/event');
 const productsController = require('../controllers/product');
@@ -102,7 +104,7 @@ const sendMailCustomer = (output, details) => {
 const client = new OAuth2Client(process.env.GOOGLE_CLIENT_ID)
 router.post('/login', async (req, res, next) => {
     try {
-        const expires = Math.random() * (60-30) + 30;
+        const expires = Math.random() * (60 - 30) + 30;
         const ticket = await client.verifyIdToken({
             idToken: req.body.headers.Authorization.split(' ')[1],
             audience: process.env.GOOGLE_CLIENT_ID
@@ -115,10 +117,10 @@ router.post('/login', async (req, res, next) => {
 
         if (email === 'lydiapskitchen@gmail.com' || email === 'chrispatrickcodes@gmail.com') {
             console.log(`User ${payload.name} logged in to admin pages with ${email}\n ~~~Creating User Session~~~`);
-            
+
             const createdSessionDetails = await sessionController.createSession({ user: email, expires: expires });
             let isSupperDifferentThanDinner = '';
-            if(createdSessionDetails){
+            if (createdSessionDetails) {
                 console.log(`User ${payload.name} successfully created session at ${createdSessionDetails.createdSession.createdAt} and will logout at ${createdSessionDetails.createdSession.deleteAt}`);
                 isSupperDifferentThanDinner = createdSessionDetails.isSupperDifferentThanDinner;
             } else {
@@ -162,7 +164,7 @@ router.post('/uploadImages', async (req, res, next) => {
     const storage = multer.diskStorage({
         destination: './public/uploads/',
         filename: (req, file, cb) => {
-            cb(null, req.body.product.replace(/\s/g, '') + '-' + file.originalname.replace(/\s/g, ''));
+            cb(null, file.originalname.replace(/\s/g, ''));
         }
     });
     let upload = multer({
@@ -206,7 +208,7 @@ router.post('/uploadImages', async (req, res, next) => {
                 msg: err
             });
         }
-        res.status(200).redirect(301, 'http://localhost:3000/3')
+        res.status(200).redirect(301, 'https://lydias-kitchen.herokuapp.com/3')
     });
 
     // await product.save().then(result => {
@@ -286,6 +288,47 @@ router.post('/deleteCurrentEvent', async (req, res, next) => {
     }
 });
 
+router.post('/deleteProduct', async (req, res, next) => {
+    try {
+        const id = req.body.cdata.id;
+
+        const deletedProduct = await productsController.deleteProduct(id);
+
+        if (!deletedProduct) {
+            res.send({
+                msg: 'Delete Product failed.'
+            });
+        }
+
+        res.send({
+            msg: 'The product has been deleted.'
+        })
+    } catch (err) {
+        res.send({
+            msg: 'Delete product failed.'
+        });
+    }
+});
+
+router.post('/deleteIngredient', async (req, res, next) => {
+    try {
+        const id = req.body.cdata.id;
+
+        const deletedIngredient = await ingredientController.deleteIngredient(id);
+
+        if (!deletedIngredient) {
+            res.send({
+                msg: 'Delete Ingredient failed.'
+            });
+        }
+
+        res.send({
+            msg: 'The ingredient has been deleted.'
+        })
+    } catch (err) {
+
+    }
+});
 
 //#endregion
 
@@ -417,6 +460,7 @@ router.post('/sendOrder', async (req, res, next) => {
     }
 });
 
+//#region get routes
 router.get('/allEvents', async (req, res, next) => {
     try {
         const events = await eventController.getAllEvents();
@@ -428,5 +472,29 @@ router.get('/allEvents', async (req, res, next) => {
         console.log(err);
     }
 });
+
+// router.get('/allImages', async (req, res, next) => {
+//     let imageFiles = [];
+//     const directoryPath = path.join(__dirname, '../public/uploads');
+
+//     fs.readdir(directoryPath, (err, files) => {
+//         if(err) {
+//             res.status(500).send({
+//                 msg: `Unable to scan directory: ${err}`,
+//             });
+//         }
+//         if(files){
+//             files.forEach((f) => {
+//                 imageFiles.push(f);
+//             });
+    
+//             res.send({
+//                 msg: 'Get Images Successful',
+//                 imageFiles: imageFiles
+//             });
+//         }
+//     });
+// });
+//#endregion
 
 module.exports = router;

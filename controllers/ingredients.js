@@ -55,5 +55,16 @@ module.exports = {
         } catch (e) {
             throw (e)
         }
+    },
+    deleteIngredient: async (args, req) => {
+        try {
+            await Ingredient.deleteOne({_id: args}).catch(err => {
+                console.log(err);
+                return false;
+            });
+            return true;
+        } catch(e) {
+            throw (e)
+        }
     }
 }

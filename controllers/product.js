@@ -29,7 +29,7 @@ module.exports = {
     },
     getAllProducts: async (args, req) => {
         try {
-            const products = await Product.find();
+            const products = await Product.find().populate('ingredients');
             return products.map(p => {
                 return transformProduct(p);
             });
@@ -94,6 +94,17 @@ module.exports = {
             return result;
 
         } catch (e) {
+            throw (e)
+        }
+    },
+    deleteProduct: async (args, req) => {
+        try {
+            await Product.deleteOne({_id: args}).catch(err => {
+                console.log(err);
+                return false;
+            });
+            return true;
+        } catch(e) {
             throw (e)
         }
     }

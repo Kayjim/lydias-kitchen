@@ -87,7 +87,7 @@ const EditProduct = (props) => {
     }
 
     const handleDeleteClick = e => {
-        axios.post(`http://localhost:4000/3/deleteProduct`, {
+        axios.post(`https://lydias-kitchen.herokuapp.com/3/deleteProduct`, {
             cdata: { id: props.productToEdit._id }
         }).then(res => {
             if (!res.status === 200) {

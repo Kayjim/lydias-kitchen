@@ -17,12 +17,15 @@ const DBNAME = process.env.DBNAME;
 const app = express();
 
 mongoose.set("useFindAndModify", false);
+mongoose.set("useCreateIndex", true);
 
 app.use("/public", express.static(path.join(__dirname, "public")));
 
 // app.use(cookieParser());
 app.use(bodyParser.urlencoded({ extended: false }));
 app.use(bodyParser.json());
+
+app.use(express.static(__dirname + '/public/uploads'));
 
 var corsOptions = {
   origin: [

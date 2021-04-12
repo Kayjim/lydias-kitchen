@@ -64,7 +64,7 @@ const ImportIngredient = (props) => {
 
     const handleImportClick = () => {
         const ingrds = [ ...ingredients ];
-        axios.post(`http://localhost:4000/3/ingredients`, {
+        axios.post(`https://lydias-kitchen.herokuapp.com/3/ingredients`, {
             ingredients: ingrds
         })
             .then(res => {

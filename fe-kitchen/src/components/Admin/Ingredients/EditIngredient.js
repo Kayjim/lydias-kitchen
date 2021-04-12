@@ -76,7 +76,7 @@ const EditIngredient = (props) => {
     }
 
     const handleDeleteClick = e => {
-        axios.post(`http://localhost:4000/3/deleteIngredient`, {
+        axios.post(`https://lydias-kitchen.herokuapp.com/3/deleteIngredient`, {
             cdata: { id: ingredient._id }
         }).then(res => {
             if (!res.status === 200) {
@@ -105,7 +105,7 @@ const EditIngredient = (props) => {
 
     const handleSaveEditClick = e => {
         let ingrdient = { ...ingredient };
-        axios.put(`http://localhost:4000/3/ingredients/${ingrdient._id}`, {
+        axios.put(`https://lydias-kitchen.herokuapp.com/3/ingredients/${ingrdient._id}`, {
             ingredient: ingrdient
         })
             .then(res => {
@@ -117,9 +117,6 @@ const EditIngredient = (props) => {
     }
     return (
         <React.Fragment>
-            <div className={classes.legend}>
-                <h3>Edit an Ingredient</h3>
-            </div>
             <form>
                 <FormControl variant="outlined" className={classes.formControl}>
                     <InputLabel id="iptLabel--ingredient">Select Ingredient</InputLabel>

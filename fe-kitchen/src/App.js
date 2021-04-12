@@ -82,8 +82,7 @@ const App = (props) => {
 
   //#region auth Functions
   const loginSuccess = res => {
-    // axios.post('https://lydias-kitchen.herokuapp.com/3/login', {
-      axios.post('http://localhost:4000/3/login', {
+    axios.post('https://lydias-kitchen.herokuapp.com/3/login', {
       headers: {
         Authorization: `Bearer ${res.tokenId}`
       }
@@ -112,7 +111,7 @@ const App = (props) => {
     var name = cname + "=";
     var decodedCookie = decodeURIComponent(document.cookie);
     var ca = decodedCookie.split(';');
-    for(var i = 0; i <ca.length; i++) {
+    for (var i = 0; i < ca.length; i++) {
       var c = ca[i];
       while (c.charAt(0) == ' ') {
         c = c.substring(1);
@@ -127,7 +126,7 @@ const App = (props) => {
   //render
 
   useEffect(() => {
-    if(getCookie('DixieChicks') !== null && getCookie('DixieChicks') !== '' && getCookie('DixieChicks') === 'true'){
+    if (getCookie('DixieChicks') !== null && getCookie('DixieChicks') !== '' && getCookie('DixieChicks') === 'true') {
       setIsLoggedIn(true);
     } else {
       setIsLoggedIn(false);
@@ -210,7 +209,7 @@ const App = (props) => {
           exact
         >
           <Redirect to='/3' />
-          </Route>
+        </Route>
       </Switch>
       <footer className={classes.footer}>
         <Copyright />

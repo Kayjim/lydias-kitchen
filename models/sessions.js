@@ -9,7 +9,10 @@ const sessionSchema = new Schema({
         type: Date,
         default: Date.now,
     },
-    deleteAt: Date
+    deleteAt: {
+        type: Date,
+        index: {expires: '5m'}
+    }
 });
 
 module.exports = mongoose.model('Session', sessionSchema);

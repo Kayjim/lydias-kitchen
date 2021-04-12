@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useState, useEffect } from 'react';
 import { makeStyles } from '@material-ui/core/styles';
 import Card from '@material-ui/core/Card';
 import CardActions from '@material-ui/core/CardActions';
@@ -54,47 +54,60 @@ export default function SimpleCard(props) {
   const classes = useStyles();
 
   const product = props.product;
+  const ingredients = props.ingredients;
+
+
+  const [ingredientString, setIngredientString] = useState('');
+
+  useEffect(() => {
+    let ingrdStr = '';
+
+    ingredients.forEach(i => {
+      ingrdStr += i.name + ' ';
+    })
+    setIngredientString(ingrdStr);
+  }, []);
 
   const showMore = (e) => {
     e.preventDefault();
-    if(e.target.classList.contains('MuiTypography-noWrap')){
+    if (e.target.classList.contains('MuiTypography-noWrap')) {
       e.target.classList.remove('MuiTypography-noWrap')
-    } 
+    }
     else {
       e.target.classList.add('MuiTypography-noWrap')
     }
-    
+
   };
 
   return (
     <Card className={props.className}>
       <CardContent className={classes.content}>
-        <Typography 
-          className={classes.title} 
-          style={{textAlign: 'center'}} 
+        <Typography
+          className={classes.title}
+          style={{ textAlign: 'center' }}
           gutterBottom>
           {props.title}
         </Typography>
-          <img style={{width: '100%', maxWidth:250, maxHeight: 325, height: 200}} src={props.image}></img>
-        <Typography 
+        <img style={{ width: '100%', maxWidth: 250, maxHeight: 325, height: 200 }} src={`https://lydias-kitchen.herokuapp.com/${props.title.replace(/\s/g, "")}-A.jpg`}></img>
+        <Typography
           id='description'
-          className={classes.pos} 
-          style={{textAlign: 'center', width: '100%'}}
+          className={classes.pos}
+          style={{ textAlign: 'center', width: '100%' }}
           noWrap
           onClick={showMore}
-          >
-            {props.description}
+        >
+          {props.description}
         </Typography>
-        <Typography 
+        <Typography
           id='ingredients'
           className={classes.ingredients}
-          variant="body2" 
-          style={{textAlign: 'center', width: '100%'}} 
+          variant="body2"
+          style={{ textAlign: 'center', width: '100%' }}
           component="p"
           noWrap
           onClick={showMore}
-          >
-            {props.ingredients.toString()}
+        >
+          {ingredientString}
         </Typography>
       </CardContent>
     </Card>
