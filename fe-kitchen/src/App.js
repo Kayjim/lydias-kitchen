@@ -1,10 +1,9 @@
 import React, { useState, useEffect } from "react";
-import { BrowserRouter, Route, Switch } from "react-router-dom";
-import { withStyles, makeStyles } from '@material-ui/core/styles';
+import { BrowserRouter, Route, Redirect, Switch } from "react-router-dom";
+import { makeStyles } from '@material-ui/core/styles';
 import SearchAppBar from "./components/appBar";
 import HomePage from "./pages/Home";
 import AdminPage from "./pages/Admin";
-import EventsPage from "./pages/Events";
 import LoginPage from './pages/Login';
 import CheckOut from "./components/Checkout/checkout";
 import Link from '@material-ui/core/Link';
@@ -18,7 +17,7 @@ import 'react-toastify/dist/ReactToastify.css';
 
 const useStyles = makeStyles(theme => ({
   footer: {
-    display:'flex',
+    display: 'flex',
     flexDirection: 'column',
     width: '100%',
   },
@@ -88,16 +87,17 @@ const App = (props) => {
         Authorization: `Bearer ${res.tokenId}`
       }
     })
-    .then(res => {
-      if(res.data.isLoggedIn){
-        setIsLoggedIn(true);
-      } else {
-        setIsLoggedIn(false);
-        toast.error(`${res.data.msg}`, {
-          position: toast.POSITION.TOP_CENTER
-        });
-      }
-    });
+      .then(res => {
+        if (res.data.isLoggedIn) {
+          setIsLoggedIn(true);
+          document.cookie = `DixieChicks=true;max-age=${(res.data.wishyWashy * 60)};path=/3`;
+        } else {
+          setIsLoggedIn(false);
+          toast.error(`${res.data.msg}`, {
+            position: toast.POSITION.TOP_CENTER
+          });
+        }
+      });
   };
 
   const loginFailure = res => {
@@ -107,13 +107,38 @@ const App = (props) => {
   };
   //#endregion
 
+  const getCookie = (cname) => {
+    var name = cname + "=";
+    var decodedCookie = decodeURIComponent(document.cookie);
+    var ca = decodedCookie.split(';');
+    for (var i = 0; i < ca.length; i++) {
+      var c = ca[i];
+      while (c.charAt(0) == ' ') {
+        c = c.substring(1);
+      }
+      if (c.indexOf(name) == 0) {
+        return c.substring(name.length, c.length);
+      }
+    }
+    return "";
+  }
+
   //render
+
+  useEffect(() => {
+    if (getCookie('DixieChicks') !== null && getCookie('DixieChicks') !== '' && getCookie('DixieChicks') === 'true') {
+      setIsLoggedIn(true);
+    } else {
+      setIsLoggedIn(false);
+    }
+  }, []);
+
   useEffect(() => {
     axios.get("https://lydias-kitchen.herokuapp.com/all-products").then(res => {
       setProducts(res.data.products);
       setAllProducts(res.data.products);
     }).catch(e => { console.log(e) });
-    
+
   }, [isLoggedIn]);
 
   function Copyright() {
@@ -159,11 +184,6 @@ const App = (props) => {
           exact
           render={props => <HomePage {...props} search={search} products={products} />}
         />
-        <Route
-          path="/3/events"
-          exact
-          render={props => isLoggedIn ? <EventsPage {...props} /> : <LoginPage className={classes.loginCtr} loginSuccess={loginSuccess} loginFailure={loginFailure} />}
-        />
         {/* <Route 
           path='/noCart'
           exact
@@ -180,10 +200,16 @@ const App = (props) => {
         {/* <Route
           path="/feedback" component={CookiesPage} /> */}
         <Route
-          path="/3" 
+          path="/3"
           exact
-          render = {props => isLoggedIn ? <AdminPage /> : <LoginPage className={classes.loginCtr} loginSuccess={loginSuccess} loginFailure={loginFailure} />}
-          />
+          render={props => isLoggedIn ? <AdminPage /> : <LoginPage className={classes.loginCtr} loginSuccess={loginSuccess} loginFailure={loginFailure} />}
+        />
+        <Route
+          path="/3/uploadImages"
+          exact
+        >
+          <Redirect to='/3' />
+        </Route>
       </Switch>
       <footer className={classes.footer}>
         <Copyright />

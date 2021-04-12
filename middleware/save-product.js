@@ -1,8 +1,7 @@
 const productController = require('../controllers/product');
 
 module.exports = saveProduct = (p) => {
-    const ingredients = p.ingredients.split(', ');
-    const imgs = p.imgs.split(', ');
+    const ingredients = p.ingredients;
     const title = p.title;
     const description = p.description;
     const type = p.type;
@@ -17,7 +16,7 @@ module.exports = saveProduct = (p) => {
             break;
     }
 
-    productController.createProduct({ title, description, price, type, level, imgs, ingredients})
+    productController.createProduct({ title, description, price, type, level, ingredients})
     .then((err, p) => {
         if(err)
             console.log(err);

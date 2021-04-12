@@ -13,7 +13,7 @@ const CookiePage = (props) => {
                         product={p}
                         className='cookie-card'
                         title={p.title}
-                        ingredients={p.ingredients}
+                        ingredients={p.ingredients || []}
                         description={p.description}
                         image={p.images[0]}
                     />

@@ -13,9 +13,8 @@ const CakesPage = (props) => {
                         product={p}
                         className='cake-card'
                         title={p.title}
-                        ingredients={p.ingredients}
+                        ingredients={p.ingredients || ''}
                         description={p.description}
-                        image={p.images[0]}
                     />
                 );
             }

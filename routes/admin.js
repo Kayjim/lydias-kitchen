@@ -3,8 +3,14 @@ var router = express.Router();
 const sgMail = require('@sendgrid/mail');
 const cors = require('cors');
 const { OAuth2Client } = require('google-auth-library');
+const multer = require('multer');
+const fs = require('fs');
+const path = require('path');
 
 const eventController = require('../controllers/event');
+const productsController = require('../controllers/product');
+const ingredientController = require('../controllers/ingredients');
+const sessionController = require('../controllers/sessions');
 
 
 const corsOptions = require('../middleware/cors-config');
@@ -14,6 +20,58 @@ const deleteEvent = require('../middleware/delete-event');
 const updateCurrentEvent = require('../middleware/update-current-event');
 
 router.use(cors(corsOptions));
+
+//#region ingredients routes
+router.get('/ingredients', async (req, res, next) => {
+    try {
+        //need to return an array of ingredients objects in data.cdata
+        const ingredients = await ingredientController.getAllIngredients();
+        res.send({
+            msg: 'Success!',
+            status: 200,
+            cdata: {
+                ingredients: ingredients
+            }
+        })
+    } catch (err) {
+        console.log(err);
+    }
+});
+router.post('/ingredients', async (req, res) => {
+    try {
+        const ingredients = req.body.ingredients;
+        ingredients.forEach(i => {
+            ingredientController.saveIngredient(i);
+        });
+
+        res.send({
+            msg: 'Ingredients created!'
+        });
+
+    } catch (err) {
+        console.log(err);
+    }
+});
+
+router.put('/ingredients/:id', async (req, res, next) => {
+    let updateComplete = await ingredientController.updateIngredient({
+        id: req.params.id,
+        updatedIngredient: req.body.ingredient
+    });
+    if (!updateComplete) {
+        res.send({
+            msg: "Error, update failed.",
+            status: 400
+        });
+    }
+    res.send({
+        status: 200,
+        msg: "Update complete"
+    });
+});
+
+//#endregion
+
 //#region SendGrid Stuff
 const sendMail = output => {
     sgMail.setApiKey(process.env.SG_API_KEY);
@@ -27,12 +85,26 @@ const sendMail = output => {
     }
     sgMail.send(msg);
 };
+
+const sendMailCustomer = (output, details) => {
+    sgMail.setApiKey(process.env.SG_API_KEY);
+    const msg = {
+        //to: 'lydiapskitchen@gmail.com',
+        to: `${details.email}`,
+        from: 'lydiapskitchen@gmail.com',
+        subject: `Your Lydia's Kitchen Order Has Been Placed`,
+        text: "Thanks for shopping with Lydia's Kitchen!",
+        html: output
+    }
+    sgMail.send(msg);
+}
 //#endregion
 
 //#region authentication routes
 const client = new OAuth2Client(process.env.GOOGLE_CLIENT_ID)
 router.post('/login', async (req, res, next) => {
     try {
+        const expires = Math.random() * (60 - 30) + 30;
         const ticket = await client.verifyIdToken({
             idToken: req.body.headers.Authorization.split(' ')[1],
             audience: process.env.GOOGLE_CLIENT_ID
@@ -43,12 +115,24 @@ router.post('/login', async (req, res, next) => {
 
         const { email } = payload;
 
-        if(email === 'lydiapskitchen@gmail.com' || email === 'chrispatrickcodes@gmail.com'){
-            console.log(`User ${payload.name} logged in to admin pages with ${email}`);
+        if (email === 'lydiapskitchen@gmail.com' || email === 'chrispatrickcodes@gmail.com') {
+            console.log(`User ${payload.name} logged in to admin pages with ${email}\n ~~~Creating User Session~~~`);
+
+            const createdSessionDetails = await sessionController.createSession({ user: email, expires: expires });
+            let isSupperDifferentThanDinner = '';
+            if (createdSessionDetails) {
+                console.log(`User ${payload.name} successfully created session at ${createdSessionDetails.createdSession.createdAt} and will logout at ${createdSessionDetails.createdSession.deleteAt}`);
+                isSupperDifferentThanDinner = createdSessionDetails.isSupperDifferentThanDinner;
+            } else {
+                console.log('Error creating user session.');
+                isSupperDifferentThanDinner = 'Error'
+            }
             res.send({
                 msg: 'User Authenticated',
-                isLoggedIn: true
-            })
+                isLoggedIn: true,
+                wishyWashy: expires,
+                isSupperDifferentThanDinner: isSupperDifferentThanDinner
+            });
         } else {
             console.log(`User ${payload.name} denied access to admin pages with ${email}`);
             res.send({
@@ -57,15 +141,90 @@ router.post('/login', async (req, res, next) => {
             });
         }
     }
-    catch(err) {
+    catch (err) {
         console.log(err);
     }
 });
 //#endregion
 
 //#region Saving routes
+
+const imageFilter = function (req, file, cb) {
+    // Accept images only
+    if (!file.originalname.match(/\.(jpg|JPG|jpeg|JPEG|png|PNG|gif|GIF)$/)) {
+        req.fileValidationError = 'Only image files are allowed!';
+        return cb(new Error('Only image files are allowed!'), false);
+    }
+    cb(null, true);
+};
+
+router.post('/uploadImages', async (req, res, next) => {
+
+    let filenames = [];
+    const storage = multer.diskStorage({
+        destination: './public/uploads/',
+        filename: (req, file, cb) => {
+            cb(null, file.originalname.replace(/\s/g, ''));
+        }
+    });
+    let upload = multer({
+        storage: storage,
+        fileFilter: imageFilter,
+    }).array('productImages', 10);
+
+
+    upload(req, res, function (err) {
+        // req.file contains information of uploaded file
+        // req.body contains information of text fields, if there were any
+        for (let i = 0; i < req.files.length; i++) {
+            filenames.push(req.files[i].path);
+        }
+
+        productsController.updateImagesForProduct({
+            title: req.body.product,
+            newImages: filenames
+        });
+        if (req.fileValidationError) {
+            return res.send({
+                status: 400,
+                msg: 'File did not pass filetype validation. Please select an image file type.'
+            });
+        }
+        else if (!req.file && !req.files) {
+            return res.send({
+                status: 400,
+                msg: 'Please select an image to upload'
+            });
+        }
+        else if (err instanceof multer.MulterError) {
+            return res.send({
+                status: 400,
+                msg: err
+            });
+        }
+        else if (err) {
+            return res.send({
+                status: 400,
+                msg: err
+            });
+        }
+        res.status(200).redirect(301, 'https://lydias-kitchen.herokuapp.com/3')
+    });
+
+    // await product.save().then(result => {
+    //     console.log(result.images);
+    //     res.status(201).json({
+    //         msg: "Images uploaded!",
+    //         productCreated: {
+    //             _id: result._id,
+    //             images: result.images
+    //         }
+    //     });
+    // });
+});
+
 router.post('/import', async (req, res) => {
-    const products = req.body;
+    const products = req.body.data.products;
 
     products.forEach(p => {
         saveProduct(p);
@@ -95,7 +254,7 @@ router.post('/updateCurrentEvent', async (req, res) => {
 });
 
 router.post('/saveEvent', async (req, res) => {
-    try{
+    try {
         const event = req.body.cdata.event;
 
         const updatedEvent = await saveEvent(event);
@@ -103,7 +262,7 @@ router.post('/saveEvent', async (req, res) => {
             msg: 'Save Event success',
             uE: updatedEvent
         })
-    } catch (err){
+    } catch (err) {
         res.send({
             msg: 'Save Event failed.'
         });
@@ -118,10 +277,10 @@ router.post('/deleteCurrentEvent', async (req, res, next) => {
         const id = req.body.cdata.id;
 
         const deletedEvent = await deleteEvent(id);
-            res.status(200).send({
-                msg: 'Deleted Event'
-            });
-    } catch(err){
+        res.status(200).send({
+            msg: 'Deleted Event'
+        });
+    } catch (err) {
         res.send({
             msg: 'Delete Event failed.'
         });
@@ -129,6 +288,47 @@ router.post('/deleteCurrentEvent', async (req, res, next) => {
     }
 });
 
+router.post('/deleteProduct', async (req, res, next) => {
+    try {
+        const id = req.body.cdata.id;
+
+        const deletedProduct = await productsController.deleteProduct(id);
+
+        if (!deletedProduct) {
+            res.send({
+                msg: 'Delete Product failed.'
+            });
+        }
+
+        res.send({
+            msg: 'The product has been deleted.'
+        })
+    } catch (err) {
+        res.send({
+            msg: 'Delete product failed.'
+        });
+    }
+});
+
+router.post('/deleteIngredient', async (req, res, next) => {
+    try {
+        const id = req.body.cdata.id;
+
+        const deletedIngredient = await ingredientController.deleteIngredient(id);
+
+        if (!deletedIngredient) {
+            res.send({
+                msg: 'Delete Ingredient failed.'
+            });
+        }
+
+        res.send({
+            msg: 'The ingredient has been deleted.'
+        })
+    } catch (err) {
+
+    }
+});
 
 //#endregion
 
@@ -164,8 +364,46 @@ const buildOrder = data => {
 };
 //#endregion
 
+
+//#region product routes
+router.get('/products/:id', async (req, res, next) => {
+    let product = await productsController.getProduct({
+        id: req.params.id,
+    });
+    if (!product) {
+        res.send({
+            msg: "Error, no product found!",
+            status: '404'
+        });
+    }
+    res.send({
+        status: 200,
+        cdata: {
+            product: product
+        }
+    })
+});
+
+router.put('/products/:id', async (req, res, next) => {
+    let updateComplete = await productsController.updateProduct({
+        id: req.params.id,
+        updatedProduct: req.body.updatedProduct
+    });
+    if (!updateComplete) {
+        res.send({
+            msg: "Error, update failed.",
+            status: 400
+        });
+    }
+    res.send({
+        status: 200,
+        msg: "Update complete"
+    });
+})
+//#endregion
 router.post('/sendOrder', async (req, res, next) => {
     try {
+        //#region Build Order for Internal Use
         const order = buildOrder(req.body.data);
         let output = `
         <h3>You have a new order from Lydia's Kitchen!</h3>
@@ -209,23 +447,54 @@ router.post('/sendOrder', async (req, res, next) => {
                    <p>${order.specReq}</p>`
         }
         sendMail(output);
+        //#endregion
+        let custDetails = {};
+        output = `Dear ${order.firstName} ${order.lastName},<br>Thank you for supporting Lydia's Kitchen with your order. Attached is  summary of your choices. You can expect an invoice closer to pickup day unless you chose the "cash on pickup" option. As a small business owner I know that I cannot succeed without your support - enjoy your treats!<br> - Lydia`;
+        custDetails.email = order.email;
+
+        sendMailCustomer(output, custDetails)
+        res.send('Mail sent');
     }
     catch (err) {
         console.log(err);
     }
-    res.send('Mail sent');
 });
 
+//#region get routes
 router.get('/allEvents', async (req, res, next) => {
-    try{
+    try {
         const events = await eventController.getAllEvents();
         res.send({
             msg: 'Success!',
             events: events
         })
-    } catch(err) {
+    } catch (err) {
         console.log(err);
     }
 });
+
+// router.get('/allImages', async (req, res, next) => {
+//     let imageFiles = [];
+//     const directoryPath = path.join(__dirname, '../public/uploads');
+
+//     fs.readdir(directoryPath, (err, files) => {
+//         if(err) {
+//             res.status(500).send({
+//                 msg: `Unable to scan directory: ${err}`,
+//             });
+//         }
+//         if(files){
+//             files.forEach((f) => {
+//                 imageFiles.push(f);
+//             });
+    
+//             res.send({
+//                 msg: 'Get Images Successful',
+//                 imageFiles: imageFiles
+//             });
+//         }
+//     });
+// });
+//#endregion
 
 module.exports = router;

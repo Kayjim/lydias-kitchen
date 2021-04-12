@@ -4,7 +4,18 @@ import Button from '@material-ui/core/Button';
 import AddIcon from '@material-ui/icons/Add';
 import RemoveIcon from '@material-ui/icons/Remove';
 import TextField from '@material-ui/core/TextField';
-import { withStyles, makeStyles } from '@material-ui/core/styles';
+import Input from '@material-ui/core/Input';
+import { makeStyles } from '@material-ui/core/styles';
+import InputLabel from '@material-ui/core/InputLabel';
+import MenuItem from '@material-ui/core/MenuItem';
+import FormControl from '@material-ui/core/FormControl';
+import Select from '@material-ui/core/Select';
+import EditProduct from '../components/Admin/Products/EditProduct';
+import ImportProduct from '../components/Admin/Products/ImportProduct';
+import EditIngredient from '../components/Admin/Ingredients/EditIngredient';
+import ImportIngredient from '../components/Admin/Ingredients/ImportIngredient';
+
+import Events from '../components/Admin/Events/Events';
 
 import axios from 'axios';
 
@@ -15,65 +26,184 @@ const useStyles = makeStyles(theme => ({
         flexDirection: 'column',
         padding: '10px'
     },
-    uploadProductForm: {
-        display: 'flex',
-        flexDirection: 'column',
-        minWidth: '100%',
-    },
-    productCtr: {
-        display: 'flex',
-        minWidth: '100%',
-        flexDirection: 'column',
-        border: '1px solid black',
-        padding: '10px',
-        margin: '5px 0'
-    },
-    addBtn: {
-        marginLeft: 'auto',
-        width: '300px',
-        maxWidth: '300px',
-    },
-    rmvBtn: {
-        maxWidth: '300px',
-        width: '300px',
-        marginLeft: 'auto'
-    },
-    importBtn: {
-        maxWidth: '30%',
-        margin: 'auto'
-    },
     input: {
         margin: '5px 0',
     },
-     title: {
-         alignSelf: 'center',
-         width: '50%'
-     },
-     legend: {
-         display: 'flex',
-         flexDirection: 'column',
-         alignSelf: 'center',
-         alignItems: 'center',
-         border: '1px solid black',
-         minWidth: '70%',
-         maxWidth: '70%',
-         marginBottom: '5px',
-         padding: '5px'
-     }
+    legend: {
+        display: 'flex',
+        flexDirection: 'column',
+        alignSelf: 'center',
+        alignItems: 'center',
+        border: '1px solid black',
+        minWidth: '70%',
+        maxWidth: '70%',
+        marginBottom: '5px',
+        padding: '5px'
+    },
+    productNav: {
+        display: 'flex',
+        flexDirection: 'row'
+    }
 }));
+
 
 const AdminPage = () => {
 
     const classes = useStyles();
 
-    const [products, setProducts] = useState([{ imgs: null, title: null, description: null, ingredients: null }]);
+    //#region universial state
+    const [viewKey, setViewKey] = useState('products');
+    const [service, setService] = useState('product-edit');
+    //#endregion
+
+    //#region product view state
+    const [products, setProducts] = useState([{ imgs: null, title: null, description: null, ingredients: null, images: [] }]);
+    const [productToEdit, setProductToEdit] = useState({});
+    const [productToEditId, setProductToEditId] = useState('');
+    const [ingredients, setIngredients] = useState([]);
+    const [allIngredients, setAllIngredients] = useState([]);
+    //#endregion
+
+    //#region image view state
+    const [product, setProduct] = useState({});
+    const [entireList, setEntireList] = useState([{}]);
+    const [images, setImages] = useState([]);
+    //#endregion
+
+    const importAll = r => {
+        return r.keys().map((r, idx) => {
+
+        });
+    }
+
+    //#region render
+    useEffect(() => {
+        //get all
+        axios.get("https://lydias-kitchen.herokuapp.com/all-products").then(res => {
+            console.log(res.data.products);
+            setEntireList(res.data.products);
+        }).catch(e => { console.log(e) });
+    }, []);
+    //#endregion
+
+    //#region change listeners
+
+    useEffect(() => {
+        axios.get(`https://lydias-kitchen.herokuapp.com/3/products/${productToEditId}`)
+            .then(res => {
+                setIngredients(res.data.cdata.product.ingredients);
+                setProductToEdit(res.data.cdata.product);
+            }).catch(err => {
+                console.log(err);
+            })
+    }, [productToEditId]);
+
+    useEffect(() => {
+        if (viewKey == 'products') {
+            axios.get('https://lydias-kitchen.herokuapp.com/3/ingredients')
+                .then(res => {
+                    setAllIngredients(res.data.cdata.ingredients);
+                }).catch(err => {
+                    console.log(err);
+                });
+        }
+    }, [viewKey]);
+
+    //#endregion
+
+    const handleRelations = (e) => {
+        setProduct(e.target.value);
+    };
+
+    const handleNavClick = e => {
+        e.preventDefault();
+
+        switch (e.target.parentElement.id) {
+            case ('productImport'):
+                setViewKey('products')
+                break;
+            case ('imageUpload'):
+                setViewKey('images')
+                break;
+            case ('ingredientImport'):
+                setViewKey('ingredients')
+                break;
+            case ('Events'):
+                setViewKey('events')
+                break;
+        }
+    }
+
+    //#region product methods
+    const addNew = () => {
+        const values = [...products];
+        values.push({ imgs: null, title: null, description: null, ingredients: null });
+        setProducts(values);
+    };
+
+    const remove = (i) => {
+        const values = [...products];
+        values.splice(i, 1);
+        setProducts(values);
+    };
+
+    const handleImport = () => {
+        // axios.post('https://lydias-kitchen.herokuapp.com/3/import', products)
+        axios.post('https://lydias-kitchen.herokuapp.com/3/import', {
+            data: {
+                products: products
+            }
+        })
+            .then(res => {
+                console.log(res);
+                console.log(res.data);
+            });
+    }
+
+    const handleEditChange = e => {
+        const value = { ...productToEdit };
+        switch (e.target.id) {
+            case ('editTitle'):
+                value.title = e.target.value;
+                break;
+            case ('editDesc'):
+                value.description = e.target.value;
+                break;
+            case ('editIngrd'):
+                value.ingredients = e.target.value;
+                setIngredients(e.target.value);
+                break;
+            case ('editType'):
+                value.type = e.target.value;
+                break;
+            default:
+                break;
+        }
+
+        setProductToEdit(value);
+    }
+
+    const handleSelectProductEdit = (e, child) => {
+        setProductToEditId(child.props.id);
+    }
+
+    const handleSaveEditClick = (e, ingredients) => {
+        e.preventDefault();
+        let product = { ...productToEdit, ingredients: ingredients };
+        axios.put(`https://lydias-kitchen.herokuapp.com/3/products/${productToEdit._id}`, {
+            updatedProduct: product
+        })
+            .then(res => {
+                console.log(res.data.msg);
+            })
+            .catch(err => {
+                console.log(err);
+            })
+    }
 
     const handleChange = (i, e) => {
         const values = [...products];
         switch (e.target.id) {
-            case ('imgs-' + i):
-                values[i].imgs = e.target.value;
-                break;
             case ('title-' + i):
                 values[i].title = e.target.value;
                 break;
@@ -88,57 +218,136 @@ const AdminPage = () => {
                 break;
         }
         setProducts(values);
-    };
-
-    const addNew = () => {
-        const values = [...products];
-        values.push({ imgs: null, title: null, description: null, ingredients: null });
-        setProducts(values);
-    };
-
-    const remove = (i) => {
-        const values = [...products];
-        values.splice(i, 1);
-        setProducts(values);
-    };
-
-    const handleImport = () => {
-        console.log(products);
-        axios.post('https://lydias-kitchen.herokuapp.com/3/import', products)
-            .then(res => {
-                console.log(res);
-                console.log(res.data);
-            });
     }
-
+    //#endregion
 
     return (
         <div className={classes.adminCtr}>
-            <div className={classes.legend}>
-                <h3>Rules to Follow for Importing Products:</h3>
-                <p>*<i>This page is primarily for importing a list of new products, and it is not for editing existing products.</i></p>
-                <ul className={classes.legendList}>
-                    <li>When adding images you need to enter them using a comma seperated list. For example - urlforimage1.imgur.com,urlforimage2.imgur.com,urlforimage3.imgur.com</li>
-                    <li>When adding ingredients you need to enter them using a comma seperated list. For example - flour,butter,icing,sprinkles</li>
-                    <li>Examples for the "type" field - Cake or Cookie or Cupcake</li>
-                </ul>
+            <div className={classes.adminNav}>
+                <Button id='Events' className={classes.navBtn} variant='outlined' color='primary' onClick={handleNavClick}>Events</Button>
+                <Button id='productImport' className={classes.navBtn} variant='outlined' color='primary' onClick={handleNavClick}>Products</Button>
+                <Button id='imageUpload' className={classes.navBtn} variant='outlined' color='primary' onClick={handleNavClick}>Image Upload</Button>
+                <Button id='ingredientImport' className={classes.navBtn} variant='outlined' color='primary' onClick={handleNavClick}>Ingredients</Button>
             </div>
-            <Button className={classes.addBtn} variant='outlined' color='primary' onClick={addNew}><AddIcon />Add Product<AddIcon /></Button>
-            <form className={classes.uploadProductForm}>
-                {products.map((field, idx) => {
-                    return (
-                        <div className={classes.productCtr} key={`${field}-${idx}`}>
-                            <TextField className={`${classes.input} ${classes.title}`} variant='outlined' label='Product Name' id={'title-' + idx} onChange={(e) => handleChange(idx, e)} />
-                            <TextField className={classes.input} variant='outlined' label='Images' id={'imgs-' + idx} onChange={(e) => handleChange(idx, e)} />
-                            <TextField className={classes.input} variant='outlined' label='Description' id={'desc-' + idx}  onChange={(e) => handleChange(idx, e)} />
-                            <TextField className={classes.input} variant='outlined' label='Ingredients' id={'ingrd-' + idx}  onChange={(e) => handleChange(idx, e)} />
-                            <TextField className={classes.input} variant='outlined' label='Type' id={'type-' + idx} onChange={(e) => handleChange(idx, e)} />
-                            <Button className={classes.rmvBtn} variant='outlined' color='secondary' onClick={() => remove(idx)}><RemoveIcon />Remove Product<RemoveIcon /></Button>
-                        </div>)
-                })}
-            </form>
-            <Button id='btnImport' className={classes.importBtn} variant='contained' color='primary' onClick={handleImport}>Import</Button>
-        </div>
+            { viewKey == 'events' &&
+                <Events />
+            }
+            { viewKey == 'products' &&
+                <React.Fragment>
+                    <div className={classes.legend}>
+                        <h3>Add/Edit a Product</h3>
+                        <ol>
+                            <h4>The product names you are importing or editing must follow this STRICT formatting:</h4>
+                            <li>
+                                Chocolate Crazy Cake
+                            </li>
+                            <li>
+                                ChocolateCrazyCake
+                            </li>
+                            <li>
+                                Chocolate-Crazy-Cake
+                            </li>
+                            <li>
+                                Chocolate_Crazy_Cake
+                            </li>
+                            <p>Any /'s or other crazy characters my cause the system to error out.</p>
+                        </ol>
+                    </div>
+                    <div className={classes.productNav}>
+                        <Button className={classes.addBtn} variant='outlined' color='primary' onClick={() => setService('product-edit')}>Edit Product</Button>
+                        <Button className={classes.addBtn} variant='outlined' color='primary' onClick={() => setService('product-import')}>Import Products</Button>
+                    </div>
+                    {service == 'product-import' &&
+                        <ImportProduct products={products} allIngredients={allIngredients} handleChange={handleChange} addNew={addNew} remove={remove} handleImport={handleImport} />
+                    }
+                    {
+                        service == 'product-edit' &&
+                        <EditProduct entireList={entireList} allIngredients={allIngredients} product={product} productToEdit={productToEdit} ingredients={ingredients} handleSelectProductEdit={handleSelectProductEdit} handleEditChange={handleEditChange} handleSaveEditClick={handleSaveEditClick} />
+                    }
+                </React.Fragment >
+            }
+            {
+                viewKey == 'images' &&
+                <React.Fragment>
+                    <div className={classes.legend}>
+                        <h3>Import Images</h3>
+                        <ol>
+                            <h4>The image names you are importing must follow this STRICT formatting:</h4>
+                            <li>
+                                ValentineLoveCookie-A
+                            </li>
+                            <li>
+                                ValentineLoveCookie-B
+                            </li>
+                            <li>
+                                SprinkleCrinkleCupcake-A
+                            </li>
+                            <li>
+                                SprinkleCrinkleCupcake-B
+                            </li>
+                            <li>
+                                SprinkleCrinkleCupcake-C
+                            </li>
+                            <p>Images that end with -A will be the primary display image. Images that don't end with -A will just be stored on  the server for future use.</p>
+                        </ol>
+                    </div>
+                    <form action='https://lydias-kitchen.herokuapp.com/3/uploadImages' method='POST' encType="multipart/form-data">
+                        <FormControl variant="outlined" className={classes.formControl}>
+                            <InputLabel id="iptLabel--product">Select Product</InputLabel>
+                            <Select
+                                labelId="select--product_label"
+                                id="product"
+                                name='product'
+                                value={product}
+                                onChange={handleRelations}
+                                label="Product"
+                            >
+                                {entireList.map(p => {
+                                    return (<MenuItem key={`${p._id}`} value={`${p.title}`}>{p.title}</MenuItem>)
+                                })
+                                }
+                            </Select>
+                        </FormControl>
+                        <Input
+                            accept="image/*"
+                            className={classes.input}
+                            id='productImages'
+                            name='productImages'
+                            inputProps={{ multiple: true }}
+                            type="file"
+                        />
+                        <Button type='submit' id='btnUpload' className={classes.uploadBtn} variant='contained' color='primary'>Submit</Button>
+                    </form>
+
+                    <div className={'imagesCtr'}>
+                        {
+                            images.map(
+                                (img, idx) => <img key={idx} alt="product" style={{ width: '100%', maxWidth: 250, maxHeight: 325, height: 200 }} src={img}></img>
+                            )
+                        }
+                    </div>
+                </React.Fragment>
+            }
+            {
+                viewKey == 'ingredients' &&
+                <React.Fragment>
+                    <div className={classes.legend}>
+                        <h3>Add/Edit Ingredients</h3>
+                    </div>
+                    <div className={classes.productNav}>
+                        <Button className={classes.addBtn} variant='outlined' color='primary' onClick={() => setService('ingredient-edit')}>Edit Ingredient</Button>
+                        <Button className={classes.addBtn} variant='outlined' color='primary' onClick={() => setService('ingredient-import')}>Import Ingredients</Button>
+                    </div>
+                    {service == 'ingredient-import' &&
+                        <ImportIngredient allIngredients={allIngredients} handleChange={handleChange} addNew={addNew} remove={remove} handleImport={handleImport} />
+                    }
+                    {
+                        service == 'ingredient-edit' &&
+                        <EditIngredient allIngredients={allIngredients} />
+                    }
+                </React.Fragment>
+            }
+        </div >
     );
 };
 export default AdminPage;

@@ -2,7 +2,6 @@ import 'date-fns';
 import React, { useState, useEffect } from 'react';
 import TextField from '@material-ui/core/TextField';
 import Checkbox from '@material-ui/core/Checkbox';
-import FormGroup from '@material-ui/core/FormGroup';
 import FormControlLabel from '@material-ui/core/FormControlLabel';
 import Button from '@material-ui/core/Button';
 import DateFnsUtils from '@date-io/date-fns';
@@ -11,13 +10,13 @@ import {
     MuiPickersUtilsProvider,
     KeyboardDatePicker,
 } from '@material-ui/pickers';
-import EventImages from '../components/Events/EventImages';
-import Products from '../components/Events/Products';
+import EventImages from './EventImages';
+import Products from './Products';
 import { makeStyles } from '@material-ui/core/styles';
 
 import axios from 'axios';
 
-import '../css/EventsCss.css'
+import '../../../css/EventsCss.css'
 
 const useStyles = makeStyles(theme => ({
     button: {
@@ -237,19 +236,27 @@ const EventsPage = (props) => {
             cdata: { id: event._id }
         }).then(res => {
             if (!res.status === 200) {
-                toast.success(res.status + ' : ' + res.statusText, {
+                toast.error(res.status + ' : ' + res.statusText, {
+                    position: toast.POSITION.TOP_CENTER
+                })
+                return;
+            }
+            else {
+
+                toast.success(`${res.data.msg} - Please wait while the page and database refresh.`, {
                     position: toast.POSITION.TOP_CENTER
                 });
                 return;
             }
-            return res;
-        }).catch(err => {
-            toast.error(err.message, {
-                position: toast.POSITION.TOP_CENTER
-            });
-            return;
         })
-        window.location.reload();
+            .then(() => {
+                setTimeout(() => { window.location.reload(); }, 3000);
+            }).catch(err => {
+                toast.error(err.message, {
+                    position: toast.POSITION.TOP_CENTER
+                });
+                return;
+            })
     };
 
     const handleDateChange = (date) => {
